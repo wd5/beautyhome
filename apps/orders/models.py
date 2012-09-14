@@ -215,8 +215,6 @@ class OrderProduct(models.Model):
     order = models.ForeignKey(Order, verbose_name=u'Заказ')
     count = models.PositiveIntegerField(default=1, verbose_name=u'Количество')
     product = models.ForeignKey(Product, verbose_name=u'Товар', on_delete = models.SET_NULL, blank=True, null=True,)
-
-    product_description = models.CharField(max_length=255, verbose_name=u'описание товара')
     product_price = models.DecimalField(verbose_name=u'Цена товара', decimal_places=2, max_digits=10,)
 
     def __unicode__(self):
@@ -227,10 +225,7 @@ class OrderProduct(models.Model):
         verbose_name_plural = _(u'product_items')
 
     def get_total(self):
-        if self.product:
-            total = self.product.price * self.count
-        else:
-            total = self.product_price * self.count
+        total = self.product_price * self.count
         return total
 
     def get_str_total(self):
@@ -252,20 +247,3 @@ class OrderProduct(models.Model):
             return u'%s %s' %(starts, ends)
         else:
             return u'%s' % value
-
-    def get_service_str_total(self):
-        total = self.get_services_total()
-        value = u'%s' % total
-        if total._isinteger():
-            value = u'%s' % value[:len(value) - 3]
-            count = 3
-        else:
-            count = 6
-
-        if len(value) > count:
-            ends = value[len(value) - count:]
-            starts = value[:len(value) - count]
-
-            return u'%s %s' % (starts, ends)
-        else:
-            return value

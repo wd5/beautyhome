@@ -16,6 +16,7 @@ def file_path_Brand(instance, filename):
 class Brand(models.Model):
     title = models.CharField(verbose_name=u'Название', max_length=255)
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_Brand, blank=True)
+    description = models.TextField(verbose_name = u'Описание',)
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
 

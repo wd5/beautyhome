@@ -298,7 +298,7 @@ var RTOOLBAR = {};
 		{		
 			// container
 			this.$box = $('<div class="redactor_box"></div>');				
-	
+            this.height = '150px'; // todo: моё! строку можно удалить
 			// frame
 			this.$frame = $('<iframe frameborder="0" scrolling="auto" style="height: ' + this.height + ';" class="redactor_frame"></iframe>');	   	
 			

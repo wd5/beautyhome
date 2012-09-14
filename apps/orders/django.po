@@ -22,15 +22,9 @@ msgstr "заказ"
 msgid "order_items"
 msgstr "заказы"
 
-msgid "oneclk_item"
+msgid "order_item"
 msgstr "заказ"
 
-msgid "oneclk_items"
-msgstr "купить в один клик"
-
-msgid "service_item"
-msgstr "услуга"
-
-msgid "service_items"
-msgstr "услуги к продуктам"
+msgid "order_items"
+msgstr "заказы"
 

@@ -19,7 +19,8 @@ class NewsAdminForm(forms.ModelForm):
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'date_add', 'is_published', )
     list_display_links = ('title',)
-    list_filter = ('is_published',)
+    list_filter = ('is_published','date_add',)
+    search_fields = ('title','short_text','text',)
     form = NewsAdminForm
     date_hierarchy = 'date_add'
 

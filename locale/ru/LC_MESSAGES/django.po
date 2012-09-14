@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-16 16:21+1000\n"
+"POT-Creation-Date: 2012-09-14 10:53+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: dashboard.py:17
 msgid "Quick links"
@@ -76,127 +76,215 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: apps/faq/
-msgid "Faq"
-msgstr "Вопрос/Ответ"
-
+#: apps/faq/__init__.py:2
 msgid "faq"
 msgstr "вопрос/Ответ"
 
-msgid "questions"
-msgstr "вопросы"
+#: apps/faq/__init__.py:3
+msgid "Faq"
+msgstr "Вопрос/Ответ"
 
+#: apps/faq/models.py:24
 msgid "question"
 msgstr "вопрос"
 
-msgid "question_category"
-msgstr "категория"
+#: apps/faq/models.py:25
+msgid "questions"
+msgstr "вопросы"
 
-msgid "question_categories"
-msgstr "категории вопросов"
+#: apps/faq/models.py:68
+msgid "advice"
+msgstr "вопрос"
 
+#: apps/faq/models.py:69
+msgid "advices"
+msgstr "консультация визажиста"
 
-
-#: apps/newsboard/
-msgid "Newsboard"
-msgstr "Новости"
-
+#: apps/newsboard/__init__.py:2
 msgid "newsboard"
 msgstr "новости"
 
-msgid "news_items"
-msgstr "новости"
+#: apps/newsboard/__init__.py:3
+msgid "Newsboard"
+msgstr "Новости"
 
+#: apps/newsboard/models.py:47
 msgid "news_item"
 msgstr "новость"
 
-msgid "news_categories"
-msgstr "категории новостей"
+#: apps/newsboard/models.py:48
+msgid "news_items"
+msgstr "новости"
 
-msgid "news_category"
-msgstr "категория"
+#: apps/orders/__init__.py:2
+msgid "Orders"
+msgstr "Заказы"
 
+msgid "orders"
+msgstr "заказы"
 
-#: apps/pages/
-msgid "Pages"
-msgstr "Структура сайта"
+msgid "cart"
+msgstr "корзина"
 
-msgid "pages"
-msgstr "структура сайта"
-
-msgid "page_items"
-msgstr "страницы"
-
-msgid "page_item"
-msgstr "страница"
-
-
-
-#: apps/products/
-msgid "Products"
-msgstr "Товары"
-
-msgid "products"
-msgstr "товары"
-
-msgid "categories"
-msgstr "категории"
-
-msgid "category"
-msgstr "категория"
-
-msgid "product_items"
-msgstr "товары"
+msgid "carts"
+msgstr "корзина"
 
 msgid "product_item"
 msgstr "товар"
 
-msgid "phrases"
-msgstr "фразы для поиска"
+msgid "product_items"
+msgstr "товары"
 
-msgid "phrase"
-msgstr "фраза"
+msgid "order_item"
+msgstr "заказ"
 
-msgid "product_photos"
-msgstr "фотографии товара"
+msgid "order_items"
+msgstr "заказы"
 
+#: apps/orders/models.py:103
+msgid "buy_later_record"
+msgstr "товар"
+
+#: apps/orders/models.py:104
+msgid "buy_later_records"
+msgstr "товары"
+
+
+#: apps/pages/__init__.py:2
+msgid "pages"
+msgstr "структура сайта"
+
+#: apps/pages/__init__.py:3
+msgid "Pages"
+msgstr "Структура сайта"
+
+#: apps/pages/models.py:31
+msgid "page_item"
+msgstr "страница"
+
+#: apps/pages/models.py:32
+msgid "page_items"
+msgstr "страницы"
+
+#: apps/products/__init__.py:2
+msgid "products"
+msgstr "товары"
+
+#: apps/products/__init__.py:3
+msgid "Products"
+msgstr "Товары"
+
+#: apps/products/models.py:26
+msgid "brand"
+msgstr "брэнд"
+
+#: apps/products/models.py:27
+msgid "brands"
+msgstr "брэнды"
+
+#: apps/products/models.py:48
+msgid "life_event"
+msgstr "случай"
+
+#: apps/products/models.py:49
+msgid "life_events"
+msgstr "случаи жизни"
+
+#: apps/products/models.py:70
+msgid "category"
+msgstr "категория"
+
+#: apps/products/models.py:71
+msgid "categories"
+msgstr "категории"
+
+#: apps/products/models.py:167
 msgid "product_photo"
 msgstr "фотография"
 
+#: apps/products/models.py:168
+msgid "product_photos"
+msgstr "фотографии товара"
 
+#: apps/products/models.py:185
+msgid "review"
+msgstr "обзор"
 
-#: apps/siteblocks/
-msgid "Siteblocks"
-msgstr "Блоки сайта"
+#: apps/products/models.py:186
+msgid "reviews"
+msgstr "обзоры"
 
+#: apps/siteblocks/__init__.py:2
 msgid "siteblocks"
 msgstr "блоки сайта"
 
-msgid "menu_item"
-msgstr "элемент"
+#: apps/siteblocks/__init__.py:3
+msgid "Siteblocks"
+msgstr "Блоки сайта"
 
-msgid "menu_items"
-msgstr "элементы меню"
-
+#: apps/siteblocks/models.py:35
 msgid "site_setting"
 msgstr "параметр"
 
+#: apps/siteblocks/models.py:36
 msgid "site_settings"
 msgstr "настройки сайта"
 
+#: apps/siteblocks/models.py:56
+msgid "banner"
+msgstr "баннер"
 
-#: apps/slider/__init__.py:2
-msgid "Slider"
-msgstr "Слайдер"
+#: apps/siteblocks/models.py:57
+msgid "banners"
+msgstr "баннеры"
 
-msgid "slider"
-msgstr "Слайдер"
+#: apps/siteblocks/models.py:86
+msgid "action"
+msgstr "акция"
 
-msgid "slider_photo"
-msgstr "фотография"
+#: apps/siteblocks/models.py:87
+msgid "actions"
+msgstr "акции"
 
-msgid "slider_photos"
-msgstr "фотографии"
+#: apps/spam/__init__.py:2
+msgid "spam"
+msgstr ""
+
+#: apps/spam/__init__.py:3
+msgid "Spam"
+msgstr ""
+
+#: apps/users/forms.py:57
+msgid "username"
+msgstr ""
+
+#: apps/users/forms.py:59
+msgid "email address"
+msgstr ""
+
+#: apps/users/forms.py:61
+msgid "password"
+msgstr ""
+
+#: apps/users/forms.py:63
+msgid "password (again)"
+msgstr ""
+
+#: apps/users/models.py:23
+msgid "user_profile"
+msgstr "профиль"
+
+#: apps/users/models.py:24
+msgid "users_profiles"
+msgstr "профили"
+
+#: apps/users/models.py:44
+msgid "profile_addres"
+msgstr "адрес"
+
+#: apps/users/models.py:45
+msgid "profile_addreses"
+msgstr "адреса"
 
 #: templates/admin/actions.html:4
 msgid "Run the selected action"
@@ -223,23 +311,28 @@ msgstr ""
 #: templates/admin/change_list.html:42
 #: templates/admin/delete_confirmation.html:6
 #: templates/admin/delete_selected_confirmation.html:6
+#: templates/admin/spam/mailer/change_form.html:19
 msgid "Home"
 msgstr ""
 
 #: templates/admin/change_form.html:22
+#: templates/admin/spam/mailer/change_form.html:22
 #: templates/admin_tools/dashboard/modules/app_list.html:13
 msgid "Add"
 msgstr ""
 
 #: templates/admin/change_form.html:31
+#: templates/admin/spam/mailer/change_form.html:31
 msgid "History"
 msgstr ""
 
 #: templates/admin/change_form.html:32
+#: templates/admin/spam/mailer/change_form.html:32
 msgid "View on site"
 msgstr ""
 
 #: templates/admin/change_form.html:43 templates/admin/change_list.html:73
+#: templates/admin/spam/mailer/change_form.html:43
 msgid "Please correct the error below."
 msgid_plural "Please correct the errors below."
 msgstr[0] ""
@@ -327,3 +420,39 @@ msgstr ""
 #: templates/admin_tools/dashboard/modules/app_list.html:14
 msgid "Change"
 msgstr ""
+
+#~ msgid "question_category"
+#~ msgstr "категория"
+
+#~ msgid "question_categories"
+#~ msgstr "категории вопросов"
+
+#~ msgid "news_categories"
+#~ msgstr "категории новостей"
+
+#~ msgid "news_category"
+#~ msgstr "категория"
+
+#~ msgid "phrases"
+#~ msgstr "фразы для поиска"
+
+#~ msgid "phrase"
+#~ msgstr "фраза"
+
+#~ msgid "menu_item"
+#~ msgstr "элемент"
+
+#~ msgid "menu_items"
+#~ msgstr "элементы меню"
+
+#~ msgid "Slider"
+#~ msgstr "Слайдер"
+
+#~ msgid "slider"
+#~ msgstr "Слайдер"
+
+#~ msgid "slider_photo"
+#~ msgstr "фотография"
+
+#~ msgid "slider_photos"
+#~ msgstr "фотографии"

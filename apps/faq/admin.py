@@ -7,7 +7,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display_links = ('id','pub_date',)
     list_editable = ('is_published',)
     search_fields = ('name','email', 'question', 'answer',)
-    list_filter = ('pub_date','is_published',)
+    list_filter = ('is_published','pub_date',)
 
 admin.site.register(Question, QuestionAdmin)
 
@@ -16,6 +16,6 @@ class AdviceAdmin(admin.ModelAdmin):
     list_display_links = ('id','pub_date',)
     list_editable = ('is_published',)
     search_fields = ('name','email', 'question', 'answer',)
-    list_filter = ('pub_date','is_published',)
+    list_filter = ('is_published','pub_date',)
 
 admin.site.register(Advice, AdviceAdmin)
