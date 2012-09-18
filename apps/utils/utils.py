@@ -110,3 +110,28 @@ def crop_image(post, original_img, output_size):
     image = image.resize(new_size, Image.ANTIALIAS)
     image.save(name, "JPEG", quality=100)
     return True
+
+def url_spliter(url,cut_count):
+    url = url.split('/')
+    current = ''
+    counter = 0
+    if len(url)>1:
+        for part in url[1:]:
+            counter = counter + 1
+            if cut_count==False:
+                current = '%s/%s' % (current,part)
+            else:
+                if counter <= cut_count:
+                    current = '%s/%s' % (current,part)
+                else:
+                    pass
+    else:
+        current = u'/'
+
+    if not current.startswith('/'):
+        current = '/%s' % current
+    if not current.endswith('/'):
+        current = '%s/' % current
+    current = current.replace('//', '/')
+
+    return current

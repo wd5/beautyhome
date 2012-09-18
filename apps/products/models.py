@@ -17,6 +17,7 @@ class Brand(models.Model):
     title = models.CharField(verbose_name=u'Название', max_length=255)
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_Brand, blank=True)
     description = models.TextField(verbose_name = u'Описание',)
+    slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице',)
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
 
@@ -33,6 +34,12 @@ class Brand(models.Model):
 
     def get_products(self):
         return self.product_set.published()
+
+    def get_absolute_url(self):
+        return u'/brands/%s/' % self.slug
+
+    def get_src_image(self):
+        return self.image.url
 
 def file_path_LifeEvent(instance, filename):
     return os.path.join('images','lifeEvents',  translify(filename).replace(' ', '_') )
@@ -53,18 +60,33 @@ class LifeEvent(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return u'/category/lifeevents/%s/' % self.id
+
+    def get_src_image(self):
+        return self.image.url
+
 class Category(MPTTModel):
-    parent = TreeForeignKey('self', verbose_name=u'Категория', related_name='children', blank=True, null=True, on_delete=models.SET_NULL)
+    parent = TreeForeignKey('self', verbose_name=u'Родительская категория', related_name='children', blank=True, null=True, on_delete=models.SET_NULL)
     title = models.CharField(verbose_name=u'Название', max_length=100)
     slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице',)
     is_in_bottom_menu = models.BooleanField(verbose_name = u'Отображать в блоке "Всё сразу"', default=False, help_text=u'(только для категорий 2-го уровня)')
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
 
+    parent.custom_filter_spec = True
+
     # Managers
     objects = TreeManager()
 
     def __unicode__(self):
+        if self.level==1:
+            return '--- %s' % self.title
+        elif self.level==2:
+            return '------ %s' % self.title
+        elif self.level==3:
+            return '------------ %s' % self.title
+        else:
             return self.title
 
     class Meta:
@@ -75,9 +97,130 @@ class Category(MPTTModel):
     class MPTTMeta:
             order_insertion_by = ['order']
 
-
     def get_absolute_url(self):
-        return u'' #self.alias
+        if self.parent:
+            exist_parent = True
+            first = True
+            abs_url = self.slug
+            while exist_parent:
+                if first:
+                    parent = self.parent
+                    first = False
+                else:
+                    if parent.parent:
+                        parent = parent.parent
+                    else:
+                        exist_parent = False
+                if exist_parent:
+                    abs_url= u'%s/%s' % (parent.slug,abs_url)
+
+            if not abs_url.startswith('/'):
+                abs_url = '/%s' % abs_url
+            if not abs_url.endswith('/'):
+                abs_url = '%s/' % abs_url
+            abs_url = abs_url.replace('//', '/')
+            return u'/category%s' % abs_url
+        else:
+            return u'/category/%s/' % self.slug
+
+    def get_bread(self):
+        if self.parent:
+            exist_parent = True
+            first = True
+            abs_bread = u'<a href="%s">%s</a>' % (self.get_absolute_url(), self.title)
+            while exist_parent:
+                if first:
+                    parent = self.parent
+                    first = False
+                else:
+                    if parent.parent:
+                        parent = parent.parent
+                    else:
+                        exist_parent = False
+                if exist_parent:
+                    abs_bread= u' <a href="%s">%s</a> / %s /' % (parent.get_absolute_url() ,parent.title ,abs_bread)
+
+            if abs_bread.startswith('/'):
+                abs_bread = '%s' % abs_bread[1:]
+            if not abs_bread.endswith('/'):
+                abs_bread = '%s /' % abs_bread
+            abs_bread = abs_bread.replace('/ / /', '/')
+            abs_bread = abs_bread.replace('/ /', '/')
+            return u'%s' % abs_bread
+        else:
+            return u' <a href="%s">%s</a> /' % (self.get_absolute_url(), self.title)
+
+    def get_children(self):
+        return self.children.filter(is_published=True)
+
+    def get_4cols_childrens(self):
+        all_childrens = self.get_children()
+        col4_childs = []
+        is_4cols = False
+        for item in all_childrens:
+            if not item.get_children():
+                pass
+            else:
+                for child1 in item.get_children():
+                    if not child1.get_children():
+                        pass
+                    else:
+                        is_4cols = True
+            if is_4cols:
+                col4_childs.append(item)
+                is_4cols = False
+        return col4_childs
+
+    def get_3cols_childrens(self):
+        all_childrens = self.get_children()
+        col3_childs = []
+        is_3cols = False
+        for item in all_childrens:
+            if not item.get_children():
+                pass
+            else:
+                for child1 in item.get_children():
+                    if not child1.get_children():
+                        is_3cols = True
+                    else:
+                        is_3cols = False
+            if is_3cols:
+                col3_childs.append(item)
+                is_3cols = False
+        return col3_childs
+
+    def get_2cols_childrens(self):
+        all_childrens = self.get_children()
+        col2_childs = []
+        is_2cols = False
+        for item in all_childrens:
+            if not item.get_children():
+                is_2cols = True
+            else:
+                for child1 in item.get_children():
+                    if not child1.get_children():
+                        is_2cols = False
+                    else:
+                        is_2cols = False
+            if is_2cols:
+                col2_childs.append(item)
+                is_2cols = False
+        return col2_childs
+
+    def get_childs_in_menu(self):
+        return self.children.filter(is_published=True, is_in_bottom_menu=True)
+
+    def get_products(self):
+        products_ids = []
+        if self.parent == None:
+            products = Product.objects.published()
+            for child in self.get_children():
+                for product in child.product_set.published():
+                    products_ids.append(product.id)
+            products = products.filter(id__in=products_ids)
+            return products
+        else:
+            return self.product_set.published()
 
 def str_price(price):
     if not price:
@@ -143,10 +286,10 @@ class Product(models.Model):
         ordering = ['-order', 'title']
 
     def __unicode__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
-        return reverse('products_detail',kwargs={'pk': '%s'%self.id})
+        return u'%s%s/' % (self.category.get_absolute_url(),self.id)
 
     def get_str_price(self):
         return str_price(self.price)
@@ -170,7 +313,7 @@ class Photo(models.Model):
         ordering = ['-order',]
 
     def __unicode__(self):
-        return u'Фото товара %s' %self.product.name
+        return u'Фото товара %s' %self.product.title
 
 class Review(models.Model):
     title = models.CharField(verbose_name=u'Название', max_length=255)

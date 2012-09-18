@@ -12,6 +12,7 @@ register = template.Library()
 def block_cart(context):
     if 'request' in context:
         request = context['request']
+        user = request.user
 
         cookies = request.COOKIES
 
@@ -59,6 +60,7 @@ def block_cart(context):
                 cart = False
     else:
         cart = False
+        user = False
 
     is_empty = True
     cart_total = 0
@@ -72,6 +74,7 @@ def block_cart(context):
             cart_products_text = u'товар%s' % (choose_plural(cart_products_count, (u'', u'а', u'ов')))
     return {
         'is_empty': is_empty,
+        'user': user,
         'cart_products_count': cart_products_count,
         'cart_total': cart_total,
         'cart_products_text': cart_products_text,

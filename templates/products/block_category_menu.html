@@ -1,0 +1,60 @@
+<div class="menu">
+	<ul>
+        {% for item in menu %}
+            <li>
+                <a href="{{ item.get_absolute_url }}" name="{{ item.id }}" >{{ item.title|safe }}</a>
+                <div class="menu_arr"></div>
+            </li>
+        {% endfor %}
+	</ul>
+</div><!--/menu-->
+
+{% for item in menu %}
+    <div class="submenu smenu_{{ item.id }}">
+        <div class="submenu_content">
+            {% if item.get_children %}
+                {% for child_1 in item.get_4cols_childrens %}
+                    <h2><a href="{{ child_1.get_absolute_url }}">{{ child_1.title }}</a></h2>
+
+                    <div class="submenu_4cols">
+                        {% for child_2 in child_1.get_children %}
+                            <div class="submenu_4col col">
+                                <h3><a href="{{ child_2.get_absolute_url }}">{{ child_2.title }}</a></h3>
+                                <ul>
+                                    {% for child_3 in child_2.get_children %}
+                                        <li><a href="{{ child_3.get_absolute_url }}">{{ child_3.title }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div><!--/submenu_4cols-->
+                {% endfor %}
+
+                <div class="submenu_3cols">
+                    {% for child_1 in item.get_3cols_childrens %}
+                        <div class="submenu_3col col">
+                            <h2><a href="{{ child_1.get_absolute_url }}">{{ child_1.title }}</a></h2>
+                            <ul>
+                                {% for child_2 in child_1.get_children %}
+                                    <li><a href="{{ child_2.get_absolute_url }}">{{ child_2.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                    {% if item.get_2cols_childrens %}
+                        <div class="submenu_3col col">
+                            {% for children in item.get_2cols_childrens %}
+                                <h2><a href="{{ children.get_absolute_url }}">{{ children.title }}</a></h2>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div><!--/submenu_3cols-->
+
+            {% else %}
+                Категория пуста
+            {% endif %}
+        </div>
+        <div class="submenu_shade_b"></div>
+        <div class="submenu_shade_lr"><img src="/media/img/submenu_shade_lr.png"/></div>
+    </div><!--/submenu-->
+{% endfor %}

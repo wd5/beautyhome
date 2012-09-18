@@ -1,14 +1,16 @@
-{% load siteblocks_extras %}
+{% load pages_extras products_extras orders_extras %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="description" content="{% block META_description %}{{ meta.description }}{% endblock %}"/>
-    <meta name="keywords" content="{% block META_keywords %}{{ meta.keywords }}{% endblock %}"/>
-    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <!--[if lte IE 8]><link rel="stylesheet" type="text/css" media="screen" href="/static/css/ie.css" /><![endif]-->
-    <script type="text/javascript" src="/static/js/jquery.js"></script>
-    <script type="text/javascript" src="/static/js/script.js"></script>
+    <link href="/media/css/style.css" rel="stylesheet" type="text/css" />
+    <!--[if lte IE 8]><link rel="stylesheet" type="text/css" media="screen" href="/media/css/ie.css" /><![endif]-->
+    <script type="text/javascript" src="/media/js/jquery.js"></script>
+    <script type="text/javascript" src="/media/js/jquery.jcarousel.min.js"></script>
+    <script type="text/javascript" src="/media/js/jquery-ui-1.8.21.custom.min.js"></script>
+    <script type="text/javascript" src="/media/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+    <link rel="stylesheet" href="/media/js/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/media/js/script.js"></script>
     <title>
         {% block title %}
             {% if meta.title %}
@@ -22,6 +24,100 @@
 </head>
 
 <body>
-{% comment %}{% block_menu request.path %}{% endcomment %}
+
+<div class="wrapper">
+
+<!--PAGE-->
+<div class="page">
+
+    <!--HEADER-->
+	<div class="header">
+		<a id="logo_box" href="/" title="Beauty Home"><img id="logo" src="/media/img/logo.png" alt="Beauty Home" width="192" height="137" /></a>
+
+		<div class="purse">
+			<div class="header_search">
+				<form method="post" action="">
+					<div>
+						<input class="header_search_inpt" type="text" placeholder="поиск"/>
+						<input class="header_search_submit" type="submit" value="" />
+					</div>
+				</form>
+			</div><!--/header_search-->
+
+            {% block_menu request.path %}
+		</div><!--/purse-->
+
+		<div class="contacts">
+			<div class="tel">{{ phonenum|safe }}</div>
+
+			<ul>
+				<li><a href="{{ skype|safe }}"><img src="/media/img/skype.png" alt="" /> <span>beautyhome</span></a></li>
+				<li><a href="{{ vk|safe }}"><img src="/media/img/vk.png" alt="" /> <span>Группа ВКонтакте</span></a></li>
+			</ul>
+		</div><!--/contacts-->
+
+        {% block_cart %}
+
+        {% block_category_menu %}
+
+		<div class="advices">
+			<div class="advices_btn"><span>Советы</span></div>
+		</div><!--/advices-->
+
+        {% block_brand_menu %}
+
+	</div>
+    <!--/HEADER-->
+
+    <!--MAIN-->
+	<div class="main">
+        {% block main %}{% endblock %}
+        {% block_all_footer_menu %}
+    </div>
+    <!--/MAIN-->
+
+    <!--FOOTER-->
+    <div class="footer">
+		<div id="copyright">
+			<p>© 2003-{% now "Y" %} Beauty Home</p>
+			<p>Все цены представлены в рублях</p>
+		</div>
+
+		<div class="footer_search">
+			<form method="post" action="">
+				<div>
+					<input class="footer_search_inpt" type="text" placeholder="поиск"/>
+					<input class="footer_search_submit" type="submit" value="" />
+				</div>
+			</form>
+		</div>
+
+		<a id="madein" title="Разработка сайта — студия OctoberWeb" href="http://octoberweb.ru/"><img id="octoberweb" alt="Разработка сайта — студия OctoberWeb" src="/media/img/octoberweb.png" width="32" height="32"/>разработка сайта <span>OctoberWeb</span></a>
+    </div>
+    <!--/FOOTER-->
+
+
+</div>
+<!--/PAGE-->
+
+{% if user.is_authenticated %}
+{% else %}
+    <div style="display: none;">
+        <form class="auth_form" id="auth_form" method="post" action="{% url auth_login %}?next={% if request.path == '/show_order_form/' %}{{ request.path }}{% else %}{{ next_url }}{% endif %}">
+            <h2>Вход</h2>
+            <div class="input input3">
+                <label>E-mail:</label>
+                {{ auth_form.username }}{{ auth_form.username.errors }} <a href="/registration_form/">Зарегистрироваться</a>
+            </div>
+            <div class="input input3">
+                <label>Пароль:</label>
+                {{ auth_form.password }}{{ auth_form.password.errors }} <a href="/password/reset/">Восстановить пароль</a>
+            </div>
+            <div><input class="btn2 auth_submit" type="submit" value="Войти" /></div>
+        </form>
+    </div>
+{% endif %}
+
+</div><!--/wrapper-->
 </body>
 </html>

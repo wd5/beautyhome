@@ -1,0 +1,6 @@
+{% load thumbnail %}
+
+{% for b in banner %}
+    <div class="cases"><a href="{{ b.url }}" {% if b.is_target_blank %}target="_blank"{% endif %} ><span>{{ b.title }}</span></a></div>
+{% endfor %}
+

@@ -8,7 +8,8 @@ admin.site.unregister(User)
 class ProfileInline(admin.StackedInline):
     model = Profile
 
-class ProfileAddressInline(admin.StackedInline):
+class ProfileAddressInline(admin.TabularInline):
+    readonly_fields = ('city','street',)
     model = ProfileAddress
 
 class MyAdmin(UserAdmin):

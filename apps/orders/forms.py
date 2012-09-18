@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from apps.orders.models import Order, OneClickBye
+from apps.orders.models import Order
 
 class RegistrationOrderForm(forms.ModelForm):
     first_name = forms.CharField(error_messages={'required': 'Введите ваше имя'})
@@ -25,10 +25,3 @@ class RegistrationOrderForm(forms.ModelForm):
             raise forms.ValidationError("Введите адрес доставки")
 
         return cleaned_data
-
-class OneClickByeForm(forms.ModelForm):
-    phone = forms.CharField(widget=forms.TextInput(),required=True)
-
-    class Meta:
-        model = OneClickBye
-        exclude = ('create_date',)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 DATABASE_NAME = u'beautyhome'
 PROJECT_NAME = u'beautyhome'
-SITE_NAME = u'Beauty-Home'
+SITE_NAME = u'Beauty Home'
 DEFAULT_FROM_EMAIL = u'support@beautyhome.octweb.ru'
 
 from config.base import *
@@ -37,4 +37,5 @@ MIDDLEWARE_CLASSES += (
 TEMPLATE_CONTEXT_PROCESSORS += (
     'apps.pages.context_processors.meta',
     'apps.siteblocks.context_processors.settings',
+    'apps.utils.context_processors.authorization_form',
 )

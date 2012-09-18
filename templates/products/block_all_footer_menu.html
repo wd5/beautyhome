@@ -1,0 +1,22 @@
+<div class="all">
+	<div class="all_content">
+		<h2>Все сразу</h2>
+        {% for item in categs_with_childs %}
+            <div class="all_col col">
+                <h3><a href="{{ item.get_absolute_url }}">{{ item.title|striptags }}</a></h3>
+                    <ul>
+                        {% for child in item.childrens %}
+                            <li><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+            </div>
+        {% endfor %}
+        {% for item in categs %}
+            <div class="all_col col">
+                <h3><a href="{{ item.get_absolute_url }}">{{ item.title|striptags }}</a></h3>
+            </div>
+        {% endfor %}
+
+		<div class="all_t"></div>
+	</div>
+</div><!--/all-->

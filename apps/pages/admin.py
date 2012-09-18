@@ -47,6 +47,7 @@ class PageAdmin(AdminImageMixin, MPTTModelAdmin):
         #PageDocInline,
         #PagePicInline,
     ]
+    exclude = ('is_at_footer_menu',)
 
 class MetaDataAdmin(admin.ModelAdmin):
     list_display=('url', 'title',)

@@ -1,0 +1,13 @@
+<div class="purse_menu">
+    <ul>
+    {% for item in menu %}
+            <li>
+                {% if current == item.url %}
+                    <a href="{{ item.url }}"><strong>{{ item.title }}</strong></a>
+                {% else %}
+                    <a href="{{ item.url }}">{{ item.title }}</a>
+                {% endif %}
+            </li>
+    {% endfor %}
+    </ul>
+</div>

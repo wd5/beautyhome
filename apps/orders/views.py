@@ -5,9 +5,9 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import FormView, TemplateView, View
-from apps.orders.models import Cart, CartProduct, OrderProduct, CartProductService, OrderProductService
-from apps.orders.forms import RegistrationOrderForm, OneClickByeForm
-from apps.products.models import Product, CategoryService
+from apps.orders.models import Cart, CartProduct, OrderProduct
+from apps.orders.forms import RegistrationOrderForm
+from apps.products.models import Product
 from apps.users.models import Profile
 from apps.users.forms import RegistrationForm
 from apps.siteblocks.models import Settings
@@ -127,7 +127,7 @@ class OrderFromView(FormView):
 
             for cart_product in cart_products:
                 try:
-                    mfrer = '%s - ' % cart_product.product.manufacturer.title
+                    mfrer = '%s - ' % cart_product.product.brand.title
                 except:
                     mfrer = ''
                 ord_prod = OrderProduct(
@@ -488,159 +488,3 @@ class ChangeCartCountView(View):
             return HttpResponse(data)
 
 change_cart_product_count = csrf_exempt(ChangeCartCountView.as_view())
-
-class ChangeCartProdServView(View):
-    def post(self, request, *args, **kwargs):
-        if not request.is_ajax():
-            return HttpResponseRedirect('/')
-        else:
-            if 'cart_product_id' not in request.POST or 'serv_id' not in request.POST or 'not_delete' not in request.POST:
-                return HttpResponseBadRequest()
-
-            cart_product_id = request.POST['cart_product_id']
-            try:
-                cart_product_id = int(cart_product_id)
-                cart_product = CartProduct.objects.get(id=cart_product_id)
-            except:
-                return HttpResponseBadRequest()
-
-            serv_id = request.POST['serv_id']
-            try:
-                serv_id = int(serv_id)
-                service = CategoryService.objects.get(id=serv_id)
-            except:
-                return HttpResponseBadRequest()
-
-            try:
-                serv_count = request.POST['serv_count']
-                serv_count = int(serv_count)
-            except:
-                serv_count = 1
-
-            not_delete = request.POST['not_delete']
-
-            if not_delete == 'false':
-                try:
-                    prod_service = CartProductService.objects.get(cart_product=cart_product, service=service)
-                    prod_service.delete()
-                    serv_str_total = u'0'
-                except:
-                    serv_str_total = u'0'
-            else:
-                prod_service = CartProductService(cart_product=cart_product, count=serv_count, service=service)
-                prod_service.save()
-                serv_str_total = prod_service.get_str_total()
-
-            cart_str_total = cart_product.cart.get_str_total()
-
-            data = u'''{"cart_str_total":'%s',"serv_str_total":'%s'}''' % (cart_str_total, serv_str_total)
-
-            return HttpResponse(data)
-
-change_cart_product_service = csrf_exempt(ChangeCartProdServView.as_view())
-
-class ChangeCartProdServCountView(View):
-    def post(self, request, *args, **kwargs):
-        if not request.is_ajax():
-            return HttpResponseRedirect('/')
-        else:
-            if 'cart_product_id' not in request.POST or 'serv_id' not in request.POST:
-                return HttpResponseBadRequest()
-
-            cart_product_id = request.POST['cart_product_id']
-            try:
-                cart_product_id = int(cart_product_id)
-                cart_product = CartProduct.objects.get(id=cart_product_id)
-            except:
-                return HttpResponseBadRequest()
-
-            serv_id = request.POST['serv_id']
-            try:
-                serv_id = int(serv_id)
-                service = CategoryService.objects.get(id=serv_id)
-            except:
-                return HttpResponseBadRequest()
-
-            try:
-                serv_count = request.POST['serv_count']
-                serv_count = int(serv_count)
-            except:
-                serv_count = 1
-
-            prod_service = CartProductService.objects.get(cart_product=cart_product, service=service)
-            prod_service.count = serv_count
-            prod_service.save()
-            serv_str_total = prod_service.get_str_total()
-
-            cart_str_total = cart_product.cart.get_str_total()
-
-            data = u'''{"cart_str_total":'%s',"serv_str_total":'%s'}''' % (cart_str_total, serv_str_total)
-
-            return HttpResponse(data)
-
-change_cart_product_service_count = csrf_exempt(ChangeCartProdServCountView.as_view())
-
-class CheckOneClkFormView(View):
-    def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            data = request.POST.copy()
-            one_clk_form = OneClickByeForm(data)
-            if one_clk_form.is_valid():
-                saved_object = one_clk_form.save()
-                subject = u'ЧитаМаг - Новый заказ (покупка "в один клик")'
-                subject = u''.join(subject.splitlines())
-                message = render_to_string(
-                    'products/admin_message_template_one_click.html',
-                        {
-                        'saved_object': saved_object,
-                        }
-                )
-                try:
-                    emailto = Settings.objects.get(name='workemail').value
-                except Settings.DoesNotExist:
-                    emailto = False
-
-                if emailto:
-                    msg = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [emailto])
-                    msg.content_subtype = "html"
-                    msg.send()
-
-                return HttpResponse('success')
-            else:
-                one_clk_form_html = render_to_string(
-                    'products/one_clk_form.html',
-                        {'one_clk_form': one_clk_form}
-                )
-                return HttpResponse(one_clk_form_html)
-        else:
-            return HttpResponseBadRequest()
-
-check_oneclick_form = CheckOneClkFormView.as_view()
-
-class LoadServRowsAdmin(View):
-    def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            if 'ids' not in request.POST:
-                return HttpResponseBadRequest()
-
-            ids = request.POST['ids']
-            ids = ids.split(',')
-
-            try:
-                order_products = OrderProduct.objects.filter(id__in=ids)
-            except OrderProduct.DoesNotExist:
-                return HttpResponseBadRequest()
-            html=''
-            for item in order_products:
-                html += render_to_string(
-                    'orders/loaded_serv_template.html',
-                        {
-                        'op_id': item.id,
-                        'op_services_total_price': item.get_service_str_total(),
-                        'op_services': item.get_services()
-                    })
-            return HttpResponse(html)
-        else:
-            return HttpResponseBadRequest()
-
-load_serv_rows = LoadServRowsAdmin.as_view()
