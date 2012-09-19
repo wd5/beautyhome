@@ -1,0 +1,21 @@
+{% load thumbnail %}
+{% if products %}
+    <div class="recent">
+        <h2><span>Недавно просмотренные товары</span></h2>
+        {% for product in products %}
+            <div class="carousel_item">
+                <div class="carousel_item_img"><a href="{{ product.get_absolute_url }}">
+                    {% thumbnail product.image "90x92" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                    {% endthumbnail %}
+
+                </a></div>
+                <div class="carousel_item_des">
+                    <h3 class="item_name"><a href="{{ product.get_absolute_url }}">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
+                    <div class="item_w">{{ product.volume }}</div>
+                    <div class="item_price">{{ product.get_str_price }} <i>руб.</i></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div><!--/recent-->
+{% endif %}

@@ -89,7 +89,7 @@ field_set = (
         }),
         ('Параметры', {
             'classes': ('collapse',),
-            'fields': ('series', 'collection', 'art','color','volume',)
+            'fields': ('collection','series', 'color', 'art','volume',)
         }),
         ('Цена', {
             'fields': ('price', 'old_price')
@@ -107,7 +107,7 @@ field_set = (
             'fields': ('is_new','is_hit','is_daily','is_unique','is_limit',)
         }),
         (None, {
-            'fields': ('life_events','related_products','order','is_published',)
+            'fields': ('life_events','related_products','id2s','order','is_published',)
         }),
     )
 

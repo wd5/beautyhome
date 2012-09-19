@@ -41,9 +41,17 @@ class BannerAdmin(AdminImageMixin, admin.ModelAdmin):
 
 admin.site.register(Banner, BannerAdmin)
 
+class ActionAdminForm(forms.ModelForm):
+    description = forms.CharField(widget=Redactor(attrs={'cols': 110, 'rows': 20}), required=False)
+    description.label=u'Описание'
+
+    class Meta:
+        model = Action
+
 class ActionAdmin(AdminImageMixin, admin.ModelAdmin):
-    list_display = ('id','title','banner_preview','is_published',)
+    list_display = ('id','title','banner_preview','order','is_published',)
     list_display_links = ('id','title',)
-    list_editable = ('is_published',)
+    list_editable = ('order','is_published',)
+    form = ActionAdminForm
 
 admin.site.register(Action, ActionAdmin)

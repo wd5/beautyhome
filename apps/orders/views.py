@@ -23,8 +23,8 @@ class ViewCart(TemplateView):
         cookies = self.request.COOKIES
 
         cookies_cart_id = False
-        if 'chitamag_cart_id' in cookies:
-            cookies_cart_id = cookies['chitamag_cart_id']
+        if 'beautyhome_cart_id' in cookies:
+            cookies_cart_id = cookies['beautyhome_cart_id']
 
         if self.request.user.is_authenticated and self.request.user.id:
             profile_id = self.request.user.profile.id
@@ -83,8 +83,8 @@ class OrderFromView(FormView):
         badresponse = HttpResponseBadRequest()
         cookies = self.request.COOKIES
         cookies_cart_id = False
-        if 'chitamag_cart_id' in cookies:
-            cookies_cart_id = cookies['chitamag_cart_id']
+        if 'beautyhome_cart_id' in cookies:
+            cookies_cart_id = cookies['beautyhome_cart_id']
 
         if self.request.user.is_authenticated and self.request.user.id:
             profile_id = self.request.user.profile.id
@@ -156,7 +156,7 @@ class OrderFromView(FormView):
                 profile.save()
 
             cart.delete() #Очистка и удаление корзины
-            response.delete_cookie('chitamag_cart_id') # todo: ???
+            response.delete_cookie('beautyhome_cart_id') # todo: ???
 
             subject = u'ЧитаМаг - Информация по заказу.'
             subject = u''.join(subject.splitlines())
@@ -198,8 +198,8 @@ class OrderFromView(FormView):
 
         cookies = self.request.COOKIES
         cookies_cart_id = False
-        if 'chitamag_cart_id' in cookies:
-            cookies_cart_id = cookies['chitamag_cart_id']
+        if 'beautyhome_cart_id' in cookies:
+            cookies_cart_id = cookies['beautyhome_cart_id']
 
         if self.request.user.is_authenticated and self.request.user.id:
             profile_id = self.request.user.profile.id
@@ -292,8 +292,8 @@ class AddProdictToCartView(View):
             response = HttpResponse()
 
             cookies_cart_id = False
-            if 'chitamag_cart_id' in cookies:
-                cookies_cart_id = cookies['chitamag_cart_id']
+            if 'beautyhome_cart_id' in cookies:
+                cookies_cart_id = cookies['beautyhome_cart_id']
 
             if request.user.is_authenticated and request.user.id:
                 profile_id = request.user.profile.id
@@ -309,7 +309,7 @@ class AddProdictToCartView(View):
 
             if profile_id:
                 try:
-                    cart = Cart.objects.get(profile=profile_id)
+                    cart = Cart.objects.get(profile__id=profile_id)
                 except Cart.DoesNotExist:
                     if cookies_cart_id:
                         try:
@@ -331,21 +331,21 @@ class AddProdictToCartView(View):
                             else:
                                 return HttpResponseBadRequest()
                     else:
-                        cart = Cart.objects.create(profile=profile_id)
-                response.set_cookie('chitamag_cart_id', cart.id, 1209600)
-                #if cookies_cart_id: response.delete_cookie('chitamag_cart_id')
+                        cart = Cart.objects.create(profile=profile)
+                response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
+                #if cookies_cart_id: response.delete_cookie('beautyhome_cart_id')
             elif cookies_cart_id:
                 try:
                     cart = Cart.objects.get(id=cookies_cart_id)
                 except Cart.DoesNotExist:
                     cart = Cart.objects.create(sessionid=sessionid)
-                response.set_cookie('chitamag_cart_id', cart.id, 1209600)
+                response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
             else:
                 try:
                     cart = Cart.objects.get(sessionid=sessionid)
                 except Cart.DoesNotExist:
                     cart = Cart.objects.create(sessionid=sessionid)
-                response.set_cookie('chitamag_cart_id', cart.id, 1209600)
+                response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
 
             try:
                 cart_product = CartProduct.objects.get(

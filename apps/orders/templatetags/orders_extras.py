@@ -17,8 +17,8 @@ def block_cart(context):
         cookies = request.COOKIES
 
         cookies_cart_id = False
-        if 'chitamag_cart_id' in cookies:
-            cookies_cart_id = cookies['chitamag_cart_id']
+        if 'beautyhome_cart_id' in cookies:
+            cookies_cart_id = cookies['beautyhome_cart_id']
 
         if request.user.is_authenticated and request.user.id:
             profile_id = request.user.profile.id

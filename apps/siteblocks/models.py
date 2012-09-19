@@ -75,6 +75,7 @@ class Banner(models.Model):
 class Action(models.Model):
     image = models.FileField(upload_to=file_path_Banner, verbose_name = u'изображение')
     title = models.CharField(u'название',max_length = 150,)
+    description = models.TextField(verbose_name = u'Описание',)
     is_target_blank = models.BooleanField(u'открывать на новой странице',)
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
@@ -85,12 +86,16 @@ class Action(models.Model):
     class Meta:
         verbose_name = _(u'action')
         verbose_name_plural = _(u'actions')
+        ordering = ['-order',]
 
     def __unicode__(self):
         return self.title
 
     def get_src_image(self):
         return self.image.url
+
+    def get_absolute_url(self):
+        return u'/actions/%s/' % self.id
 
     def banner_preview(self):
         image = self.image

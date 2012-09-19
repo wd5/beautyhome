@@ -16,7 +16,7 @@ def file_path_Brand(instance, filename):
 class Brand(models.Model):
     title = models.CharField(verbose_name=u'Название', max_length=255)
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_Brand, blank=True)
-    description = models.TextField(verbose_name = u'Описание',)
+    description = models.TextField(verbose_name = u'Описание', blank=True)
     slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице',)
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
@@ -98,7 +98,7 @@ class Category(MPTTModel):
             order_insertion_by = ['order']
 
     def get_absolute_url(self):
-        if self.parent:
+        if self.is_child_node():
             exist_parent = True
             first = True
             abs_url = self.slug
@@ -124,7 +124,7 @@ class Category(MPTTModel):
             return u'/category/%s/' % self.slug
 
     def get_bread(self):
-        if self.parent:
+        if self.is_child_node():
             exist_parent = True
             first = True
             abs_bread = u'<a href="%s">%s</a>' % (self.get_absolute_url(), self.title)
@@ -151,73 +151,49 @@ class Category(MPTTModel):
             return u' <a href="%s">%s</a> /' % (self.get_absolute_url(), self.title)
 
     def get_children(self):
-        return self.children.filter(is_published=True)
+        return self.children.filter(is_published=True).select_related()
+
+    def get_descend(self):
+        return self.get_descendants(include_self=False)
 
     def get_4cols_childrens(self):
         all_childrens = self.get_children()
         col4_childs = []
-        is_4cols = False
         for item in all_childrens:
-            if not item.get_children():
-                pass
-            else:
-                for child1 in item.get_children():
-                    if not child1.get_children():
-                        pass
-                    else:
-                        is_4cols = True
-            if is_4cols:
+            descendants = item.get_descend().filter(level=3)
+            if descendants:
                 col4_childs.append(item)
-                is_4cols = False
         return col4_childs
 
     def get_3cols_childrens(self):
         all_childrens = self.get_children()
         col3_childs = []
-        is_3cols = False
         for item in all_childrens:
-            if not item.get_children():
-                pass
-            else:
-                for child1 in item.get_children():
-                    if not child1.get_children():
-                        is_3cols = True
-                    else:
-                        is_3cols = False
-            if is_3cols:
-                col3_childs.append(item)
-                is_3cols = False
+            descendants = item.get_descend()
+            lvl3 = descendants.filter(level=3)
+            if not lvl3:
+                if descendants.filter(level=2):
+                    col3_childs.append(item)
         return col3_childs
 
     def get_2cols_childrens(self):
         all_childrens = self.get_children()
         col2_childs = []
-        is_2cols = False
         for item in all_childrens:
-            if not item.get_children():
-                is_2cols = True
-            else:
-                for child1 in item.get_children():
-                    if not child1.get_children():
-                        is_2cols = False
-                    else:
-                        is_2cols = False
-            if is_2cols:
+            descendants = item.get_descend()
+            lvl2_3 = descendants.filter(level__in=[2,3])
+            if not lvl2_3:
                 col2_childs.append(item)
-                is_2cols = False
         return col2_childs
 
-    def get_childs_in_menu(self):
-        return self.children.filter(is_published=True, is_in_bottom_menu=True)
-
     def get_products(self):
-        products_ids = []
-        if self.parent == None:
-            products = Product.objects.published()
-            for child in self.get_children():
-                for product in child.product_set.published():
-                    products_ids.append(product.id)
-            products = products.filter(id__in=products_ids)
+        if self.get_children():
+            # развернем для данной все дочерние категории
+            descend_ids = self.get_descend().values('id')
+            if descend_ids:
+                products = Product.objects.filter(is_published=True,category__id__in=descend_ids)
+            else:
+                products = Product.objects.filter(title="1").filter(title="2")
             return products
         else:
             return self.product_set.published()
@@ -274,6 +250,8 @@ class Product(models.Model):
     life_events = models.ManyToManyField(LifeEvent, verbose_name=u'для случаев жизни', blank=True, null=True)
     related_products = models.ManyToManyField("self", verbose_name=u'С этим товаром рекомендуем купить', blank=True, null=True,)
 
+    id2s = models.IntegerField(verbose_name=u'Идентификатор в 2 C', blank=True, null=True)
+
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
 
@@ -283,7 +261,7 @@ class Product(models.Model):
     class Meta:
         verbose_name =_(u'product_item')
         verbose_name_plural =_(u'product_items')
-        ordering = ['-order', 'title']
+        ordering = ['-order',]
 
     def __unicode__(self):
         return self.title
@@ -299,6 +277,9 @@ class Product(models.Model):
 
     def get_photos(self):
         return self.photo_set.all()
+
+    def get_related_products(self):
+        return self.related_products.published()
 
 def file_path_Product(instance, filename):
      return os.path.join('images','products',  translify(filename).replace(' ', '_') )

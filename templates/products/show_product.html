@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras pagination_tags products_extras %}
+
+{% if page.title %}
+    {% block title %}
+        {{ product.title|striptags }} &mdash;
+    {% endblock %}
+{% endif %}
+
+{% block main %}
+    <div class="catalog">
+        <div class="catalog_l col">
+            <div class="catalog_menu">
+                <ul>
+                    {% for child in parent_category.get_children %}
+                        <li class="catalog_menu_l1{% if child.slug == sub_slug_1 and not sub_slug_2 %} curr{% endif %}"><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+                        {% if child.slug == sub_slug_1 %}
+                            {% for child_l2 in child.get_children %}
+                                <li class="catalog_menu_l2{% if child_l2.slug == sub_slug_2 and not sub_slug_3 %} curr{% endif %}"><a href="{{ child_l2.get_absolute_url }}">{{ child_l2.title }}</a></li>
+                                {% if child_l2.slug == sub_slug_2 %}
+                                    {% for child_l3 in child_l2.get_children %}
+                                        <li {% if child_l3.slug == sub_slug_3 %}class="curr"{% endif %} ><a href="{{ child_l3.get_absolute_url }}">{{ child_l3.title }}</a></li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div><!--/catalog_menu-->
+
+            {% block_banner %}
+        </div><!--/catalog_l-->
+
+        <div class="catalog_r col">
+            <div class="bread">
+                {{ category.get_bread|removetags:"br"|safe }}
+            </div>
+
+            <div class="product">
+                <div class="product_h">
+                    <h1>{{ product.title }}</h1>
+                    {% if product.discount %}
+                        <div class="item_spec_percent">{{ product.discount }}</div>
+                    {% endif %}
+                    {% if product.is_daily %}
+                        <div class="product_label_daily"></div>
+                    {% endif %}
+                    {% if product.is_hit %}
+                        <div class="product_label_top"></div>
+                    {% endif %}
+                    {% if product.is_new %}
+                        <div class="product_label_new"></div>
+                    {% endif %}
+                    {% if product.is_unique %}
+                        <div class="product_label_unique"></div>
+                    {% endif %}
+{% comment %}                    {% if product.action %}
+                                         <div class="product_label_action"></div>
+                    {% endif %}{% endcomment %}
+                </div>
+                <div class="product_w">{{ product.volume }}</div>
+
+                <div class="product_l col">
+                    <div class="product_gal">
+                        <div class="product_img">
+                            {% thumbnail product.image "1000" upscale=0 as big %}
+                            {% thumbnail product.image "x430" crop="center" as im %}
+                                <a href="{{ big.url }}" class="fancybox" rel="{{ product.id }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" /></a>
+                            {% endthumbnail %}
+                            {% endthumbnail %}
+                        </div>
+                        {% if attached_photos %}
+                            <div class="product_gal_menu">
+                                <ul>
+                                    <li class="curr">
+                                        {% thumbnail product.image "x58" as im %}
+                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                        {% endthumbnail %}
+                                        <div style="display: none;" class="replace_img">
+                                            {% thumbnail product.image "1000" upscale=0 as big %}
+                                            {% thumbnail product.image "x430" crop="center" as im %}
+                                                <a href="{{ big.url }}" class="fancybox"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" /></a>
+                                            {% endthumbnail %}
+                                            {% endthumbnail %}
+                                        </div>
+                                    </li>
+
+                                    {% for photo in attached_photos %}
+                                        <li>
+                                            {% thumbnail photo.image "x58" crop="center" as im %}
+                                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                            {% endthumbnail %}
+                                            <div style="display: none;" class="replace_img">
+                                                {% thumbnail photo.image "1000" upscale=0 as big %}
+                                                {% thumbnail photo.image "x430" crop="center" as im %}
+                                                    <a href="{{ big.url }}" class="fancybox" rel="{{ product.id }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" /></a>
+                                                {% endthumbnail %}
+                                                {% endthumbnail %}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div><!--/product_gal-->
+
+                    <div class="pagemenu">
+                        <ul>
+                            {% if product.description %}
+                                <li class="curr"><a name="description" href="#">Описание</a><div></div></li>
+                            {% endif %}
+                            {% if product.application and not product.description %}
+                                <li class="curr"><a name="application" href="#">Способ применения</a><div></div></li>
+                            {% else %}
+                                {% if product.application %}
+                                    <li><a name="application" href="#">Способ применения</a><div></div></li>
+                                {% endif %}
+                            {% endif %}
+                            {% if product.composition and not product.application and not product.description %}
+                                <li class="curr"><a name="composition" href="#">Состав</a><div></div></li>
+                            {% else %}
+                                {% if product.composition %}
+                                    <li><a name="composition" href="#">Состав</a><div></div></li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+
+<!--    todo:                    <div class="product_likes">лайки контакта</div> -->
+                    </div>
+                </div><!--/product_l-->
+
+                <div class="product_r col">
+                    <div class="product_info">
+                        <div class="product_params">
+                            <dl>
+                                {% if product.brand %}
+                                    <dt>Бренд</dt>
+                                    <dd>{{ product.brand.title }}</dd>
+                                {% endif %}
+                                {% if product.series %}
+                                    <dt>Серия</dt>
+                                    <dd>{{ product.series }}</dd>
+                                {% endif %}
+                                {% if product.collection %}
+                                    <dt>Коллекция</dt>
+                                    <dd>{{ product.collection }}</dd>
+                                {% endif %}
+                                {% if product.art %}
+                                    <dt>Артикуль</dt>
+                                    <dd>{{ product.art }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div><!--/product_params-->
+
+                        <div class="product_price">
+                            {% if product.old_price %}
+                                <div class="product_price_old col">{{ product.get_str_old_price }}</div>
+                            {% endif %}
+                            <div class="product_price_val col">{{ product.get_str_price }}<i> руб.</i></div>
+                        </div>
+
+                        <div class="btn1 iwant_btn"><div class="btn1_in"><input type="button" value="Хочу" class="buy_btn" name="{{ product.id }}" /></div></div>
+
+                        <div class="product_payment">
+                            <p>Принимаем к оплате</p>
+                            <p><img src="/media/img/card_visa.png" alt="" /> <img src="/media/img/card_mastercard.png" alt="" /></p>
+                        </div>
+
+                        <div class="product_delivery"><p>Доставка почтой России или курьером</p></div>
+
+                        <div class="product_info_b"></div>
+                    </div><!--/product_info-->
+                </div><!--/product_r-->
+
+                <div class="product_des">
+                    {% if product.description %}
+                        <div class="text description">
+                            {{ product.description|safe }}
+                        </div>
+                    {% endif %}
+                    {% if product.application and not product.description %}
+                        <div class="text application">
+                            {{ product.application|safe }}
+                        </div>
+                    {% else %}
+                        {% if product.application %}
+                            <div class="text application" style="display: none;">
+                                {{ product.application|safe }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if product.composition and not product.description and not product.application %}
+                        <div class="text composition">
+                            {{ product.composition|safe }}
+                        </div>
+                    {% else %}
+                        {% if product.composition %}
+                            <div class="text composition" style="display: none;">
+                                {{ product.composition|safe }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div><!--/product-->
+        </div><!--/catalog_r-->
+    </div><!--/catalog-->
+
+    {% if product.get_related_products %}
+        <div class="recommend">
+            <h2>С этим товаром мы рекомендуем купить</h2>
+            <div class="items">
+                {% for related_product in product.get_related_products %}
+                    <div class="item">
+                        <div class="item_img">
+                            {% thumbnail related_product.image "164" as im %}
+                                <a href="{{ related_product.get_absolute_url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" /></a>
+                            {% endthumbnail %}
+                        </div>
+                        <h3 class="item_name"><a href="{{ related_product.get_absolute_url }}">{{ related_product.title }}</a></h3>
+                        <div class="item_w">{{ related_product.volume }}</div>
+                        <div class="item_price">{{ related_product.get_str_price }} <i>руб.</i></div>
+                    </div>
+                {% endfor %}
+            </div><!--/items-->
+        </div><!--/recommend-->
+    {% endif %}
+
+    {% block_recent request.session %}
+
+    <!-- todo: vk
+    <div class="vk">
+        <div class="vk_l col">код "Мы вконтакте"</div>
+        <div class="vk_r col">код комментов контакта</div>
+    </div><!--/vk-->
+{% endblock %}
+

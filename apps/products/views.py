@@ -20,11 +20,23 @@ class ShowCategory(TemplateView):
         context = super(ShowCategory, self).get_context_data()
 
         try:
-            brand = int(self.request.GET['brand'])
+            brand = self.request.GET['brand']
         except:
             brand = False
         try:
-            price_filter = int(self.request.GET['price_filter'])
+            collection_value = self.request.GET['collection']
+        except:
+            collection_value = False
+        try:
+            series_value = self.request.GET['series']
+        except:
+            series_value = False
+        try:
+            color_value = self.request.GET['color']
+        except:
+            color_value = False
+        try:
+            price_filter = self.request.GET['price_filter']
         except:
             price_filter = False
 
@@ -59,11 +71,6 @@ class ShowCategory(TemplateView):
         else:
             category = False
 
-        try:
-            context['parent_category'] = all_categories.get(slug=slug)
-        except:
-            context['parent_category'] = False
-
         if category and category.count() == 1:
             category = category[0]
         elif category.count() > 1: # если по slug'у будет найдено несколько категорий
@@ -73,14 +80,22 @@ class ShowCategory(TemplateView):
                 category = False
 
         if category:
+            context['parent_category'] = category.get_root()
             context['category'] = category
             products = category.get_products()
 
             brands = Brand.objects.published().filter(id__in=products.values('brand__id')).values(
                 'id', 'title')
-            collection = products.values('collection').distinct().order_by('collection')
-            series = products.values('series').distinct().order_by('series')
-            color = products.values('color').distinct().order_by('color')
+
+            if brand:
+                products = products.filter(brand__title__exact=brand)
+                context['brand'] = brand
+
+            collection = products.values('collection').exclude(collection__exact='').distinct().order_by('collection')
+            series = products.values('series').exclude(series__exact='').distinct().order_by('series')
+            color = products.values('color').exclude(color__exact='').distinct().order_by('color')
+            if brands.count()==0: brands = False
+
             setattr(context['category'], 'brands', brands)
             setattr(context['category'], 'collection', collection)
             setattr(context['category'], 'series', series)
@@ -92,9 +107,15 @@ class ShowCategory(TemplateView):
                 context['max_price'] = 0
                 context['min_price'] = 0
 
-            if brand:
-                products = products.filter(brand__id=brand)
-                context['brand'] = brand
+            if collection_value:
+                products = products.filter(collection__exact=collection_value)
+                context['collection_value'] = collection_value
+            if series_value:
+                products = products.filter(series__exact=series_value)
+                context['series_value'] = series_value
+            if color_value:
+                products = products.filter(color__exact=color_value)
+                context['color_value'] = color_value
 
             if price_filter:
                 products = products.filter(price__lte=price_filter)
@@ -114,59 +135,30 @@ class ShowProduct(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ShowProduct, self).get_context_data()
+        context['slug'] = slug = self.kwargs.get('slug', None)
+        context['sub_slug_1'] = sub_slug_1 = self.kwargs.get('sub_slug_1', None)
+        context['sub_slug_2'] = sub_slug_2 = self.kwargs.get('sub_slug_2', None)
+        context['sub_slug_3'] = sub_slug_3 = self.kwargs.get('sub_slug_3', None)
 
-        # все указанные параметры товара
-        product_features_values_set = self.object.get_feature_values()
-
-        # группа с основными параметрами
-        base_features_values = []
-        base_feature_group = self.object.category.get_base_feature_group()
-        for name in base_feature_group.get_feature_names():
-            try:
-                value = product_features_values_set.get(feature_name=name)
-                base_features_values.append({'title': name.title, 'value': value})
-            except:
-                value = False
-        setattr(base_feature_group, 'features_values', base_features_values)
-        if base_features_values:
-            context['base_feature_group'] = base_feature_group
-        else:
-            context['base_feature_group'] = False
-
-        base_feature_group = self.object.category.get_base_feature_group()
-
-        # группа с НЕосновными параметрами
-        exists = False
-        other_feature_groups = self.object.category.get_other_feature_groups()
-        for gpoup in other_feature_groups:
-            other_features_values = []
-            for name in gpoup.get_feature_names():
-                try:
-                    value = product_features_values_set.get(feature_name=name)
-                    exists = True
-                    other_features_values.append({'title': name.title, 'value': value})
-                except:
-                    value = False
-            setattr(gpoup, 'features_values', other_features_values)
-        if exists:
-            context['other_feature_groups'] = other_feature_groups
-        else:
-            context['other_feature_groups'] = []
-
+        category = self.object.category
+        context['category'] = category
+        context['parent_category'] = category.get_root()
         context['attached_photos'] = self.object.get_photos()
 
-        # форма покупки "в один клик"
-        product_qs = Product.objects.filter(id=self.object.id)
-        try:
-            mfrer = '%s - ' % self.object.brand.title
-        except:
-            mfrer = ''
-        one_clk_form = OneClickByeForm(initial={'product': self.object,
-                                                'product_description': u'%s%s %s' % (
-                                                    mfrer, self.object.category.title_singular, self.object.title),
-                                                'product_price': self.object.price})
-        one_clk_form.fields['product'].queryset = product_qs
-        context['one_clk_form'] = one_clk_form
+        # недавно просмотренные:
+        if 'recent_prod_ids' in self.request.session:
+            list = self.request.session['recent_prod_ids']
+            if self.object.id not in list:
+                if len(list)>3:
+                    list.pop(0)
+                list.append(self.object.id)
+            else:
+                if len(list)>3:
+                    list.remove(self.object.id)
+                list.append(self.object.id)
+            self.request.session['recent_prod_ids'] = list
+        else:
+            self.request.session['recent_prod_ids'] = [self.object.id,]
         return context
 
 show_product = ShowProduct.as_view()

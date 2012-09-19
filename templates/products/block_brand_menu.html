@@ -7,7 +7,7 @@
                 <ul>
                     {% for brand in brands %}
                         <li><a href="{{ brand.get_absolute_url }}">
-                            {% thumbnail brand.image "142x32" as im %}
+                            {% thumbnail brand.image "142x32" crop="center" as im %}
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ brand.title }}" />
                             {% endthumbnail %}
                             <span>{{ brand.title }}</span></a>

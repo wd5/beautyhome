@@ -1,6 +1,12 @@
 {% load thumbnail %}
 
 {% for b in banner %}
-    <div class="cases"><a href="{{ b.url }}" {% if b.is_target_blank %}target="_blank"{% endif %} ><span>{{ b.title }}</span></a></div>
+    <div class="right_banner">
+        <a href="{{ b.url }}" {% if b.is_target_blank %}target="_blank"{% endif %}>
+            {% thumbnail b.image "164x218" format="PNG" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+            {% endthumbnail %}
+            <span>{{ b.title }}</span>
+        </a>
+    </div>
 {% endfor %}
-

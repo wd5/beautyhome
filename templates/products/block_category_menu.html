@@ -1,14 +1,13 @@
 <div class="menu">
 	<ul>
         {% for item in menu %}
-            <li>
+            <li {% if item.slug == current_category %}class="current"{% endif %} >
                 <a href="{{ item.get_absolute_url }}" name="{{ item.id }}" >{{ item.title|safe }}</a>
                 <div class="menu_arr"></div>
             </li>
         {% endfor %}
 	</ul>
 </div><!--/menu-->
-
 {% for item in menu %}
     <div class="submenu smenu_{{ item.id }}">
         <div class="submenu_content">
@@ -49,7 +48,6 @@
                         </div>
                     {% endif %}
                 </div><!--/submenu_3cols-->
-
             {% else %}
                 Категория пуста
             {% endif %}

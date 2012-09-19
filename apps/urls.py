@@ -15,14 +15,16 @@ urlpatterns = patterns('',
     #(r'^catalog/search/$',search_products,),
     (r'^category/$', index),
     (r'^category/(?P<slug>[^/]+)/$',show_category, {'sub_slug':'all'}),
-    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/$',show_category),
-    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/$',show_category),
-    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/(?P<sub_slug_3>[^/]+)/$',show_category),
+    (r'^category/(?P<slug>[^/]+)/(?P<pk>\d+)/$',show_product),
 
-    (r'^category/(?P<slug>[^/]+)/(?P<pk>[^/]+)/$',show_product),
-    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<pk>[^/]+)/$',show_product),
-    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/(?P<pk>[^/]+)/$',show_product),
-    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/(?P<sub_slug_3>[^/]+)/(?P<pk>[^/]+)/$',show_product),
+    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/$',show_category),
+    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<pk>\d+)/$',show_product),
+
+    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/$',show_category),
+    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/(?P<pk>\d+)/$',show_product),
+
+    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/(?P<sub_slug_3>[^/]+)/$',show_category),
+    (r'^category/(?P<slug>[^/]+)/(?P<sub_slug_1>[^/]+)/(?P<sub_slug_2>[^/]+)/(?P<sub_slug_3>[^/]+)/(?P<pk>\d+)/$',show_product),
 
     url(r'^cabinet/$',show_cabinet, name='show_cabinet'),
     (r'^cabinet/edit_info_form/$',show_profile_form),

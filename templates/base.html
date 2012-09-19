@@ -58,7 +58,7 @@
 
         {% block_cart %}
 
-        {% block_category_menu %}
+        {% block_category_menu request.path %}
 
 		<div class="advices">
 			<div class="advices_btn"><span>Советы</span></div>
@@ -119,5 +119,9 @@
 {% endif %}
 
 </div><!--/wrapper-->
+
+{% block modal_bg %}
+{% endblock %}
+
 </body>
 </html>
