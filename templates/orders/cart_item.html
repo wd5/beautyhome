@@ -13,12 +13,25 @@
     <div class="cart_qty">
         <div class="cart_qty_btn">{{ cart_item.count }}</div>
         <div class="cart_qty_modal" style="display: none;">
+            <input type="hidden" class="initial_count" value="{{ cart_item.count }}">
+            <input type="hidden" class="cart_qty_item_id" value="{{ cart_item.id }}">
+            <h3>Укажите количество</h3>
+            <span class="item_price cart_qty_price"><span>{{ cart_item.product.price|floatformat:0 }}</span> <i>руб.</i></span>
+            <span class="cart_qty_m">×</span>
+            <input type="button" class="cart_qty_minus"/>
+            <input class="cart_qty_input cart_qty_modal_text" type="text" name="" value="{{ cart_item.count }}" />
+            <input type="button" class="cart_qty_plus"/>
+            <span class="cart_qty_m">=</span>
+            <span class="item_price cart_qty_total_price"><span>{{ cart_item.get_str_total }}</span> <i>руб.</i></span>
+            <div class="cart_qty_ok"><input class="cart_qty_modal_ok"  type="button" value="Сохранить" /></div>
+        </div>
+{% comment %}        <div class="cart_qty_modal" style="display: none;">
             <h3>Изменить количество</h3>
             <input type="hidden" class="initial_count" value="{{ cart_item.count }}">
             <input type="hidden" class="cart_qty_item_id" value="{{ cart_item.id }}">
             <p><span class="cart_qty_price"><span>{{ cart_item.product.price|floatformat:0 }}</span> руб.</span> × <input class="cart_qty_modal_text" type="text" value="{{ cart_item.count }}"/> = <span class="cart_qty_total_price"><span>{{ cart_item.get_str_total }}</span> руб.</span></p>
             <div><input class="cart_qty_modal_ok" type="button" value="Сохранить" /> <input class="cart_qty_modal_cancel" type="button" value="Отменить" /></div>
-        </div>
+        </div>{% endcomment %}
     </div>
     <div class="cart_price">
         <div class="item_price">{{ cart_item.get_str_total }} <i>руб.</i></div>
