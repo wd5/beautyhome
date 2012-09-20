@@ -9,9 +9,210 @@
 {% endif %}
 
 {% block main %}
-    {% block_catalog_menu '' %}
+    <div class="cabinet">
+        <h1>Личный кабинет</h1>
+        <input type="hidden" name="profile_id" id="profile_id" value="{{ user.profile.id }}">
+        <div class="pagemenu cabinet_menu">
+            <ul>
+                <li{% if division == 'history'%} class="curr"{% endif %}><a href="/cabinet/history/">История заказов</a><div></div></li>
+                <li{% if division == 'info'%} class="curr"{% endif %}><a href="/cabinet/info/">Общие сведения</a><div></div></li>
+                <li{% if division == 'addresses'%} class="curr"{% endif %}><a href="/cabinet/addresses/">Адреса доставки</a><div></div></li>
+                <li{% if division == 'bonus'%} class="curr"{% endif %}><a href="/cabinet/bonus/">Бонусный счет</a><div></div></li>
+            </ul>
+        </div><!--/cabinet_menu-->
 
-    <div class="right col">
+        {% if division == 'history' %}
+            <div class="histories">
+                <div class="history">
+                    <div class="history_date">12 марта 2012</div>
+                    <div class="history_num"><span>Заказ № 46 209</span></div>
+                    <div class="history_status">Оплачен</div>
+
+                    <div class="history_items">
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                    </div>
+
+                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
+
+                    <div class="history_t"></div>
+                    <div class="history_b"></div>
+                </div>
+
+                <div class="history">
+                    <div class="history_date">12 марта 2012</div>
+                    <div class="history_num"><span>Заказ № 46 209</span></div>
+                    <div class="history_status">Оплачен</div>
+
+                    <div class="history_items">
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                    </div>
+
+                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
+
+                    <div class="history_t"></div>
+                    <div class="history_b"></div>
+                </div>
+
+                <div class="history">
+                    <div class="history_date">12 марта 2012</div>
+                    <div class="history_num"><span>Заказ № 46 209</span></div>
+                    <div class="history_status">Доставлен</div>
+
+                    <div class="history_items">
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                    </div>
+
+                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
+
+                    <div class="history_t"></div>
+                    <div class="history_b"></div>
+                </div>
+
+                <div class="history">
+                    <div class="history_date">12 марта 2012</div>
+                    <div class="history_num"><span>Заказ № 46 209</span></div>
+                    <div class="history_status">Оплачен</div>
+
+                    <div class="history_items">
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                    </div>
+
+                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
+
+                    <div class="history_t"></div>
+                    <div class="history_b"></div>
+                </div>
+
+                <div class="history">
+                    <div class="history_date">12 марта 2012</div>
+                    <div class="history_num"><span>Заказ № 46 209</span></div>
+                    <div class="history_status">Доставлен</div>
+
+                    <div class="history_items">
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
+                    </div>
+
+                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
+
+                    <div class="history_t"></div>
+                    <div class="history_b"></div>
+                </div>
+
+                <div class="all_history"><div class="btn2"><div class="btn2_in"><a href="#">Все заказы</a></div></div></div>
+
+            </div><!--/histories-->
+        {% endif %}
+        {% if division == 'info' %}
+            <div class="personal">
+                <h2>Персональная информация</h2>
+
+                <div class="personal_l col">
+                    <div class="personal_input">
+                        <label>Имя</label>
+                        <input type="text" name="name" value="{{ user.profile.name }}" />
+                    </div>
+                    <div class="personal_input">
+                        <label>Фамилия</label>
+                        <input type="text" name="last_name" value="{{ user.profile.last_name }}" />
+                    </div>
+                    <div class="personal_input">
+                        <label>Отчество</label>
+                        <input type="text" name="third_name" value="{{ user.profile.third_name }}" />
+                    </div>
+                </div>
+
+                <div class="personal_r col">
+                    <div class="personal_select">
+                        <label>Дата рождения</label>
+                        <select name="day" class="select_day">
+                            {% for day in day_range %}
+                                <option value="{{ day }}"{% if day == user.profile.b_day.day %} selected{% endif %} >{{ day }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="month" class="select_month">
+                            {% for month in month_range %}
+                                <option value="{{ month.0 }}"{% if month.0 == user.profile.b_day.month %} selected{% endif %}>{{ month.1|lower }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="year" class="select_year">
+                            {% for year in year_range %}
+                                <option value="{{ year }}"{% if year == user.profile.b_day.year %} selected{% endif %} >{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="personal_radio">
+                        <span class="pseudo_label">Пол</span>
+                        <label><input type="radio" name="sex" value="male" {% if user.profile.sex == 'male' %} checked{% endif %}/> Мужской</label>
+                        <label><input type="radio" name="sex" value="female" {% if user.profile.sex == 'female' %} checked{% endif %}/> Женский</label>
+                    </div>
+                </div>
+
+                <h2>Контактная информация</h2>
+
+                <div class="personal_l col">
+                    <div class="personal_input">
+                        <label>E-mail</label>
+                        <input type="text" name="email" value="{{ user.email }}" />
+                    </div>
+                </div>
+
+                <div class="personal_r col">
+                    <div class="personal_input">
+                        <label>Телефон</label>
+                        <input type="text" name="phone" value="{{ user.profile.phone }}" />
+                    </div>
+                </div>
+
+                <div class="personal_subscribe">
+                    <label><input type="checkbox" name="is_in_subscribe"{% if user.profile.is_in_subscribe %} checked{% endif %} /> Подписаться на рассылку новостей</label>
+                </div>
+                <div class="sysmess" style="color:red;"></div>
+                <div class="personal_shade"></div>
+            </div><!--/personal-->
+        {% endif %}
+        {% if division == 'addresses' %}
+            <div class="addresses">
+                <div class="address">
+                    <address><span>Наб. реки Карповки, 43</span>, Санкт-Петербург, 410930</address>
+                    <div class="address_shade"></div>
+                    <div class="address_del"><a href="#">Удалить</a></div>
+                </div>
+
+                <div class="address">
+                    <address><span>Наб. реки Карповки, 43</span>, Санкт-Петербург, 410930</address>
+                    <div class="address_shade"></div>
+                    <div class="address_del"><a href="#">Удалить</a></div>
+                </div>
+
+                <div class="adr_add"><input class="add_adr_btn" type="button" value="Добавить адрес" /></div>
+            </div><!--/addresses-->
+        {% endif %}
+    </div>
+
+{% comment %}    <div class="right col">
         <div class="cabinet">
             <h1>Личный кабинет <span class="ifregistred"><a class="dot" href="/password/change/">сменить пароль</a></span></h1>
 
@@ -80,6 +281,96 @@
                 {% endif %}
             </div>
         </div><!--/cabinet-->
-    </div><!--/right-->
+    </div><!--/right-->{% endcomment %}
 
+{% endblock %}
+
+{% block modal_bg %}
+    {% if division == 'history'%}
+        <div class="modal_bg" style="display: none;">
+        	<div class="modal_history">
+        		<h1>Заказ № 54 601</h1>
+        		<div class="modal_history_status">Оплачен</div>
+
+        		<div class="cart_in">
+        			<div class="cart_item">
+        				<div class="cart_item_img"><img src="/media/images/i1_s.jpg" alt="" /></div>
+        				<div class="cart_item_des">
+        					<h3 class="item_name"><a href="#">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
+        					<div class="item_w">400 мл</div>
+        				</div>
+        				<div class="cart_qty">
+        					<div class="cart_qty_btn">1</div>
+        				</div>
+        				<div class="cart_price">
+        					<div class="item_price">340 <i>руб.</i></div>
+        				</div>
+        			</div>
+
+        			<div class="cart_item">
+        				<div class="cart_item_img"><img src="/media/images/i2_s.jpg" alt="" /></div>
+        				<div class="cart_item_des">
+        					<h3 class="item_name"><a href="#">Бархатистое Молочко для Тела «Малина БИО»</a></h3>
+        					<div class="item_w">400 мл</div>
+        					<h3 class="item_name"><a href="#">Эксфолиант для тела «Сочный Персик»</a></h3>
+        					<div class="item_w">400 мл</div>
+        				</div>
+        				<div class="cart_qty">
+        					<div class="cart_qty_btn">1</div>
+        				</div>
+        				<div class="cart_price">
+        					<div class="item_price">3 740 <i>руб.</i></div>
+        				</div>
+        			</div>
+
+        			<div class="cart_gift">
+        				<div class="cart_item_img"><img src="/media/images/i1_zxs.jpg" alt="" /></div>
+        				<div class="cart_item_des">
+        					<h3 class="item_name"><a href="#">Бархатистое Молочко для Тела «Малина БИО»</a></h3>
+        					<div class="item_w">400 мл</div>
+        				</div>
+        				<div class="cart_gift_label">Подарок</div>
+        			</div>
+
+        			<div class="cart_item">
+        				<div class="cart_item_img"><img src="/media/images/i3_s.jpg" alt="" /></div>
+        				<div class="cart_item_des">
+        					<h3 class="item_name"><a href="#">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
+        					<div class="item_w">400 мл</div>
+        				</div>
+        				<div class="cart_qty">
+        					<div class="cart_qty_btn">1</div>
+        				</div>
+        				<div class="cart_price">
+        					<div class="item_price">340 <i>руб.</i></div>
+        				</div>
+        			</div>
+
+        			<div class="cart_summary">
+        				<div class="cart_discount"> Скидка <span>5%</span></div>
+        				<div class="cart_total">Итого <span>7 800</span> <i>руб.</i></div>
+        			</div>
+        		</div><!--/cart_in-->
+        	</div>
+        </div><!--/modal_bg-->
+    {% endif %}
+    {% if division == 'addresses'%}
+        <div class="modal_bg" style="display: none;">
+        	<div class="modal_add_adr">
+        		<h1>Новый адрес</h1>
+        		<form method="post" action="">
+        			<div class="add_adr_input">
+        				<label>Адрес</label>
+        				<input type="text" name="" value="" />
+        			</div>
+        			<div class="add_adr_input">
+        				<label>Улица, дом, квартира</label>
+        				<input type="text" name="" value="" />
+        			</div>
+        			<div class="adr_add_submit"><div class="btn1"><div class="btn1_in"><input type="submit" value="Добавить" /></div></div></div>
+        		</form>
+        		<div class="add_adr_modal_shade"></div>
+        	</div>
+        </div><!--/modal_bg-->
+    {% endif %}
 {% endblock %}

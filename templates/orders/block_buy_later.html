@@ -1,0 +1,24 @@
+{% load thumbnail %}
+
+{% if products %}
+<div class="cart_later">
+    <h2>Куплю потом</h2>
+    {% for product in products %}
+        <div class="later_item">
+            <div class="later_item_img">
+                {% thumbnail product.image "71x71" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                {% endthumbnail %}
+            </div>
+            <div class="later_item_des">
+                <h3 class="item_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h3>
+                <div class="item_w">{{ product.volume }}</div>
+            </div>
+            <div class="later_item_t"></div>
+            <div class="later_item_b"></div>
+            <div class="later_buynow"><input type="button" name="{{ product.id }}" class="later_buy_now" value="Купить сейчас" /></div>
+        </div>
+    {% endfor %}
+    <div class="cart_later_clip"></div>
+</div><!--/cart_later-->
+{% endif %}

@@ -5,8 +5,9 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import FormView, TemplateView, View
-from apps.orders.models import Cart, CartProduct, OrderProduct
+from apps.orders.models import Cart, CartProduct, OrderProduct, BuyLater
 from apps.orders.forms import RegistrationOrderForm
+from apps.orders.templatetags.orders_extras import f7
 from apps.products.models import Product
 from apps.users.models import Profile
 from apps.users.forms import RegistrationForm
@@ -334,18 +335,33 @@ class AddProdictToCartView(View):
                         cart = Cart.objects.create(profile=profile)
                 response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
                 #if cookies_cart_id: response.delete_cookie('beautyhome_cart_id')
+                try:
+                    buy_later_cart = BuyLater.objects.get(profile=profile_id)
+                except BuyLater.DoesNotExist:
+                    try:
+                        buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
+                    except BuyLater.DoesNotExist:
+                        buy_later_cart = False
             elif cookies_cart_id:
                 try:
                     cart = Cart.objects.get(id=cookies_cart_id)
                 except Cart.DoesNotExist:
                     cart = Cart.objects.create(sessionid=sessionid)
                 response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
+                try:
+                    buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
+                except Cart.DoesNotExist:
+                    buy_later_cart = False
             else:
                 try:
                     cart = Cart.objects.get(sessionid=sessionid)
                 except Cart.DoesNotExist:
                     cart = Cart.objects.create(sessionid=sessionid)
                 response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
+                try:
+                    buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
+                except Cart.DoesNotExist:
+                    buy_later_cart = False
 
             try:
                 cart_product = CartProduct.objects.get(
@@ -362,6 +378,18 @@ class AddProdictToCartView(View):
                     cart=cart,
                     product=product,
                 )
+            # если добавляемый товар лежал в later_cart то убираем его оттуда
+            if buy_later_cart:
+                ids = buy_later_cart.product_ids
+                if ids != '':
+                    ids_arr = ids.split(',')
+                    ids_arr = f7(ids_arr)
+                    if u'%s' % product.id in ids_arr: # удалим элемент из списка
+                        ids_arr[:] = (value for value in ids_arr if value != u'%s' % product.id)
+                    ids = ','.join(ids_arr)
+                    buy_later_cart.product_ids = ids
+                    buy_later_cart.save()
+
             is_empty = True
             cart_products_count = cart.get_products_count()
             cart_total = cart.get_str_total()
@@ -488,3 +516,259 @@ class ChangeCartCountView(View):
             return HttpResponse(data)
 
 change_cart_product_count = csrf_exempt(ChangeCartCountView.as_view())
+
+class SetProductLaterView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            return HttpResponseRedirect('/')
+        else:
+            if 'cart_product_id' not in request.POST:
+                return HttpResponseBadRequest()
+            else:
+                cart_product_id = request.POST['cart_product_id']
+                try:
+                    cart_product_id = int(cart_product_id)
+                except ValueError:
+                    return HttpResponseBadRequest()
+
+            try:
+                cart_product = CartProduct.objects.get(id=cart_product_id)
+            except CartProduct.DoesNotExist:
+                return HttpResponseBadRequest()
+
+            if request.user.is_authenticated and request.user.id:
+                profile_id = request.user.profile.id
+                try:
+                    profile = Profile.objects.get(pk=int(profile_id))
+                except:
+                    profile = False
+            else:
+                profile_id = False
+                profile = False
+
+            sessionid = request.session.session_key
+
+            if profile_id:
+                try:
+                    later_cart = BuyLater.objects.get(profile__id=profile_id)
+                except BuyLater.DoesNotExist:
+                    try:
+                        later_cart = BuyLater.objects.get(sessionid=sessionid)
+                    except BuyLater.DoesNotExist:
+                        if profile:
+                            later_cart = BuyLater.objects.create(profile=profile)
+                        else:
+                            return HttpResponseBadRequest()
+            else:
+                try:
+                    later_cart = BuyLater.objects.get(sessionid=sessionid)
+                except BuyLater.DoesNotExist:
+                    later_cart = BuyLater.objects.create(sessionid=sessionid)
+
+            ids = later_cart.product_ids
+            if ids != '':
+                ids_arr = ids.split(',')
+                ids_arr.append(u'%s' % cart_product.product_id)
+                ids = ",".join(ids_arr)
+                if ids.startswith(','):
+                    ids = ids[1:]
+                if ids.endswith(','):
+                    ids = ids[:-1]
+                ids = ids.replace(',,', ',')
+            else:
+                ids = u'%s' % cart_product.product_id
+            later_cart.product_ids = ids
+            later_cart.save()
+
+            cart = cart_product.cart
+            cart_product.delete()
+
+            cart_str_total = cart.get_str_total()
+
+            data = u'''{"cart_str_total":'%s'}''' % cart_str_total
+
+            return HttpResponse(data)
+
+set_product_later_from_cart = csrf_exempt(SetProductLaterView.as_view())
+
+
+class GetLaterListView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            return HttpResponseRedirect('/')
+        else:
+            response = HttpResponse()
+
+            if request.user.is_authenticated and request.user.id:
+                profile_id = request.user.profile.id
+            else:
+                profile_id = False
+
+            sessionid = request.session.session_key
+
+            if profile_id:
+                try:
+                    buy_later_cart = BuyLater.objects.get(profile=profile_id)
+                except BuyLater.DoesNotExist:
+                    try:
+                        buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
+                    except BuyLater.DoesNotExist:
+                        buy_later_cart = False
+            else:
+                try:
+                    buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
+                except Cart.DoesNotExist:
+                    buy_later_cart = False
+
+            products = False
+
+            if buy_later_cart:
+                ids = buy_later_cart.product_ids
+                if ids != '':
+                    ids_arr = ids.split(',')
+                    products = Product.objects.published().filter(id__in=ids_arr)
+
+            later_html = render_to_string(
+                'orders/block_buy_later.html',
+                    {'products':products,}
+            )
+            response.content = later_html
+            return response
+
+get_later_list = csrf_exempt(GetLaterListView.as_view())
+
+
+class GetCartboxHtmlView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            return HttpResponseRedirect('/')
+        else:
+            response = HttpResponse()
+            user = request.user
+
+            cookies = request.COOKIES
+
+            cookies_cart_id = False
+            if 'beautyhome_cart_id' in cookies:
+                cookies_cart_id = cookies['beautyhome_cart_id']
+
+            if request.user.is_authenticated and request.user.id:
+                profile_id = request.user.profile.id
+            else:
+                profile_id = False
+
+            sessionid = request.session.session_key
+
+            if profile_id:
+                try:
+                    cart = Cart.objects.get(profile=profile_id)
+                except Cart.DoesNotExist:
+                    if cookies_cart_id:
+                        try:
+                            cart = Cart.objects.get(id=cookies_cart_id)
+                            if cart.profile:
+                                cart = False
+                            else:
+                                try:
+                                    profile = Profile.objects.get(pk=int(profile_id))
+                                except:
+                                    profile = False
+                                if profile:
+                                    cart.profile = profile
+                                    cart.save()
+                        except:
+                            cart = False
+                    else:
+                        cart = False
+            elif cookies_cart_id:
+                try:
+                    cart = Cart.objects.get(id=cookies_cart_id)
+                except Cart.DoesNotExist:
+                    cart = False
+            else:
+                try:
+                    cart = Cart.objects.get(sessionid=sessionid)
+                except Cart.DoesNotExist:
+                    cart = False
+
+            is_empty = True
+            cart_total = 0
+            cart_products_count = 0
+            cart_products_text = u''
+            if cart:
+                cart_products_count = cart.get_products_count()
+                if cart_products_count:
+                    cart_total = cart.get_str_total()
+                    is_empty = False
+                    cart_products_text = u'товар%s' % (choose_plural(cart_products_count, (u'', u'а', u'ов')))
+
+            later_html = render_to_string(
+                'orders/block_cart.html',
+                    {                'is_empty': is_empty,
+                                    'user': user,
+                                    'cart_products_count': cart_products_count,
+                                    'cart_total': cart_total,
+                                    'cart_products_text': cart_products_text,
+                }
+            )
+            response.content = later_html
+            return response
+
+get_cartbox_html = csrf_exempt(GetCartboxHtmlView.as_view())
+
+class GetCartInHtmlView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            return HttpResponseRedirect('/')
+        else:
+            response = HttpResponse()
+            user = request.user
+
+            cookies = request.COOKIES
+            cookies_cart_id = False
+            if 'beautyhome_cart_id' in cookies:
+                cookies_cart_id = cookies['beautyhome_cart_id']
+
+            if self.request.user.is_authenticated and self.request.user.id:
+                profile_id = self.request.user.profile.id
+            else:
+                profile_id = False
+
+            sessionid = self.request.session.session_key
+
+            try:
+                if profile_id:
+                    cart = Cart.objects.get(profile=profile_id)
+                elif cookies_cart_id:
+                    cart = Cart.objects.get(id=cookies_cart_id)
+                else:
+                    cart = Cart.objects.get(sessionid=sessionid)
+                cart_id = cart.id
+            except Cart.DoesNotExist:
+                cart = False
+                cart_id = False
+
+
+            if cart:
+                cart_products = cart.get_products_all()
+            else:
+                cart_products = False
+
+            cart_str_total = u''
+            if cart_products:
+                cart_str_total = cart.get_str_total()
+
+            later_html = render_to_string(
+                'orders/cart_in.html',
+                    {
+                    'user': user,
+                    'cart_products': cart_products,
+                    'cart_str_total': cart_str_total,
+                    'cart_id': cart_id,
+                }
+            )
+            response.content = later_html
+            return response
+
+get_cartin_html = csrf_exempt(GetCartInHtmlView.as_view())
+

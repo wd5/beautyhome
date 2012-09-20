@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import  settings
+import  settings, datetime
 from django.db.models.loading import get_model
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -159,28 +159,48 @@ class ShowCabinetView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ShowCabinetView, self).get_context_data()
+        context['division'] = division = self.kwargs.get('division', None) #раздел
+
         if self.request.user.is_authenticated and self.request.user.id:
             try:
                 profile = Profile.objects.get(id=self.request.user.profile.id)
             except:
                 profile = False
             if profile:
-                try:
-                    loaded_count = int(Settings.objects.get(name='loaded_count').value)
-                except:
-                    loaded_count = 5
-                queryset = profile.get_orders()
-                result = GetLoadIds(queryset, loaded_count)
-                splited_result = result.split('!')
-                try:
-                    remaining_count = int(splited_result[0])
-                except:
-                    remaining_count = False
-                next_id_loaded_items = splited_result[1]
+                if division == 'history':
+                    try:
+                        loaded_count = int(Settings.objects.get(name='loaded_count').value)
+                    except:
+                        loaded_count = 5
+                    queryset = profile.get_orders()
+                    result = GetLoadIds(queryset, loaded_count)
+                    splited_result = result.split('!')
+                    try:
+                        remaining_count = int(splited_result[0])
+                    except:
+                        remaining_count = False
+                    next_id_loaded_items = splited_result[1]
+                    context['loaded_count'] = remaining_count
+                    context['orders'] = profile.get_orders()[:loaded_count]
+                    context['next_id_loaded_items'] = next_id_loaded_items
+                if division == 'info':
+                    context['year_range'] = range(1950, int(datetime.datetime.now().year) + 1)
+                    months_choices = []
+                    import locale
 
-                context['loaded_count'] = remaining_count
-                context['orders'] = profile.get_orders()[:loaded_count]
-                context['next_id_loaded_items'] = next_id_loaded_items
+                    locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+                    for i in range(1, 13):
+                        months_choices.append((i, datetime.date(2012, i, 1).strftime('%B')))
+                    context['month_range'] = months_choices
+                    context['day_range'] = range(1, 32)
+
+                if division == 'addresses':
+                    pass
+                if division == 'bonus':
+                    pass
+                else:
+                    pass
+
         return context
 
 show_cabinet = ShowCabinetView.as_view()
@@ -240,31 +260,107 @@ items_loader = ItemsLoaderView.as_view()
 
 class EditUsrInfoView(View):
     def post(self, request, *args, **kwargs):
-        data = request.POST.copy()
-        profiles = Profile.objects.all()
+        type = request.POST['type']
+        value = request.POST['value']
+        id = request.POST['id']
         try:
-            profile = Profile.objects.get(pk=int(data['id']))
+            profile = Profile.objects.get(pk=int(id))
         except:
             profile = False
 
         if profile:
-            profile_form = ProfileForm(data, instance=profile)
-            if profile_form.is_valid():
-                profile_form.save()
+            if type == "name":
+                profile_form = ProfileForm({'name': value}, instance=profile)
                 try:
-                    user = User.objects.get(id=int(profile.user.id))
-                    user.email = data['user__email']
-                    if not request.user.is_superuser:
-                        user.username = data['user__email']
-                    user.save()
+                    return HttpResponseBadRequest(u'Имя - %s' % profile_form.errors['name'][0])
                 except:
-                    return HttpResponseRedirect('/cabinet/')
-                return HttpResponseRedirect('/cabinet/')
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "last_name":
+                profile_form = ProfileForm({'last_name': value}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Фамилия - %s' % profile_form.errors['last_name'][0])
+                except:
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "third_name":
+                profile_form = ProfileForm({'third_name': value}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Отчество - %s' % profile_form.errors['third_name'][0])
+                except:
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "day":
+                curr_bdate = profile.b_day
+                try:
+                    new_date = datetime.datetime(curr_bdate.year, curr_bdate.month, int(value))
+                except:
+                    return HttpResponseBadRequest(u'Дата рождения - Не верная дата')
+                profile_form = ProfileForm({'b_day': new_date}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Дата рождения - %s' % profile_form.errors['b_day'][0])
+                except:
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "month":
+                curr_bdate = profile.b_day
+                try:
+                    new_date = datetime.datetime(curr_bdate.year, int(value), curr_bdate.day)
+                except:
+                    return HttpResponseBadRequest(u'Дата рождения - Не верная дата')
+                profile_form = ProfileForm({'b_day': new_date}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Дата рождения - %s' % profile_form.errors['b_day'][0])
+                except:
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "year":
+                curr_bdate = profile.b_day
+                try:
+                    new_date = datetime.datetime(int(value), curr_bdate.month, curr_bdate.day)
+                except:
+                    return HttpResponseBadRequest(u'Дата рождения - Не верная дата')
+                profile_form = ProfileForm({'b_day': new_date}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Дата рождения - %s' % profile_form.errors['b_day'][0])
+                except:
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "sex":
+                profile.sex = value
+                profile.save()
+                return HttpResponse(u'Изменения внесены')
+            elif type == "email":
+                profile_form = ProfileForm({'user__email': value}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Email - %s' % profile_form.errors['user__email'][0])
+                except:
+                    user = profile.user
+                    if user.id != 1: # не для админа
+                        user.email = value
+                        user.login = value
+                    else:
+                        user.email = value
+                    user.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "phone":
+                profile_form = ProfileForm({'phone': value}, instance=profile)
+                try:
+                    return HttpResponseBadRequest(u'Номер телефона - %s' % profile_form.errors['phone'][0])
+                except:
+                    profile.save()
+                    return HttpResponse(u'Изменения внесены')
+            elif type == "is_in_subscribe":
+                if value=='checked':
+                    profile.is_in_subscribe = True
+                else:
+                    profile.is_in_subscribe = False
+                profile.save()
+                return HttpResponse(u'Изменения внесены')
             else:
-                return render_to_response('users/profile_form.html',
-                        {'profile_form': profile_form, 'request': request, 'user': request.user})
+                return HttpResponse(u'Не указано поле для изменения')
         else:
             errors = u'Произошла внутренняя ошибка. Не верный идентификатор пользователя.'
-            return render_to_response('users/profile_form.html', {'errors': errors, 'request': request, })
+            return HttpResponse(errors)
 
 edt_profile_info = csrf_exempt(EditUsrInfoView.as_view())

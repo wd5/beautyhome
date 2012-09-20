@@ -128,6 +128,7 @@ order_status_choices = (
     (u'posted', u'Отправлен'),
     (u'delivered', u'Доставлен'),
     (u'cancelled', u'Отменен'),
+    (u'paid', u'Оплачен'),
     )
 
 class Order(models.Model):

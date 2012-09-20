@@ -11,10 +11,10 @@ sex_choices = (
 
 class Profile(models.Model):
     user = models.OneToOneField(User)
-    name = models.CharField(max_length=100, verbose_name=u'Имя')
-    last_name = models.CharField(max_length=100, verbose_name=u'фамилия')
-    third_name = models.CharField(max_length=100, verbose_name=u'отчество')
-    phone = models.CharField(max_length=50, verbose_name=u'телефон', blank=True)
+    name = models.CharField(max_length=20, verbose_name=u'Имя')
+    last_name = models.CharField(max_length=20, verbose_name=u'фамилия')
+    third_name = models.CharField(max_length=20, verbose_name=u'отчество')
+    phone = models.CharField(max_length=20, verbose_name=u'телефон', blank=True)
     b_day = models.DateField(verbose_name=u'дата рождения',)
     sex = models.CharField(max_length=30, verbose_name=u'Пол', choices=sex_choices, )
     is_in_subscribe = models.BooleanField(verbose_name=u'подписка на рассылку новостей', default=False)

@@ -1,60 +1,82 @@
 // карусель
 function mycarousel_initCallback(carousel) {
-    $('.carousel_ctrls li').bind('click', function() {
+    //$('.carousel_ctrls li').bind('click', function() {
+    $('.carousel_ctrls li').live('click',function(){
         carousel.scroll(jQuery.jcarousel.intval($(this).index('.carousel_ctrls li')+1));
 		$('.carousel_ctrls li').removeClass('curr');
         $(this).addClass('curr');
     });
 }
 
-
 $(function() {
-	$('.carousel_ctrls li:first').addClass('curr');
-    var params_dict = {
-        scroll: 1,
-        wrap: "both",
-        visible: 1,
-        start:1,
-        auto: 6,
-        initCallback: mycarousel_initCallback,
-        itemVisibleInCallback: {
-            onAfterAnimation: mycarousel_itemVisibleInCallbackAfterAnimation
-        }
-    };
+    if ($('.carousel_actions').html()) { // если нашли элемент - то делаем карусели
+        $('.carousel_ctrls li:first').addClass('curr');
+        var params_dict = {
+            scroll: 1,
+            wrap: "both",
+            visible: 1,
+            start:1,
+            auto: 6,
+            initCallback: mycarousel_initCallback,
+            itemVisibleInCallback: {
+                onAfterAnimation: mycarousel_itemVisibleInCallbackAfterAnimation
+            }
+        };
 
-	jQuery('.carousel_actions').jcarousel(params_dict);
-	jQuery('.carousel_daily').jcarousel(params_dict);
-	jQuery('.carousel_hit').jcarousel(params_dict);
-	jQuery('.carousel_new').jcarousel(params_dict);
-	jQuery('.carousel_unique').jcarousel(params_dict);
+        jQuery('.carousel_actions').jcarousel(params_dict);
+        jQuery('.carousel_daily').jcarousel(params_dict);
+        jQuery('.carousel_hit').jcarousel(params_dict);
+        jQuery('.carousel_new').jcarousel(params_dict);
+        jQuery('.carousel_unique').jcarousel(params_dict);
 
-    $('.jcarousel-container').hide();
-    $('.jcarousel-container').eq(2).show();
+        $('.carousel_actions').jcarousel('stopAuto');
+        $('.carousel_daily').jcarousel('stopAuto');
+        $('.carousel_hit').jcarousel('stopAuto');
+        $('.carousel_new').jcarousel('stopAuto');
+        $('.carousel_unique').jcarousel('stopAuto');
 
-	function mycarousel_itemVisibleInCallbackAfterAnimation(carousel, item, idx, state) {
-        $('.carousel_ctrls li').removeClass('curr');
-		$($('.carousel_ctrls li').get(idx - 1)).addClass('curr');
-	}
-
-    $('div.carousel_filter a').live('click',function(){
-        $(this).parents('ul').find('li').removeClass('curr');
-        $(this).parent().addClass('curr');
-        var slider_type = $(this).attr('name');
-        var target = $('ul.'+slider_type);
         $('.jcarousel-container').hide();
-        target.parents('.jcarousel-container').show();
-        var content = ''
-        for (var i=1;i<=target.find('li').length;i++){
-            content += '<li></li>';
+        $('.jcarousel-container').eq(2).show();
+        $('.jcarousel-container').eq(2).find('.jcarousel-list').jcarousel('startAuto');
+        var cont = '';
+        for (var i=1;i<=$('.jcarousel-container').eq(2).find('li').length;i++){
+            cont += '<li></li>';
         }
-        $('.carousel_ctrls').html(content);
+        $('.carousel_ctrls').html(cont);
         $('.carousel_ctrls li:first').addClass('curr');
 
-        target.jcarousel('reload');
-        return false;
-    });
-});
+        function mycarousel_itemVisibleInCallbackAfterAnimation(carousel, item, idx, state) {
+            $('.carousel_ctrls li').removeClass('curr');
+            $($('.carousel_ctrls li').get(idx - 1)).addClass('curr');
+        }
 
+        $('div.carousel_filter a').live('click',function(){
+            $(this).parents('ul').find('li').removeClass('curr');
+            $(this).parent().addClass('curr');
+            var slider_type = $(this).attr('name');
+            var target = $('ul.'+slider_type);
+            $('.jcarousel-container').hide();
+            target.parents('.jcarousel-container').show();
+            var content = ''
+            for (var i=1;i<=target.find('li').length;i++){
+                content += '<li></li>';
+            }
+            $('.carousel_ctrls').html(content);
+            $('.carousel_ctrls li:first').addClass('curr');
+
+            $('.carousel_actions').jcarousel('stopAuto');
+            $('.carousel_daily').jcarousel('stopAuto');
+            $('.carousel_hit').jcarousel('stopAuto');
+            $('.carousel_new').jcarousel('stopAuto');
+            $('.carousel_unique').jcarousel('stopAuto');
+
+            target.jcarousel('reload');
+            target.jcarousel('scroll',0);
+            target.jcarousel('startAuto');
+            return false;
+        });
+    }
+});
 
 
 // плашка брендов
@@ -73,8 +95,6 @@ $(document).click(function(e) {
 	if ($(e.target).parents().filter('.brands_list:visible').length != 1)
 	$('.brands_list').hide();
 });
-
-
 
 
 // фильтр цены
@@ -210,7 +230,7 @@ $(function() {
         return false;
     });
 
-    $('div.pagemenu a').live('click',function(){
+    $('div.product div.pagemenu a').live('click',function(){
         $(this).parents('ul').find('li').removeClass('curr');
         var type = $(this).attr('name');
         $(this).parent().addClass('curr');
@@ -220,11 +240,20 @@ $(function() {
     });
 
 
-
-
     //Анимация корзины при изменении
     function animate_cart(){
         $('.cartbox').animate({
+                opacity: 0.25
+            }, 200, function() {
+                $(this).animate({
+                    opacity: 1
+                },200);
+            }
+        );
+    }
+
+    function animate_later_cart(){
+        $('.cart_later').animate({
                 opacity: 0.25
             }, 200, function() {
                 $(this).animate({
@@ -248,6 +277,20 @@ $(function() {
         });
 
     }
+
+    // кабинет
+    $('div.personal input,select').live('change',function(){
+        if ($(this).attr('type') == 'checkbox'){
+            ChangePersonalInfo($(this).attr('name'),$(this).attr('checked'));
+        } else {
+            ChangePersonalInfo($(this).attr('name'),$(this).attr('value'));
+        }
+    });
+
+    $('div.personal input').live('keypress',function(e){
+        /*if(e.which == 13)
+            $(this).change();*/
+    });
 
     //Добавление товара в корзину
 
@@ -297,5 +340,301 @@ $(function() {
 
     });
 
+    $('.cart_qty_btn').live('click',function(){
+        $('.cart_qty_btn').attr('disabled', true);
+        $(this).attr('disabled', false);
+        $(this).parents('.cart_qty').find('.cart_qty_modal').show();
+        $(this).parents('.cart_qty').find('.cart_qty_modal').find('.cart_qty_modal_ok').attr('disabled', false);
+        $('.cart_submit_btn').attr('disabled', true);
+        $('.cart_back').attr('disabled', true);
+        $('.delete_cart_id').attr('disabled', true);
+    });
+
+    $('.cart_qty_modal_text').live('keypress',function(e){
+        if(e.which == 13)
+            $('.cart_qty_modal_ok').trigger("click");
+        else
+        if( e.which!=8 && e.which!=0 && (e.which<48 || e.which>57))
+        {
+            alert("Только цифры");
+            return false;
+        }
+    });
+
+    //Подсчёт стоимости
+    $('.cart_qty_modal_text').live('keyup',function(){
+        var el = $(this)
+        var count = el.val();
+        if (count){
+            count = parseInt(count);
+            if (count==0){
+                $('.cart_qty_modal_text').val('1');
+                count = 1;
+            }
+            if (count > 999){
+                $('.cart_qty_modal_text').val('999');
+                count = 999;
+            }
+
+            var product_price = el.parent().find('.cart_qty_price span').html();
+
+            product_price = parseFloat(product_price);
+            var sum = product_price*count;
+            if ((sum % 1)==0){
+                sum = sum.toFixed(0);
+            }
+            else{
+                sum = sum.toFixed(2);
+            }
+            el.parent().find('.cart_qty_total_price span').text(sum);
+        }
+    });
+
+        //Кнопка Созранить в изменении количества в корзине
+    $('.cart_qty_modal_ok').live('click', function(){
+        var el = $(this);
+        var parent = el.parents('.cart_qty_modal');
+        var cart_item = el.parents('.cart_item');
+        var initial_count = parent.find('.initial_count').val();
+        var new_count = parent.find('.cart_qty_modal_text').val();
+        var cart_product_id = parent.find('.cart_qty_item_id').val();
+
+        if (new_count && cart_product_id && initial_count){
+            if (new_count != initial_count){
+                $.ajax({
+                    type:'post',
+                    url:'/change_cart_product_count/',
+                    data:{
+                        'cart_product_id':cart_product_id,
+                        'new_count':new_count
+                    },
+                    success:function(data){
+                        data = eval('(' + data + ')');
+                        cart_item.find('.cart_price>.item_price').html(data.tr_str_total+' <i>руб.</i>');
+                        cart_item.find('.cart_qty_btn').html(new_count);
+                        parent.find('.initial_count').val(new_count);
+                        parent.find('.cart_qty_modal_text').val(new_count);
+                        parent.find('.cart_qty_total_price span').text(data.tr_str_total);
+                        $('.cart_summary .cart_total span').html(data.cart_str_total);
+                        if (data.cart_str_total=='0')
+                            {$('.cart_submit_btn').attr('disabled', true);}
+                        else
+                            {$('.cart_submit_btn').attr('disabled', false);}
+                        $('.cart_qty_btn').attr('disabled', false);
+                        $('.cart_back').attr('disabled', false);
+                        parent.hide();
+                        getCartboxHtml();
+                    },
+                    error:function(data){
+                        $('.cart_submit_btn').attr('disabled', false);
+                        $('.cart_qty_btn').attr('disabled', false);
+                        $('.cart_back').attr('disabled', false);
+                    }
+                });
+            }
+
+        }
+        $('.cart_submit_btn').attr('disabled', false);
+        return false;
+
+    });
+
+    $('.cart_qty_modal_cancel').live('click', function(){
+        var el = $(this)
+        var parent = el.parents('.cart_qty_modal')
+        parent.hide();
+        parent.find('.cart_qty_modal_ok').attr('disabled', true);
+        $('.cart_submit_btn').attr('disabled', false);
+        $('.cart_qty_btn').attr('disabled', false);
+        $('.delete_cart_id').attr('disabled', false);
+        $('.cart_back').attr('disabled', false);
+    });
+
+    $('.delete_cart_id').live('click', function(){
+        var el = $(this);
+        var cart_product_id = el.attr('name');
+        var parent = el.parents('.cart_item');
+        if (cart_product_id){
+            $.ajax({
+                type:'post',
+                url:'/delete_product_from_cart/',
+                data:{
+                    'cart_product_id':cart_product_id
+                },
+                success:function(data){
+                    data = eval('(' + data + ')');
+                    $('.cart_summary .cart_total span').html(data.cart_total);
+                    if (data.cart_total=='0')
+                        {$('.cart_submit_btn').attr('disabled', true);}
+                    else
+                        {$('.cart_submit_btn').attr('disabled', false);}
+                    parent.append('<div class="cart_item_deleted"><a class="cart_back" name="'+data.cart_product_id+'" href="#">Вернуть</a></div>')
+                },
+                error:function(data){
+                }
+            });
+        }
+        return false;
+    });
+
+    $('.cart_back').live('click', function(){
+        var el = $(this);
+        var cart_product_id = el.attr('name');
+        var parent = el.parents('.cart_item');
+        if (cart_product_id){
+            $.ajax({
+                type:'post',
+                url:'/restore_product_to_cart/',
+                data:{
+                    'cart_product_id':cart_product_id
+                },
+                success:function(data){
+                    data = eval('(' + data + ')');
+                    $('.cart_summary .cart_total span').html(data.cart_total);
+                    if (data.cart_total=='0')
+                        {$('.cart_submit_btn').attr('disabled', true);}
+                    else
+                        {$('.cart_submit_btn').attr('disabled', false);}
+                    parent.find('.cart_item_deleted').remove()
+                },
+                error:function(data){
+                }
+            });
+        }
+        return false;
+    });
+
+    $('.later_cart_id').live('click', function(){
+        var el = $(this);
+        var cart_product_id = el.attr('name');
+        var parent = el.parents('.cart_item');
+        if (cart_product_id){
+            $.ajax({
+                type:'post',
+                url:'/set_product_later_from_cart/',
+                data:{
+                    'cart_product_id':cart_product_id
+                },
+                success:function(data){
+                    data = eval('(' + data + ')');
+                    $('.cart_summary .cart_total span').html(data.cart_str_total);
+                    if (data.cart_str_total=='0')
+                        {$('.cart_submit_btn').attr('disabled', true);
+                        $('.cart_in').remove();
+                        $('.cart h1').html('Ваша косметичка пока пуста');}
+                    else
+                        {$('.cart_submit_btn').attr('disabled', false);}
+                    parent.remove();
+                    // вытащим later_cart и вставим в cart
+                    getLaterCartHtml();
+                    getCartboxHtml();
+                    setTimeout(function(){
+                        animate_later_cart();
+                        animate_cart();
+                    } ,600);
+
+                },
+                error:function(data){
+                }
+            });
+        }
+        return false;
+    });
+
+    $('.later_buy_now').live('click',function(){
+        var product_id = $(this).attr('name')
+        var parent_blk = $(this).parents('.later_item')
+
+        if (product_id){
+            $.ajax({
+                type:'post',
+                url:'/add_product_to_cart/',
+                data:{
+                    'product_id':product_id
+                },
+                success:function(data){
+                    parent_blk.remove();
+                    if ($('.later_item').length==0){
+                        $('.cart_later').remove();
+                    }
+                    $('.cartbox').replaceWith(data);
+
+                    setTimeout(function(){
+                        animate_cart();
+                    } ,600);
+                    getCartInHtml();
+                },
+                error:function(jqXHR,textStatus,errorThrown){
+
+                }
+            });
+        }
+
+    });
+
+    function getLaterCartHtml(){
+        $.ajax({
+            type:'post',
+            url:'/get_later_list/',
+            success:function(data){
+                if ($('.cart_later').html()){
+                    $('.cart_later').replaceWith(data);
+                } else {
+                    $('.cart').append(data);
+                }
+            },
+            error:function(data){
+            }
+        });
+    }
+
+    function getCartboxHtml(){
+        $.ajax({
+            type:'post',
+            url:'/get_cartbox_html/',
+            success:function(data){
+                $('.cartbox').replaceWith(data);
+            }
+        });
+    }
+
+    function getCartInHtml(){
+        $.ajax({
+            type:'post',
+            url:'/get_cartin_html/',
+            success:function(data){
+                if ($('.cart_in').html()) {
+                    $('.cart_in').replaceWith(data);
+                } else {
+                    $('.cart h1').html('Косметичка');
+                    $('.cart h1').after(data);
+                }
+            }
+        });
+    }
+
 });
 
+function ChangePersonalInfo(type,value){
+    if (value==undefined){
+        value = false;
+    }
+    $.ajax({
+        type:'post',
+        url:'/edt_profile_info/',
+        data:{
+            'type':type,
+            'value':value,
+            'id': $('#profile_id').val()
+        },
+        success:function(data){
+            $('.sysmess').html(data);
+            setTimeout( function(){
+                $('.sysmess').html('');
+            },2000);
+        },
+        error:function(jqXHR,textStatus,errorThrown){
+            $('.sysmess').html(jqXHR.responseText);
+        }
+    });
+}

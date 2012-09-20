@@ -19,7 +19,7 @@ class ProfileForm(forms.ModelForm):
     name = forms.CharField(
         widget=forms.TextInput(
             attrs={
-                #'required':'required',
+                'required':'required',
             }
         ),
         required=True
@@ -27,7 +27,23 @@ class ProfileForm(forms.ModelForm):
     last_name = forms.CharField(
         widget=forms.TextInput(
             attrs={
-               # 'required':'required',
+                'required':'required',
+            }
+        ),
+        required=True
+    )
+    third_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'required':'required',
+            }
+        ),
+        required=True
+    )
+    b_day = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                'required':'required',
             }
         ),
         required=True
@@ -35,7 +51,7 @@ class ProfileForm(forms.ModelForm):
     user__email = forms.EmailField(
         widget=forms.TextInput(
             attrs={
-                #'required':'required',
+                'required':'required',
             }
         ),
         required=True
@@ -51,7 +67,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('id', 'name', 'last_name', 'user__email', 'phone',)
+        fields = ('id', 'name', 'last_name', 'third_name', 'b_day', 'user__email', 'phone',)
 
 class RegistrationForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs=attrs_dict), label=_(u'username'))
