@@ -74,7 +74,7 @@ class Category(MPTTModel):
     order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
     is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
 
-    parent.custom_filter_spec = True
+    #parent.custom_filter_spec = True
 
     # Managers
     objects = TreeManager()

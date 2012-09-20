@@ -5,7 +5,7 @@ from django import forms
 from apps.utils.widgets import Redactor
 from sorl.thumbnail.admin import AdminImageMixin
 from mptt.admin import MPTTModelAdmin
-from apps.utils.customfilterspec import CustomFilterSpec
+#from apps.utils.customfilterspec import CustomFilterSpec
 
 
 from models import *
@@ -63,7 +63,7 @@ class CategoryAdmin(AdminImageMixin, MPTTModelAdmin):
     search_fields = ('title','slug',)
     form = CategoryAdminForm
     list_filter = ('is_published','parent',)
-    custom_filter_spec = {'parent': Category.objects.filter(level__lt=3)}
+    #custom_filter_spec = {'parent': Category.objects.filter(level__lt=3)}
 
 admin.site.register(Category, CategoryAdmin)
 

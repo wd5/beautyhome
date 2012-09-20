@@ -59,6 +59,9 @@ def block_brand_menu():
 def block_recent(session):
     if 'recent_prod_ids' in session:
         products = Product.objects.filter(id__in=session['recent_prod_ids'][1:])
+        value = session['recent_prod_ids']
     else:
         products = False
-    return {'products':products,'session':session['recent_prod_ids']}
+        value = False
+
+    return {'products':products,'session':value}
