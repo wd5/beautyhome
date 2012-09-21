@@ -112,7 +112,7 @@ def block_buy_later(context):
         else:
             try:
                 buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
-            except Cart.DoesNotExist:
+            except BuyLater.DoesNotExist:
                 buy_later_cart = False
     else:
         buy_later_cart = False

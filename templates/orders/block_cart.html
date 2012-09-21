@@ -23,10 +23,17 @@
     <div class="cartbox">
     	<div class="cartbox_name">Косметичка</div>
 
-    	<div class="cartbox_cab">
-    		<a href="/cabinet/">Личный кабинет</a>
-    		<a class="cartbox_exit" href="/cabinet/"></a>
-    	</div>
+        {% if user.is_authenticated %}
+            <div class="cartbox_cab">
+                <a href="/cabinet/">Личный кабинет</a>
+                <a class="cartbox_exit" href="/logout/"></a>
+            </div>
+        {% else %}
+            <div class="cartbox_cab">
+                <a class="auth_lnk dot fancybox" href="#auth_form">Вход</a>
+                <a class="reg_lnk" href="/registration_form/">Регистрация</a>
+            </div>
+        {% endif %}
 
     	<div class="cartbox_sum">
     		<div><a class="cartbox_qty" href="/cart/">{{ cart_products_count }} {{ cart_products_text }}</a></div>
