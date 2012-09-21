@@ -1,0 +1,20 @@
+<div class="modal_add_adr" id="add_address_modal">
+    <h1>Новый адрес</h1>
+    <form method="post" action="">
+        <div class="add_adr_input">
+            <label>Адрес</label>
+            {{ addresses_form.city }}
+            {{ addresses_form.city.errors }}
+        </div>
+        <div class="add_adr_input">
+            <label>Улица, дом, квартира</label>
+            {{ addresses_form.street }}
+            {{ addresses_form.street.errors }}
+        </div>
+        <div style="display: none;">
+            {{ addresses_form.user }}
+        </div>
+        <div class="adr_add_submit"><div class="btn1"><div class="btn1_in"><input id="addr_submit" type="button" value="Добавить" /></div></div></div>
+    </form>
+    <div class="add_adr_modal_shade"></div>
+</div>

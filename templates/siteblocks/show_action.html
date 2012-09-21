@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load thumbnail %}
+
+{% if page.title %}
+    {% block title %}
+        {{ action.title }} &mdash;
+    {% endblock %}
+{% endif %}
+
+{% block main %}
+    <div class="action_page">
+        <h1>{{ action.title }}</h1>
+
+        <div class="action_img_l">
+            {% thumbnail action.image "960" upscale=0 as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+            {% endthumbnail %}
+        </div>
+
+        <div class="text action_text">
+            {{ action.description|safe }}
+        </div>
+
+        <div class="btn2"><div class="btn2_in"><a href="/actions/">Все акции</a></div></div>
+    </div><!--/actions-->
+{% endblock %}
+

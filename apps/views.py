@@ -8,11 +8,12 @@ class IndexView(TemplateView):
     template_name = 'index.html'
     def get_context_data(self, **kwargs):
         context = super(IndexView,self).get_context_data(**kwargs)
+        context['target'] = self.kwargs.get('target', None)
         context['life_events'] = LifeEvent.objects.published()
         context['news'] = News.objects.published()[:3]
         all_products = Product.objects.published()
 
-        list_action_count = 3
+        list_action_count = 2
         all_actions = Action.objects.published()
         context['actions'] = SplitQSItems(all_actions,list_action_count)
 

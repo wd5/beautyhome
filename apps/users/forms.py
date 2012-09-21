@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from apps.users.models import Profile
+from apps.users.models import Profile, ProfileAddress
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
@@ -91,3 +91,9 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Повторите пароль верно.")
 
         return cleaned_data
+
+class AddressForm(forms.ModelForm):
+
+    class Meta:
+        model = ProfileAddress
+        fields = ('user', 'city', 'street',)

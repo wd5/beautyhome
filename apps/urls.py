@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import views as auth_views
 from apps.products.views import show_category, show_product
+from apps.siteblocks.views import show_action
 from django.conf.urls.defaults import patterns, include, url
-from apps.users.views import show_cabinet, edt_profile_info, show_profile_form, registration_form, items_loader
+from apps.users.views import show_cabinet, edt_profile_info, show_profile_form, registration_form, items_loader, check_addr_modal, del_addr
 
 #from apps.app.urls import urlpatterns as app_url
 
@@ -11,6 +12,9 @@ from views import index
 urlpatterns = patterns('',
     url(r'^$',index, name='index'),
     url(r'^faq/', include('apps.faq.urls')),
+
+    (r'^actions/(?P<pk>\d+)/$',show_action),
+    (r'^actions/$',index, {'target':'actions'}),
 
     #(r'^catalog/search/$',search_products,),
     (r'^category/$', index),
@@ -33,6 +37,8 @@ urlpatterns = patterns('',
     url(r'^cabinet/bonus/$',show_cabinet, {'division':'bonus'}),
 
     (r'^cabinet/edit_info_form/$',show_profile_form),
+    (r'^cabinet/check_addr_modal/$',check_addr_modal),
+    (r'^cabinet/del_addr/$',del_addr),
     (r'^edt_profile_info/$',edt_profile_info),
     (r'^registration_form/$',registration_form),
     url(r'^password/reset/$',

@@ -35,15 +35,28 @@ $(function() {
         $('.carousel_new').jcarousel('stopAuto');
         $('.carousel_unique').jcarousel('stopAuto');
 
-        $('.jcarousel-container').hide();
-        $('.jcarousel-container').eq(2).show();
-        $('.jcarousel-container').eq(2).find('.jcarousel-list').jcarousel('startAuto');
         var cont = '';
-        for (var i=1;i<=$('.jcarousel-container').eq(2).find('li').length;i++){
-            cont += '<li></li>';
+        if ($(".index_target").val()=='actions'){
+            $('.jcarousel-container').hide();
+            $('.jcarousel-container').eq(0).show();
+            $('.jcarousel-container').eq(0).find('.jcarousel-list').jcarousel('startAuto');
+            for (var i=1;i<=$('.jcarousel-container').eq(0).find('li').length;i++){
+                cont += '<li></li>';
+            }
+            $('.carousel_ctrls').html(cont);
+            $('.carousel_ctrls li:first').addClass('curr');
+        } else {
+            $('.jcarousel-container').hide();
+            $('.jcarousel-container').eq(2).show();
+            $('.jcarousel-container').eq(2).find('.jcarousel-list').jcarousel('startAuto');
+            for (var i=1;i<=$('.jcarousel-container').eq(2).find('li').length;i++){
+                cont += '<li></li>';
+            }
+            $('.carousel_ctrls').html(cont);
+            $('.carousel_ctrls li:first').addClass('curr');
         }
-        $('.carousel_ctrls').html(cont);
-        $('.carousel_ctrls li:first').addClass('curr');
+
+
 
         function mycarousel_itemVisibleInCallbackAfterAnimation(carousel, item, idx, state) {
             $('.carousel_ctrls li').removeClass('curr');
@@ -166,7 +179,27 @@ $(document).click(function(e) {
 
 
 $(function() {
-    $('.fancybox').fancybox();
+    $(".fancybox-thumb").fancybox({
+        prevEffect	: 'none',
+        nextEffect	: 'none',
+        helpers	: {
+            title	: {
+                type: 'outside'
+            },
+            overlay	: {
+                opacity : 0.8,
+                css : {
+                    'background-color' : '#000'
+                }
+            },
+            thumbs	: {
+                width	: 50,
+                height	: 50
+            }
+        }
+    });
+
+    $('.fancybox').fancybox({helpers: {overlay : {opacity: 0.75, css: {'background-color': '#ffffff'}}}});
 
     var myTimer = 0
 
@@ -290,6 +323,59 @@ $(function() {
     $('div.personal input').live('keypress',function(e){
         /*if(e.which == 13)
             $(this).change();*/
+    });
+
+    $('.add_adr_btn').live('click',function(){
+        $("div.modal_bg").fadeIn('fast');
+    });
+
+    $("#modal_bg").live('click',function(e){
+        if (e.target.id === "modal_bg"){
+            $(this).fadeOut('fast');
+        }
+    });
+
+    $('#addr_submit').live('click',function(){
+        $.ajax({
+            url: "/cabinet/check_addr_modal/",
+            data: {
+                city:$('#id_city').val(),
+                street:$('#id_street').val(),
+                user:$('#id_user').val()
+            },
+            type: "POST",
+            success: function(data) {
+                if (data=='success') {
+                    $('.modal_add_adr').replaceWith('<div class="modal_add_adr" id="add_address_modal"><h1>Адрес добавлен</h1></div>');
+                    setTimeout(function(){
+                        window.location = '/cabinet/addresses/';
+                    },800);
+                } else {
+                    $('.modal_add_adr').replaceWith(data);
+                }
+            }
+        });
+        return false;
+    });
+
+    $('.del_addr').live('click',function(){
+        var id = $(this).attr('name');
+        var parent = $(this).parents('.address');
+        $.ajax({
+            url: "/cabinet/del_addr/",
+            data: {
+                id:id
+            },
+            type: "POST",
+            success: function(data) {
+                if (data=='success') {
+                    parent.remove();
+                } else {
+                    //
+                }
+            }
+        });
+        return false;
     });
 
     //Добавление товара в корзину

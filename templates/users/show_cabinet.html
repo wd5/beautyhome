@@ -195,17 +195,17 @@
         {% endif %}
         {% if division == 'addresses' %}
             <div class="addresses">
-                <div class="address">
-                    <address><span>Наб. реки Карповки, 43</span>, Санкт-Петербург, 410930</address>
-                    <div class="address_shade"></div>
-                    <div class="address_del"><a href="#">Удалить</a></div>
-                </div>
-
-                <div class="address">
-                    <address><span>Наб. реки Карповки, 43</span>, Санкт-Петербург, 410930</address>
-                    <div class="address_shade"></div>
-                    <div class="address_del"><a href="#">Удалить</a></div>
-                </div>
+                {% for address in addresses %}
+                    <div class="address">
+                        <address><span>{{ address.street }}</span>, {{ address.city }}</address>
+                        <div class="address_shade"></div>
+                        <div class="address_del"><a href="#" class="del_addr" name="{{ address.id }}">Удалить</a></div>
+                    </div>
+                {% empty %}
+                    <div class="address">
+                        Адреса пока не добавлены
+                    </div>
+                {% endfor %}
 
                 <div class="adr_add"><input class="add_adr_btn" type="button" value="Добавить адрес" /></div>
             </div><!--/addresses-->
@@ -355,22 +355,8 @@
         </div><!--/modal_bg-->
     {% endif %}
     {% if division == 'addresses'%}
-        <div class="modal_bg" style="display: none;">
-        	<div class="modal_add_adr">
-        		<h1>Новый адрес</h1>
-        		<form method="post" action="">
-        			<div class="add_adr_input">
-        				<label>Адрес</label>
-        				<input type="text" name="" value="" />
-        			</div>
-        			<div class="add_adr_input">
-        				<label>Улица, дом, квартира</label>
-        				<input type="text" name="" value="" />
-        			</div>
-        			<div class="adr_add_submit"><div class="btn1"><div class="btn1_in"><input type="submit" value="Добавить" /></div></div></div>
-        		</form>
-        		<div class="add_adr_modal_shade"></div>
-        	</div>
+        <div class="modal_bg" id="modal_bg" style="display: none;">
+        	{% include "users/add_addr_modal.html" %}
         </div><!--/modal_bg-->
     {% endif %}
 {% endblock %}

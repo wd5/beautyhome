@@ -10,11 +10,9 @@
 
 {% block main %}
     <div class="carousel_out">
+        <input type="hidden" class="index_target" value="{{ target }}">
         <div class="carousel">
-{% comment %}
-        {{ products_hit }}
-        {{ products_new }}
-        {{ products_unique }}{% endcomment %}
+
             <div class="carousel_in">
                 <ul class="carousel_actions">
                     {% for list in actions %}
@@ -127,9 +125,9 @@
 
         <div class="carousel_filter">
             <ul>
-                <li><a href="#" name="carousel_actions"><img src="/media/img/carousel_ic_action.png" alt="" /> <span>Акции</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
+                <li{% if target %} class="curr"{% endif %}><a href="#" name="carousel_actions"><img src="/media/img/carousel_ic_action.png" alt="" /> <span>Акции</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
                 <li><a href="#" name="carousel_daily"><img src="/media/img/carousel_ic_daily.png" alt="" /> <span>Товары дня</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
-                <li class="curr"><a href="#" name="carousel_hit"><img src="/media/img/carousel_ic_top.png" alt="" /> <span>Хиты продаж</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
+                <li{% if not target %} class="curr"{% endif %}><a href="#" name="carousel_hit"><img src="/media/img/carousel_ic_top.png" alt="" /> <span>Хиты продаж</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
                 <li><a href="#" name="carousel_new"><img src="/media/img/carousel_ic_new.png" alt="" /> <span>Новинки</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
                 <li><a href="#" name="carousel_unique"><img src="/media/img/carousel_ic_unique.png" alt="" /> <span>Уникальные товары</span></a> <img class="carousel_menu_shade" src="/media/img/carousel_menu_curr_shade.png"/></li>
             </ul>

@@ -9,8 +9,8 @@
         <!-- todo <div class="cart_discount"> Скидка <span>5%</span></div> -->
         <div class="cart_total">Итого <span>{{ cart_str_total }}</span> <i>руб.</i></div>
     </div>
-{#            /show_order_form/ #}
-    <div class="cart_submit"><div class="btn1"><div class="btn1_in"><a href="/"><input {% if cart_str_total == '0' %}disabled="true"{% endif %} class="cart_submit_btn" type="submit" value="Оформить заказ" /></a></div></div></div>
+
+    <div class="cart_submit"><div class="btn1"><div class="btn1_in"><a href="/show_order_form/" class="fancybox fancybox.ajax"><input {% if cart_str_total == '0' %}disabled="true"{% endif %} class="cart_submit_btn" type="submit" value="Оформить заказ" /></a></div></div></div>
     <input type="hidden" class="id_cart" value="{{ cart_id }}">
 
     <div class="cart_payway">Принимаем к оплате <img src="/media/img/card_visa.png" alt="" /> <img src="/media/img/card_mastercard.png" alt="" /></div>

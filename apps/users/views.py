@@ -6,8 +6,8 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, TemplateView, View
-from apps.users.forms import ProfileForm, RegistrationForm
-from apps.users.models import Profile
+from apps.users.forms import ProfileForm, RegistrationForm, AddressForm
+from apps.users.models import Profile, ProfileAddress
 from apps.siteblocks.models import Settings
 from apps.orders.models import Order
 from django.contrib.auth.models import User
@@ -195,7 +195,11 @@ class ShowCabinetView(TemplateView):
                     context['day_range'] = range(1, 32)
 
                 if division == 'addresses':
-                    pass
+                    context['addresses'] = profile.get_addresses()
+                    user_set = User.objects.filter(id=profile.user_id)
+                    profile = Profile.objects.get(id=self.request.user.profile.id)
+                    context['addresses_form'] =  AddressForm(initial={'user':profile.user})
+                    context['addresses_form'].fields['user'].queryset = user_set
                 if division == 'bonus':
                     pass
                 else:
@@ -364,3 +368,48 @@ class EditUsrInfoView(View):
             return HttpResponse(errors)
 
 edt_profile_info = csrf_exempt(EditUsrInfoView.as_view())
+
+class CheckAddrForm(View):
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            data = request.POST.copy()
+            addr_form = AddressForm(data)
+            if addr_form.is_valid():
+                addr_form.save()
+                return HttpResponse('success')
+            else:
+                addr_form_html = render_to_string(
+                    'users/add_addr_modal.html',
+                    {'addresses_form': addr_form}
+                )
+                return HttpResponse(addr_form_html)
+        else:
+            return HttpResponseBadRequest()
+
+check_addr_modal = csrf_exempt(CheckAddrForm.as_view())
+
+class DelAddrView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            return HttpResponseRedirect('/')
+        else:
+            if 'id' not in request.POST:
+                return HttpResponseBadRequest()
+            else:
+                id = request.POST['id']
+                try:
+                    id = int(id)
+                except ValueError:
+                    return HttpResponseBadRequest()
+
+            try:
+                arddress = ProfileAddress.objects.get(pk=id)
+            except ProfileAddress.DoesNotExist:
+                return HttpResponseBadRequest()
+
+            arddress.delete()
+
+            return HttpResponse('success')
+
+del_addr = csrf_exempt(DelAddrView.as_view())
+

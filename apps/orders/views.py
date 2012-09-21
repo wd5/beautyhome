@@ -70,16 +70,6 @@ class OrderFromView(FormView):
     template_name = 'orders/order_form.html'
 
     def post(self, request, *args, **kwargs):
-        try:
-            phone = Settings.objects.get(name='contacts_phone').value
-        except Settings.DoesNotExist:
-            phone = False
-
-        try:
-            selfcarting_text = Settings.objects.get(name='selfcarting')
-        except:
-            selfcarting_text = False
-
         response = HttpResponse()
         badresponse = HttpResponseBadRequest()
         cookies = self.request.COOKIES
@@ -188,8 +178,7 @@ class OrderFromView(FormView):
                      'reg_form': reg_form, 'contacts_phone': phone, })
         else:
             return render_to_response(self.template_name,
-                    {'order_form': order_form, 'request': request, 'user': request.user,
-                     'selfcarting_text': selfcarting_text, 'cart_total': cart.get_str_total(), 'contacts_phone': phone
+                    {'order_form': order_form, 'request': request, 'user': request.user, 'cart_total': cart.get_str_total()
                     , })
 
     def get(self, request, *args, **kwargs):

@@ -35,8 +35,11 @@ class Profile(models.Model):
     def get_orders(self):
         return self.order_set.all()
 
+    def get_addresses(self):
+        return self.user.profileaddress_set.all()
+
 class ProfileAddress(models.Model):
-    user = models.OneToOneField(User)
+    user =  models.ForeignKey(User, verbose_name=u'пользователь')
     city = models.CharField(max_length=255, verbose_name=u'Адрес')
     street = models.CharField(max_length=255, verbose_name=u'Улица, Дом, Квартира')
 
