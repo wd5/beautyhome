@@ -10,6 +10,11 @@ function mycarousel_initCallback(carousel) {
 
 $(function() {
     if ($('.carousel_actions').html()) { // если нашли элемент - то делаем карусели
+        function mycarousel_itemVisibleInCallbackAfterAnimation(carousel, item, idx, state) {
+            $('.carousel_ctrls li').removeClass('curr');
+            $($('.carousel_ctrls li').get(idx - 1)).addClass('curr');
+        }
+
         $('.carousel_ctrls li:first').addClass('curr');
         var params_dict = {
             scroll: 1,
@@ -54,13 +59,6 @@ $(function() {
             }
             $('.carousel_ctrls').html(cont);
             $('.carousel_ctrls li:first').addClass('curr');
-        }
-
-
-
-        function mycarousel_itemVisibleInCallbackAfterAnimation(carousel, item, idx, state) {
-            $('.carousel_ctrls li').removeClass('curr');
-            $($('.carousel_ctrls li').get(idx - 1)).addClass('curr');
         }
 
         $('div.carousel_filter a').live('click',function(){

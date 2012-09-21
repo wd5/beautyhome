@@ -349,7 +349,7 @@ class AddProdictToCartView(View):
                 response.set_cookie('beautyhome_cart_id', cart.id, 1209600)
                 try:
                     buy_later_cart = BuyLater.objects.get(sessionid=sessionid)
-                except Cart.DoesNotExist:
+                except BuyLater.DoesNotExist:
                     buy_later_cart = False
 
             try:
