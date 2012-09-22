@@ -7,8 +7,6 @@
 {% endblock %}
 
 {% block main %}
-    {% block_catalog_menu '' %}
-
     <div class="right col">
         {{ errors }}
         <div class="page_h">
@@ -16,7 +14,7 @@
          </div>
 
         <div class="order_final">
-            <form class="final_reg" method="post" action="/edt_profile_info/">
+            <form class="final_reg" method="post" action="/edt_profile_info/">{% csrf_token %}
                 <div class="input input3">
                     <label>Имя</label>
                     {{ profile_form.name }}

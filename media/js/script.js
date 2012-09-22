@@ -271,6 +271,16 @@ $(function() {
     });
 
 
+    // выпадашка советы
+    $('.advices_btn').live('click',function(){
+        $("div.advices_pl").toggle();
+    });
+
+    $('div.advices_pl').live('mouseleave', function() {
+        $('.advices_pl').hide();
+    });
+
+
     //Анимация корзины при изменении
     function animate_cart(){
         $('.cartbox').animate({

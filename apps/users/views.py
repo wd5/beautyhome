@@ -44,7 +44,7 @@ class RegistrationFormView(FormView):
             new_user.set_password(data['password1'])
             new_user.save()
 
-            profile = Profile.objects.create(user=new_user, name=u'', last_name=u'')
+            profile = Profile.objects.create(user=new_user, name=u'', last_name=u'', third_name=u'', b_day=datetime.date(1991,1,1), sex=u'female')
 
             send_email_registration(username=new_user.username, password=data['password1'], to_email=new_user.email)
 
@@ -342,7 +342,7 @@ class EditUsrInfoView(View):
                     user = profile.user
                     if user.id != 1: # не для админа
                         user.email = value
-                        user.login = value
+                        user.username = value
                     else:
                         user.email = value
                     user.save()
