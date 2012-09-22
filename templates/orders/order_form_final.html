@@ -33,12 +33,6 @@
                     <div class="final_item_name">{{ order_product.product.title }} х {{ order_product.count }}</div>
                     <div class="final_item_price">{{ order_product.get_str_total }} руб.</div>
                 </div>
-                {% for product_service in order_product.get_services %}
-                    <div class="final_item">
-                        <div class="final_item_name">{{ product_service.service.product_service }} х {{ product_service.count }}</div>
-                        <div class="final_sitem_price">{{ product_service.get_str_total }} руб.</div>
-                    </div>
-                {% endfor %}
             {% endfor %}
             <div class="final_sum">{{ order.total_price }} руб.</div>
         </div><!--/final_contents-->
@@ -68,4 +62,20 @@
             </form>
         {% endif %}
     </div><!--/order_final-->
+    <script type="text/javascript">
+        setTimeout( function(){
+            $('.modal_bg').fadeOut(2000);
+        },5000);
+    </script>
+{% endblock %}
+
+{% block modal_bg %}
+    <div class="modal_bg">
+    	<div class="modal_thanks">
+    		<div class="modal_thanks_in">
+    			<h1>Спасибо</h1>
+    			<p>за покупку</p>
+    		</div>
+    	</div>
+    </div><!--/modal_bg-->
 {% endblock %}

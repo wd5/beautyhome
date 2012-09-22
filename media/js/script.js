@@ -257,7 +257,8 @@ $(function() {
         el.toggleClass('curr');
         link.attr('rel',rel);
         $('.product_img a').replaceWith(link);
-        $('.product_gal').append('<script type="text/javascript">$(".fancybox").fancybox()</script>');
+        $('.product_gal').append('<script type="text/javascript">$(".fancybox").fancybox({helpers: {overlay : {opacity: 0.75, css: {"background-color": "#ffffff"}}}})</script>');
+
         return false;
     });
 
@@ -754,6 +755,80 @@ $(function() {
             }
         });
     }
+
+    $('#order_modal_bg .close').live('click', function(){
+        window.location = '/cart/';
+    });
+
+    $('.ctype_order_menu li').live('click',function(){
+        var curr_class = $(this).find('a').attr('class');
+        $(this).parent().find('li').removeClass('curr');
+        $(this).toggleClass('curr');
+
+        $('#id_order_carting [value="'+curr_class+'"]').attr('selected','selected');
+
+
+        $('.order_delivery_inputs').hide();
+        $('div.'+curr_class).show();
+        return false;
+    });
+
+    $('.payment_order_menu li').live('click',function(){
+        var curr_class = $(this).find('a').attr('class');
+        $(this).parent().find('li').removeClass('curr');
+        $(this).toggleClass('curr');
+        return false;
+    });
+
+    $('input[name="checked_address"]').live('click',function(){
+        $('#id_address').val($(this).val());
+    });
+
+    $('input[name="address_city"]').live('keyup',function(){
+        $('#id_address').val($(this).val()+', '+$('input[name="address_street"]').val());
+        if ($.trim($('#id_address').val())==',' || $.trim($('input[name="address_street"]').val())=="" || $.trim($('input[name="address_city"]').val())=="") {
+            $('#id_address').val("");
+        }
+    });
+
+    $('input[name="address_street"]').live('keyup',function(){
+        $('#id_address').val($('input[name="address_city"]').val()+', '+$(this).val());
+        if ($.trim($('#id_address').val())==',' || $.trim($('input[name="address_street"]').val())=="" || $.trim($('input[name="address_city"]').val())=="") {
+            $('#id_address').val("");
+        }
+    });
+
+    $('#order_addr_submit').live('click',function(){
+        $.ajax({
+            url: "/cabinet/check_addr_modal/",
+            data: {
+                city:$('#id_city').val(),
+                street:$('#id_street').val(),
+                user:$('#id_user').val()
+            },
+            type: "POST",
+            success: function(data) {
+                if (data=='success') {
+                    $('.modal_add_adr').replaceWith('<div class="modal_add_adr" id="add_address_modal"><h1>Адрес добавлен</h1></div>');
+                    setTimeout(function(){
+                        window.location = '/show_order_form/?addr=last';
+                    },800);
+                } else {
+                    $('.modal_add_adr').replaceWith(data);
+                }
+            }
+        });
+        return false;
+    });
+
+
+/*    $("#order_modal_bg").live('click',function(e){
+        if (e.target.id === "order_modal_bg"){
+            window.location = '/cart/';
+        }
+    });*/
+
+
 
 });
 

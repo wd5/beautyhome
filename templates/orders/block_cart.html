@@ -1,8 +1,7 @@
 {% if is_empty %}
     <div class="cartbox">
         <div class="cartbox_name">Косметичка</div>
-
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated or profile_id %}
             <div class="cartbox_cab">
                 <a href="/cabinet/">Личный кабинет</a>
                 <a class="cartbox_exit" href="/logout/"></a>
@@ -22,8 +21,7 @@
 {% else %}
     <div class="cartbox">
     	<div class="cartbox_name">Косметичка</div>
-
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated or profile_id %}
             <div class="cartbox_cab">
                 <a href="/cabinet/">Личный кабинет</a>
                 <a class="cartbox_exit" href="/logout/"></a>

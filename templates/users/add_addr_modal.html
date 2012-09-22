@@ -2,7 +2,7 @@
     <h1>Новый адрес</h1>
     <form method="post" action="">
         <div class="add_adr_input">
-            <label>Адрес</label>
+            <label>Город</label>
             {{ addresses_form.city }}
             {{ addresses_form.city.errors }}
         </div>
@@ -14,7 +14,7 @@
         <div style="display: none;">
             {{ addresses_form.user }}
         </div>
-        <div class="adr_add_submit"><div class="btn1"><div class="btn1_in"><input id="addr_submit" type="button" value="Добавить" /></div></div></div>
+        <div class="adr_add_submit"><div class="btn1"><div class="btn1_in"><input{% if order_form %} id="order_addr_submit"{% else %} id="addr_submit"{% endif %} type="button" value="Добавить" /></div></div></div>
     </form>
     <div class="add_adr_modal_shade"></div>
 </div>

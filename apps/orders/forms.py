@@ -3,12 +3,13 @@ from django import forms
 from apps.orders.models import Order
 
 class RegistrationOrderForm(forms.ModelForm):
-    first_name = forms.CharField(error_messages={'required': 'Введите ваше имя'})
-    last_name = forms.CharField(error_messages={'required': 'Введите вашу фамилию'})
-    email = forms.EmailField(error_messages={'required': 'Введите ваш e-mail'})
-    phone = forms.CharField(error_messages={'required': 'Введите ваш номер телефона'})
+    first_name = forms.CharField(error_messages={'required': 'Введите ваше имя'}, widget=forms.TextInput(attrs={'class':'input1'}))
+    last_name = forms.CharField(error_messages={'required': 'Введите вашу фамилию'}, widget=forms.TextInput(attrs={'class':'input1'}))
+    email = forms.EmailField(error_messages={'required': 'Введите ваш e-mail'}, widget=forms.TextInput(attrs={'class':'input1'}))
+    phone = forms.CharField(error_messages={'required': 'Введите ваш номер телефона'}, widget=forms.TextInput(attrs={'class':'input1'}))
+    address = forms.CharField(widget=forms.TextInput(attrs={'class':'input2'}), required=False)
     note = forms.CharField(
-        widget=forms.Textarea(),
+        widget=forms.Textarea(attrs={'class':'textarea1'}),
         required=False
     )
 

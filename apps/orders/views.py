@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
 from django.core.mail.message import EmailMessage
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -10,7 +11,7 @@ from apps.orders.forms import RegistrationOrderForm
 from apps.orders.templatetags.orders_extras import f7
 from apps.products.models import Product
 from apps.users.models import Profile
-from apps.users.forms import RegistrationForm
+from apps.users.forms import RegistrationForm, AddressForm
 from apps.siteblocks.models import Settings
 from pytils.numeral import choose_plural
 import settings
@@ -70,8 +71,17 @@ class OrderFromView(FormView):
     template_name = 'orders/order_form.html'
 
     def post(self, request, *args, **kwargs):
+        try:
+            phonenum = Settings.objects.get(name='phonenum').value
+        except Settings.DoesNotExist:
+            phonenum = False
+
+        try:
+            selfcarting_text = Settings.objects.get(name='selfcarting')
+        except:
+            selfcarting_text = False
+
         response = HttpResponse()
-        badresponse = HttpResponseBadRequest()
         cookies = self.request.COOKIES
         cookies_cart_id = False
         if 'beautyhome_cart_id' in cookies:
@@ -125,23 +135,10 @@ class OrderFromView(FormView):
                     order=new_order,
                     count=cart_product.count,
                     product=cart_product.product,
-                    product_description=u'%s%s - %s' % (mfrer, cart_product.product.category.title_singular,
-                        cart_product.product.title),
                     product_price=cart_product.product.price
                 )
                 ord_prod.save()
-                for service in cart_product.get_services():
-                    ord_prod_srv = OrderProductService(
-                        order_product=ord_prod,
-                        count=service.count,
-                        service=service.service,
-                        service_description=service.service.description,
-                        service_price=service.service.price
-                    )
-                    ord_prod_srv.save()
-
             if profile:
-                profile.address = new_order.address
                 profile.phone = new_order.phone
                 profile.note = new_order.note
                 profile.save()
@@ -149,7 +146,7 @@ class OrderFromView(FormView):
             cart.delete() #Очистка и удаление корзины
             response.delete_cookie('beautyhome_cart_id') # todo: ???
 
-            subject = u'ЧитаМаг - Информация по заказу.'
+            subject = u'BeautyHome - Информация по заказу.'
             subject = u''.join(subject.splitlines())
             message = render_to_string(
                 'orders/message_template.html',
@@ -173,13 +170,14 @@ class OrderFromView(FormView):
                 reg_form = RegistrationForm(initial={'email': new_order.email, })
             else:
                 reg_form = False
+            # не регистрируем пользователя а просто губы выводим
             return render_to_response('orders/order_form_final.html',
                     {'order': new_order, 'request': request, 'user': request.user,
-                     'reg_form': reg_form, 'contacts_phone': phone, })
+                     'reg_form': reg_form, 'phonenum': phonenum, })
         else:
             return render_to_response(self.template_name,
-                    {'order_form': order_form, 'request': request, 'user': request.user, 'cart_total': cart.get_str_total()
-                    , })
+                    {'order_form': order_form, 'request': request, 'user': request.user, 'cart_total': cart.get_str_total(),
+                     'selfcarting_text': selfcarting_text, 'phonenum': phonenum })
 
     def get(self, request, *args, **kwargs):
         form_class = self.get_form_class()
@@ -195,14 +193,6 @@ class OrderFromView(FormView):
             profile_id = self.request.user.profile.id
         else:
             profile_id = False
-
-        if profile_id:
-            try:
-                profile = Profile.objects.get(pk=int(profile_id))
-            except:
-                profile = False
-        else:
-            profile = False
 
         sessionid = self.request.session.session_key
 
@@ -225,6 +215,7 @@ class OrderFromView(FormView):
             try:
                 profile_set = Profile.objects.filter(id=self.request.user.profile.id)
                 profile = Profile.objects.get(id=self.request.user.profile.id)
+                context['addresses'] = profile.get_addresses()
                 context['order_form'].fields['profile'].queryset = profile_set
                 context['order_form'].fields['profile'].initial = profile
                 context['order_form'].fields['first_name'].initial = profile.name
@@ -233,9 +224,11 @@ class OrderFromView(FormView):
                 context['order_form'].fields['phone'].initial = profile.phone
                 context['order_form'].fields['order_carting'].initial = u'carting'
                 context['order_form'].fields['order_status'].initial = u'processed'
-                context['order_form'].fields['address'].initial = profile.address
-                context['order_form'].fields['note'].initial = profile.note
                 context['order_form'].fields['total_price'].initial = cart_total
+
+                user_set = User.objects.filter(id=profile.user_id)
+                context['addresses_form'] =  AddressForm(initial={'user':profile.user})
+                context['addresses_form'].fields['user'].queryset = user_set
             except Profile.DoesNotExist:
                 return HttpResponseBadRequest()
         else:
@@ -391,6 +384,7 @@ class AddProdictToCartView(View):
                 'orders/block_cart.html',
                     {
                     'is_empty': is_empty,
+                    'profile_id': profile_id,
                     'cart_products_count': cart_products_count,
                     'cart_total': cart_total,
                     'cart_products_text': cart_products_text
@@ -633,8 +627,6 @@ class GetCartboxHtmlView(View):
             return HttpResponseRedirect('/')
         else:
             response = HttpResponse()
-            user = request.user
-
             cookies = request.COOKIES
 
             cookies_cart_id = False
@@ -693,11 +685,11 @@ class GetCartboxHtmlView(View):
 
             later_html = render_to_string(
                 'orders/block_cart.html',
-                    {                'is_empty': is_empty,
-                                    'user': user,
-                                    'cart_products_count': cart_products_count,
-                                    'cart_total': cart_total,
-                                    'cart_products_text': cart_products_text,
+                    { 'is_empty': is_empty,
+                      'profile_id': profile_id,
+                      'cart_products_count': cart_products_count,
+                      'cart_total': cart_total,
+                      'cart_products_text': cart_products_text,
                 }
             )
             response.content = later_html

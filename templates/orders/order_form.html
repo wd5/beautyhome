@@ -7,95 +7,200 @@
 {% endblock %}
 
 {% block main %}
-    <div class="page_h">
-        <h1>Заказ оформлен</h1>
-    </div>{% comment %}
-    {{ order_form.errors }}{% endcomment %}
-    <form class="order_form" method="post" action="/order_form_step2/">
-        <div style="display: none;">{{ order_form.profile }}
-            {{ order_form.profile.errors }}
-            {{ order_form.order_carting }}
-            {{ order_form.order_carting.errors }}
-            {{ order_form.total_price }}
-            {{ order_form.total_price.errors }}
-            {{ order_form.order_status }}
-            {{ order_form.order_status.errors }}</div>
-        <div class="order_form_h">
-            <span class="order_form_h_num">1</span>
-            <h2>Контактные данные</h2>
-            {% if not user.is_authenticated %}<span class="ifregistred">Уже зарегистрированы? <a href="#auth_form" class="fancybox">Войти</a></span>{% endif %}
-        </div>
+    <div class="cart">
+        <h1>Косметичка</h1>
+        <div class="cart_in">
+            <div class="cart_item">
+                <div class="cart_item_img"><img src="/media/images/i1_s.jpg" alt="" /></div>
+                <div class="cart_item_des">
+                    <h3 class="item_name"><a href="#">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
+                    <div class="item_w">400 мл</div>
+                </div>
+                <div class="cart_qty">
+                    <div class="cart_qty_btn">1</div>
+                </div>
+                <div class="cart_price">
+                    <div class="item_price">340 <i>руб.</i></div>
+                </div>
+                <div class="cart_ctrls">
+                    <div class="cart_del"><input type="button" value="Удалить" /></div>
+                    <div class="cart_leave"><input type="button" value="Оставить на потом" /></div>
+                </div>
+            </div>
 
-        <div class="input input3">
-            <label>Имя <span class="label_note">Имя получателя</span></label>
-            {{ order_form.first_name }}
-            {{ order_form.first_name.errors }}
-        </div>
-        <div class="input input3">
-            <label>Фамилия <span class="label_note">Фамилия получателя</span></label>
-            {{ order_form.last_name }}
-            {{ order_form.last_name.errors }}
-        </div>
-        <div class="input input3">
-            <label>E-mail <span class="label_note">Для входа на сайт</span></label>
-            {{ order_form.email }}
-            {{ order_form.email.errors }}
-        </div>
-        <div class="input input3">
-            <label>Телефон <span class="label_note">Для подтверждения</span></label>
-            {{ order_form.phone }}
-            {{ order_form.phone.errors }}
-        </div>
+            <div class="cart_item">
+                <div class="cart_item_img"><img src="/media/images/i2_s.jpg" alt="" /></div>
+                <div class="cart_item_des">
+                    <h3 class="item_name"><a href="#">Бархатистое Молочко для Тела «Малина БИО»</a></h3>
+                    <div class="item_w">400 мл</div>
+                    <h3 class="item_name"><a href="#">Эксфолиант для тела «Сочный Персик»</a></h3>
+                    <div class="item_w">400 мл</div>
+                </div>
+                <div class="cart_qty">
+                    <div class="cart_qty_btn">1</div>
+                </div>
+                <div class="cart_price">
+                    <div class="item_price">3 740 <i>руб.</i></div>
+                </div>
+                <div class="cart_ctrls">
+                    <div class="cart_del"><input type="button" value="Удалить" /></div>
+                    <div class="cart_leave"><input type="button" value="Оставить на потом" /></div>
+                </div>
+            </div>
 
-        <div class="order_form_h">
-            <span class="order_form_h_num">2</span>
-            <h2>Получение товара</h2>
+            <div class="cart_gift">
+                <div class="cart_item_img"><img src="/media/images/i1_zxs.jpg" alt="" /></div>
+                <div class="cart_item_des">
+                    <h3 class="item_name"><a href="#">Бархатистое Молочко для Тела «Малина БИО»</a></h3>
+                    <div class="item_w">400 мл</div>
+                </div>
+                <div class="cart_gift_label">Подарок</div>
+            </div>
+
+            <div class="cart_item">
+                <div class="cart_item_img"><img src="/media/images/i3_s.jpg" alt="" /></div>
+                <div class="cart_item_des">
+                    <h3 class="item_name"><a href="#">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
+                    <div class="item_w">400 мл</div>
+                </div>
+                <div class="cart_qty">
+                    <div class="cart_qty_btn">1</div>
+                </div>
+                <div class="cart_price">
+                    <div class="item_price">340 <i>руб.</i></div>
+                </div>
+                <div class="cart_ctrls">
+                    <div class="cart_del"><input type="button" value="Удалить" /></div>
+                    <div class="cart_leave"><input type="button" value="Оставить на потом" /></div>
+                </div>
+            </div>
+
+            <div class="cart_summary">
+                <div class="cart_discount"> Скидка <span>5%</span></div>
+                <div class="cart_total">Итого <span>7 800</span> <i>руб.</i></div>
+            </div>
+
+            <div class="cart_submit"><div class="btn1"><div class="btn1_in"><input type="submit" value="Оформить заказ" /></div></div></div>
+
+            <div class="cart_payway">Принимаем к оплате <img src="/media/img/card_visa.png" alt="" /> <img src="/media/img/card_mastercard.png" alt="" /></div>
+
+            <div class="cart_in_shade"></div>
+        </div><!--/cart_in-->
+    </div><!--/cart-->
+{% endblock %}
+
+{% block modal_bg %}
+    <div class="modal_bg" id="order_modal_bg">
+        <div class="modal_order">
+            <h1>Оформление заказа</h1>
+            <form class="order_form" method="post" action="/order_form_step2/">
+                <div style="display: none;">
+                    {{ order_form.errors }}
+                    {{ order_form.profile }}
+                    {{ order_form.profile.errors }}
+                    {{ order_form.order_carting }}
+                    {{ order_form.order_carting.errors }}
+                    {{ order_form.total_price }}
+                    {{ order_form.total_price.errors }}
+                    {{ order_form.order_status }}
+                    {{ order_form.order_status.errors }}
+                    {{ order_form.address }}
+                </div>
+                <div class="order_form_h">
+                    <span class="order_form_h_num">1</span>
+                    <h2>Контактные данные</h2>
+                    {% if not user.is_authenticated %}<span class="ifregistred">Уже зарегистрированы? <a class="dot fancybox" href="#auth_form">Войти</a></span>{% endif %}
+                </div>
+
+                <div class="order_contact_inputs">
+                    <div class="input">
+                        <label>Имя <span class="label_note">Имя получателя</span></label>
+                        {{ order_form.first_name }}
+                        {{ order_form.first_name.errors }}
+                    </div>
+                    <div class="input">
+                        <label>Фамилия <span class="label_note">Фамилия получателя</span></label>
+                        {{ order_form.last_name }}
+                        {{ order_form.last_name.errors }}
+                    </div>
+                    <div class="input">
+                        <label>E-mail <span class="label_note">Для входа на сайт</span></label>
+                        {{ order_form.email }}
+                        {{ order_form.email.errors }}
+                    </div>
+                    <div class="input">
+                        <label>Телефон <span class="label_note">Для подтверждения</span></label>
+                        {{ order_form.phone }}
+                        {{ order_form.phone.errors }}
+                    </div>
+                </div>
+
+                <div class="order_form_h">
+                    <span class="order_form_h_num">2</span>
+                    <h2>Получение товара</h2>
+                </div>
+
+                <ul class="order_menu ctype_order_menu">
+                    <li {% if order_form.order_carting.value == 'carting' %}class="curr"{% endif %}><a href="#" class="carting">Доставка</a></li>
+                    <li {% if order_form.order_carting.value == 'selfcarting' %}class="curr"{% endif %}><a href="#" class="selfcarting">Самовывоз</a></li>
+                </ul>
+
+                <div class="order_delivery_inputs carting" {% if order_form.order_carting.value != 'carting' %}style="display: none;"{% endif %}>
+                    <div class="input">
+                        {% if not user.is_authenticated %}
+                            <label>Город <span class="label_note"></span></label>
+                            <input class="input2" type="text" name="address_city" />
+                            <label>Адрес <span class="label_note">Улица, дом, квартира</span></label>
+                            <input class="input2" type="text" name="address_street" />
+                            {{ order_form.address.errors }}
+                            {{ order_form.non_field_errors  }}
+                            <script type="text/javascript">$('#id_address').val("");</script>
+                        {% else %}
+                            <label>Адрес<span class="label_note"></span></label>
+                            {% for address in addresses %}
+                                <label><span class="label_note"></span></label><input type="radio" name="checked_address" value="{{ address.city }}, {{ address.street }}" {% if request.GET.addr == 'last' %}{% if forloop.last %}checked{% endif %}{% else %}{% if forloop.first %}checked{% endif %}{% endif %}> {{ address.city }}, {{ address.street }}<br/>
+                            {% endfor %}
+                            {% if user.is_authenticated %}<input class="add_adr_btn" type="button" value="Добавить адрес" />{% endif %}
+                            <script type="text/javascript">$('#id_address').val($('input[name="checked_address"]:checked').val());</script>
+                        {% endif %}
+                    </div>
+
+                    <div class="textarea">
+                        <label>Примечание <span class="label_note">Номер домофона или&nbsp;любая другая информация</span></label>
+                        <textarea class="textarea1" cols="0" rows="0"></textarea>
+                    </div>
+                </div>
+                <div class="order_delivery_inputs selfcarting" {% if order_form.order_carting.value != 'selfcarting' %}style="display: none;"{% endif %}>
+                    {{ selfcarting_text.value|safe }}
+                </div>
+
+                <div class="order_form_h">
+                    <span class="order_form_h_num">3</span>
+                    <h2>Оплата заказа</h2>
+                    <span class="ifregistred">Общая стоимость заказа: <span>{{ cart_total }}</span> руб. </span>
+                </div>
+
+                <ul class="order_menu payment_order_menu">
+                    <li class="curr"><a href="#">Наличный расчет</a></li>
+                    <li><a href="#">Банковкая карта</a></li>
+                    <li><a href="#">Электронная валюта</a></li>
+                </ul>
+
+                <div class="order_type">
+                    <div class="order_type_text">
+                        <p>Оплата наличными при получении товара. Или в офисе, если товар поставляется по предоплате.</p>
+                    </div>
+                </div>
+
+                <div class="order_submit"><div class="btn1"><div class="btn1_in"><input type="submit" value="Отправить заказ" /></div></div></div>
+            </form>
+            <div class="close"></div>
         </div>
+    </div><!--/modal_bg-->
 
-
-        <ul class="order_menu">
-            <li {% if order_form.order_carting.value == 'carting' %}class="curr"{% endif %}><a href="#" class="carting">Доставка</a></li>
-            <li {% if order_form.order_carting.value == 'selfcarting' %}class="curr"{% endif %}><a href="#" class="selfcarting">Самовывоз</a></li>
-        </ul>
-
-    <div class="contact_info carting" {% if order_form.order_carting.value != 'carting' %}style="display: none;"{% endif %}>
-        <div class="input input2">
-            <label>Адрес <span class="label_note">Улица, дом, квартира</span></label>
-            {{ order_form.address }}
-            {{ order_form.address.errors }}
-            {{ order_form.non_field_errors  }}
-        </div>
-
-        <div class="textarea textarea1">
-            <label>Примечание <span class="label_note">Номер домофона или&nbsp;любая другая информация</span></label>
-            {{ order_form.note }}
-            {{ order_form.note.errors }}
-        </div>
-    </div>
-    <div class="contact_info selfcarting" {% if order_form.order_carting.value != 'selfcarting' %}style="display: none;"{% endif %}>
-        {{ selfcarting_text.value|safe }}
-    </div>
-
-    <div class="order_form_h">
-        <span class="order_form_h_num">3</span>
-        <h2>Оплата заказа</h2>
-        <span class="ifregistred">Общая стоимость заказа: <span>{{ cart_total }}</span> руб. </span>
-    </div>
-
-    <div class="order_type">
-        <div class="order_type_text">
-            <h3>Наличный расчет</h3>
-            <p>Оплата наличными при получении товара. Или в офисе, если товар поставляется по предоплате.</p>
-        </div>
-        <input class="btn2 order_submit" type="submit" value="Отправить заказ" />
-    </div>
-
-    {% comment %}<div class="order_type">
-        <div class="order_type_text">
-            <h3>Оплата картой <span>или электронными валютами</span></h3>
-            <p>Оплата с помощью банковского перевода (систем онлайн-банкинга) для физических лиц. Оплата картой в магазине или курьеру не предусматривается!</p>
-        </div>
-        <input class="btn2 order_submit" type="submit" value="Оплатить заказ" />
-    </div>{% endcomment %}
-    </form>
+    {% if addresses %}
+        <div class="modal_bg" id="modal_bg" style="display: none;">
+        	{% include "users/add_addr_modal.html" %}
+        </div><!--/modal_bg-->
+    {% endif %}
 {% endblock %}
