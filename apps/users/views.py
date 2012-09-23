@@ -171,7 +171,7 @@ class ShowCabinetView(TemplateView):
                     try:
                         loaded_count = int(Settings.objects.get(name='loaded_count').value)
                     except:
-                        loaded_count = 1
+                        loaded_count = 5
                     queryset = profile.get_orders()
                     result = GetLoadIds(queryset, loaded_count)
                     splited_result = result.split('!')

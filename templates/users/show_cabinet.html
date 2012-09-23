@@ -2,11 +2,9 @@
 
 {% load thumbnail siteblocks_extras products_extras pages_extras pytils_numeral pagination_tags %}
 
-{% if page.title %}
-    {% block title %}
-        Личный кабинет &mdash;
-    {% endblock %}
-{% endif %}
+{% block title %}
+    Личный кабинет &mdash;
+{% endblock %}
 
 {% block main %}
     <div class="cabinet">
@@ -127,74 +125,6 @@
 {% endblock %}
 
 {% block modal_bg %}
-    {% if division == 'history'%}
-        <div class="modal_bg" style="display: none;">
-        	<div class="modal_history">
-        		<h1>Заказ № 54 601</h1>
-        		<div class="modal_history_status">Оплачен</div>
-
-        		<div class="cart_in">
-        			<div class="cart_item">
-        				<div class="cart_item_img"><img src="/media/images/i1_s.jpg" alt="" /></div>
-        				<div class="cart_item_des">
-        					<h3 class="item_name"><a href="#">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
-        					<div class="item_w">400 мл</div>
-        				</div>
-        				<div class="cart_qty">
-        					<div class="cart_qty_btn">1</div>
-        				</div>
-        				<div class="cart_price">
-        					<div class="item_price">340 <i>руб.</i></div>
-        				</div>
-        			</div>
-
-        			<div class="cart_item">
-        				<div class="cart_item_img"><img src="/media/images/i2_s.jpg" alt="" /></div>
-        				<div class="cart_item_des">
-        					<h3 class="item_name"><a href="#">Бархатистое Молочко для Тела «Малина БИО»</a></h3>
-        					<div class="item_w">400 мл</div>
-        					<h3 class="item_name"><a href="#">Эксфолиант для тела «Сочный Персик»</a></h3>
-        					<div class="item_w">400 мл</div>
-        				</div>
-        				<div class="cart_qty">
-        					<div class="cart_qty_btn">1</div>
-        				</div>
-        				<div class="cart_price">
-        					<div class="item_price">3 740 <i>руб.</i></div>
-        				</div>
-        			</div>
-
-        			<div class="cart_gift">
-        				<div class="cart_item_img"><img src="/media/images/i1_zxs.jpg" alt="" /></div>
-        				<div class="cart_item_des">
-        					<h3 class="item_name"><a href="#">Бархатистое Молочко для Тела «Малина БИО»</a></h3>
-        					<div class="item_w">400 мл</div>
-        				</div>
-        				<div class="cart_gift_label">Подарок</div>
-        			</div>
-
-        			<div class="cart_item">
-        				<div class="cart_item_img"><img src="/media/images/i3_s.jpg" alt="" /></div>
-        				<div class="cart_item_des">
-        					<h3 class="item_name"><a href="#">Гель для Ванны и Душа «Малазийский Кокос»</a></h3>
-        					<div class="item_w">400 мл</div>
-        				</div>
-        				<div class="cart_qty">
-        					<div class="cart_qty_btn">1</div>
-        				</div>
-        				<div class="cart_price">
-        					<div class="item_price">340 <i>руб.</i></div>
-        				</div>
-        			</div>
-
-        			<div class="cart_summary">
-        				<div class="cart_discount"> Скидка <span>5%</span></div>
-        				<div class="cart_total">Итого <span>7 800</span> <i>руб.</i></div>
-        			</div>
-        		</div><!--/cart_in-->
-        	</div>
-        </div><!--/modal_bg-->
-    {% endif %}
     {% if division == 'addresses'%}
         <div class="modal_bg" id="modal_bg" style="display: none;">
         	{% include "users/add_addr_modal.html" %}

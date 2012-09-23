@@ -2,11 +2,9 @@
 
 {% load thumbnail siteblocks_extras pagination_tags products_extras %}
 
-{% if page.title %}
-    {% block title %}
-        {{ product.title|striptags }} &mdash;
-    {% endblock %}
-{% endif %}
+{% block title %}
+    {{ product.title|striptags }} &mdash;
+{% endblock %}
 
 {% block main %}
     <div class="catalog">

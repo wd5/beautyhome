@@ -2,11 +2,9 @@
 
 {% load thumbnail %}
 
-{% if page.title %}
-    {% block title %}
-        {{ action.title }} &mdash;
-    {% endblock %}
-{% endif %}
+{% block title %}
+    {{ action.title }} &mdash;
+{% endblock %}
 
 {% block main %}
     <div class="action_page">

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras products_extras pages_extras pytils_numeral pagination_tags %}
+
+
+{% block title %}
+    Заказ №{{ order.id }} &mdash;
+{% endblock %}
+
+
+{% block main %}
+    <div class="cabinet">
+        <h1>Личный кабинет</h1>
+        <input type="hidden" name="profile_id" id="profile_id" value="{{ user.profile.id }}">
+        <div class="pagemenu cabinet_menu">
+            <ul>
+                <li class="curr"><a href="/cabinet/history/">История заказов</a><div></div></li>
+                <li><a href="/cabinet/info/">Общие сведения</a><div></div></li>
+                <li><a href="/cabinet/addresses/">Адреса доставки</a><div></div></li>
+                <li><a href="/cabinet/bonus/">Бонусный счет</a><div></div></li>
+            </ul>
+        </div><!--/cabinet_menu-->
+
+        <div class="histories">
+            <input type="hidden" id="loaded_ids" autocomplete="off" value="{{ next_id_loaded_items }}">
+            <input type="hidden" id="a_name" autocomplete="off" value="orders">
+            <input type="hidden" id="m_name" autocomplete="off" value="Order">
+            {% for order in orders %}
+                {% include 'users/history_item.html' %}
+            {% empty %}
+                Вы ещё ничего не заказывали.
+            {% endfor %}
+            {% if next_id_loaded_items %}
+                <div class="all_history"><div class="btn2"><div class="btn2_in"><a href="#" class="load_items">Все заказы</a></div></div></div>
+            {% endif %}
+        </div><!--/histories-->
+    </div>
+{% endblock %}
+
+{% block modal_bg %}
+    <div class="modal_bg" id="modal_bg">
+    	<div class="modal_history">
+    		<h1>Заказ № {{ order.id }}</h1>
+            {% if order.order_status == 'processed' %}
+               <div class="modal_history_status">Обрабатывается</div>
+            {% endif %}{% if order.order_status == 'posted' %}
+               <div class="modal_history_status">Отправлен</div>
+            {% endif %}{% if order.order_status == 'delivered' %}
+               <div class="modal_history_status">Доставлен</div>
+            {% endif %}{% if order.order_status == 'cancelled' %}
+               <div class="modal_history_status">Отменен</div>
+            {% endif %}
+
+    		<div class="cart_in">
+                {% for product in order.get_products %}
+                    <div class="cart_item">
+                        <div class="cart_item_img">
+                            {% thumbnail product.product.image "90x92" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                            {% endthumbnail %}
+                        </div>
+                        <div class="cart_item_des">
+                            <h3 class="item_name"><a href="{{ product.product.get_absolute_url }}">{{ product.product.title }}</a></h3>
+                            <div class="item_w">{{ product.product.volume }}</div>
+                        </div>
+                        <div class="cart_qty">
+                            <div class="cart_qty_btn">{{ product.count }}</div>
+                        </div>
+                        <div class="cart_price">
+                            <div class="item_price">{{ product.get_str_total }} <i>руб.</i></div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+    			<div class="cart_summary">
+    				{% comment %}<div class="cart_discount"> Скидка <span>5%</span></div>{% endcomment %}
+    				<div class="cart_total">Итого <span>{{ order.get_str_total }}</span> <i>руб.</i></div>
+    			</div>
+    		</div><!--/cart_in-->
+    	</div>
+    </div><!--/modal_bg-->
+{% endblock %}

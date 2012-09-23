@@ -7,7 +7,8 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import FormView, TemplateView, View
-from apps.orders.models import Cart, CartProduct, OrderProduct, BuyLater
+from django.views.generic.detail import DetailView
+from apps.orders.models import Cart, CartProduct, OrderProduct, BuyLater, Order
 from apps.orders.forms import RegistrationOrderForm
 from apps.orders.templatetags.orders_extras import f7
 from apps.products.models import Product
@@ -15,7 +16,43 @@ from apps.users.models import Profile
 from apps.users.forms import RegistrationForm, AddressForm
 from apps.siteblocks.models import Settings
 from pytils.numeral import choose_plural
+from apps.users.views import GetLoadIds
 import settings
+
+# для кабинета - История заказов
+class ShowOrderInfo(DetailView):
+    model = Order
+    context_object_name = 'order'
+    template_name = 'users/show_order_info.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ShowOrderInfo, self).get_context_data()
+        if self.request.user.is_authenticated and self.request.user.id:
+            try:
+                profile = Profile.objects.get(id=self.request.user.profile.id)
+            except:
+                profile = False
+            if profile:
+                try:
+                    loaded_count = int(Settings.objects.get(name='loaded_count').value)
+                except:
+                    loaded_count = 5
+                queryset = profile.get_orders()
+                result = GetLoadIds(queryset, loaded_count)
+                splited_result = result.split('!')
+                try:
+                    remaining_count = int(splited_result[0])
+                except:
+                    remaining_count = False
+                next_id_loaded_items = splited_result[1]
+                context['loaded_count'] = remaining_count
+                context['orders'] = profile.get_orders()[:loaded_count]
+                context['next_id_loaded_items'] = next_id_loaded_items
+        return context
+
+show_order_info = ShowOrderInfo.as_view()
+
+
 
 class ViewCart(TemplateView):
     template_name = 'orders/cart_detail.html'

@@ -2,6 +2,7 @@
 from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
 from apps.products.views import show_category, show_product
+from apps.orders.views import show_order_info
 from apps.siteblocks.views import show_action
 from django.conf.urls.defaults import patterns, include, url
 from apps.users.views import show_cabinet, edt_profile_info, show_profile_form, registration_form, items_loader, check_addr_modal, del_addr
@@ -34,6 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^cabinet/$',show_cabinet, {'division':'history'}, name='show_cabinet'),
     url(r'^cabinet/history/$',show_cabinet, {'division':'history'}),
+    url(r'^cabinet/history/order/(?P<pk>\d+)/$',show_order_info),
     url(r'^cabinet/info/$',show_cabinet, {'division':'info'}),
     url(r'^cabinet/addresses/$',show_cabinet, {'division':'addresses'}),
     url(r'^cabinet/bonus/$',show_cabinet, {'division':'bonus'}),

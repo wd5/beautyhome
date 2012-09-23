@@ -2,11 +2,9 @@
 
 {% load thumbnail %}
 
-{% if page.title %}
-    {% block title %}
-        Главная &mdash;
-    {% endblock %}
-{% endif %}
+{% block title %}
+    Главная &mdash;
+{% endblock %}
 
 {% block main %}
     <div class="carousel_out">
