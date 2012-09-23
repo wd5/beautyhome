@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.context_processors import csrf
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import TemplateView
 from apps.products.models import LifeEvent, Product
 from apps.siteblocks.models import Action
@@ -23,10 +24,9 @@ class IndexView(TemplateView):
         context['products_hit'] = SplitQSItems(all_products.filter(is_hit=True),list_product_count)
         context['products_new'] = SplitQSItems(all_products.filter(is_new=True),list_product_count)
         context['products_unique'] = SplitQSItems(all_products.filter(is_unique=True),list_product_count)
-        context.update(csrf(self.request))
         return context
 
-index = IndexView.as_view()
+index = csrf_protect(IndexView.as_view())
 
 def SplitQSItems(QS, count):
     count = float(count)

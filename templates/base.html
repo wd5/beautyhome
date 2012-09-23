@@ -122,7 +122,8 @@
 {% if user.is_authenticated %}
 {% else %}
     <div style="display: none;">
-        <form class="auth_form" id="auth_form" method="post" action="{% url auth_login %}?next={% if request.path == '/show_order_form/' %}{{ request.path }}{% else %}{{ next_url }}{% endif %}">{% csrf_token %}
+        <form class="auth_form" id="auth_form" method="post" action="{% url auth_login %}?next={% if request.path == '/show_order_form/' %}{{ request.path }}{% else %}{{ next_url }}{% endif %}">
+            {% csrf_token %}
             <h2>Вход</h2>
             <div class="input input3">
                 <label>E-mail:</label>
