@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import views as auth_views
+from django.views.decorators.csrf import csrf_exempt
 from apps.products.views import show_category, show_product
 from apps.siteblocks.views import show_action
 from django.conf.urls.defaults import patterns, include, url
@@ -12,6 +13,7 @@ from views import index
 urlpatterns = patterns('',
     url(r'^$',index, name='index'),
     url(r'^faq/', include('apps.faq.urls')),
+    (r'^load_items/$',csrf_exempt(items_loader)),
 
     (r'^actions/(?P<pk>\d+)/$',show_action),
     (r'^actions/$',index, {'target':'actions'}),

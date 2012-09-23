@@ -22,106 +22,18 @@
         </div><!--/cabinet_menu-->
 
         {% if division == 'history' %}
-            <div class="histories">
-                <div class="history">
-                    <div class="history_date">12 марта 2012</div>
-                    <div class="history_num"><span>Заказ № 46 209</span></div>
-                    <div class="history_status">Оплачен</div>
-
-                    <div class="history_items">
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                    </div>
-
-                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
-
-                    <div class="history_t"></div>
-                    <div class="history_b"></div>
-                </div>
-
-                <div class="history">
-                    <div class="history_date">12 марта 2012</div>
-                    <div class="history_num"><span>Заказ № 46 209</span></div>
-                    <div class="history_status">Оплачен</div>
-
-                    <div class="history_items">
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                    </div>
-
-                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
-
-                    <div class="history_t"></div>
-                    <div class="history_b"></div>
-                </div>
-
-                <div class="history">
-                    <div class="history_date">12 марта 2012</div>
-                    <div class="history_num"><span>Заказ № 46 209</span></div>
-                    <div class="history_status">Доставлен</div>
-
-                    <div class="history_items">
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                    </div>
-
-                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
-
-                    <div class="history_t"></div>
-                    <div class="history_b"></div>
-                </div>
-
-                <div class="history">
-                    <div class="history_date">12 марта 2012</div>
-                    <div class="history_num"><span>Заказ № 46 209</span></div>
-                    <div class="history_status">Оплачен</div>
-
-                    <div class="history_items">
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                    </div>
-
-                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
-
-                    <div class="history_t"></div>
-                    <div class="history_b"></div>
-                </div>
-
-                <div class="history">
-                    <div class="history_date">12 марта 2012</div>
-                    <div class="history_num"><span>Заказ № 46 209</span></div>
-                    <div class="history_status">Доставлен</div>
-
-                    <div class="history_items">
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                        <a href="#"><img src="/media/images/i1_zxxs.jpg" alt="" /></a>
-                    </div>
-
-                    <div class="history_sum">на <span class="item_price">340 <i>руб.</i></span></div>
-
-                    <div class="history_t"></div>
-                    <div class="history_b"></div>
-                </div>
-
-                <div class="all_history"><div class="btn2"><div class="btn2_in"><a href="#">Все заказы</a></div></div></div>
+            <div class="histories load_block">
+                <input type="hidden" id="loaded_ids" autocomplete="off" value="{{ next_id_loaded_items }}">
+                <input type="hidden" id="a_name" autocomplete="off" value="orders">
+                <input type="hidden" id="m_name" autocomplete="off" value="Order">
+                {% for order in orders %}
+                    {% include 'users/history_item.html' %}
+                {% empty %}
+                    Вы ещё ничего не заказывали.
+                {% endfor %}
+                {% if next_id_loaded_items %}
+                    <div class="all_history"><div class="btn2"><div class="btn2_in"><a href="#" class="load_items">Все заказы</a></div></div></div>
+                {% endif %}
 
             </div><!--/histories-->
         {% endif %}
@@ -212,78 +124,6 @@
             </div><!--/addresses-->
         {% endif %}
     </div>
-
-{% comment %}    <div class="right col">
-        <div class="cabinet">
-            <h1>Личный кабинет <span class="ifregistred"><a class="dot" href="/password/change/">сменить пароль</a></span></h1>
-
-            <div class="cabinet_info">
-                <div class="cabinet_info_name">Имя и фамилия:</div>
-                <div class="cabinet_info_val">
-                    {{ user.profile.name }} {{ user.profile.last_name }}
-                    {% if user.profile.name == '' and  user.profile.last_name == '' %}Не указаны{% endif %}
-                </div>
-            </div>
-            <div class="cabinet_info">
-                <div class="cabinet_info_name">Электронная почта:</div>
-                <div class="cabinet_info_val">{{ user.email }}</div>
-            </div>
-            <div class="cabinet_info">
-                <div class="cabinet_info_name">Телефон:</div>
-                <div class="cabinet_info_val">{{ user.profile.phone|default:"Не указан" }}</div>
-            </div>
-            <div class="cabinet_info_edit col"><a href="/cabinet/edit_info_form/"></a></div>
-
-            <div class="history load_block">
-                {% if orders %}
-                    <h2>История ваших заказов:</h2>
-                {% endif %}
-                <input type="hidden" id="loaded_ids" autocomplete="off" value="{{ next_id_loaded_items }}">
-                <input type="hidden" id="a_name" autocomplete="off" value="orders">
-                <input type="hidden" id="m_name" autocomplete="off" value="Order">
-                <table>
-                    {% for order in orders %}
-                        <tr>
-                            <td class="history_num_col"><div class="history_num">{{ forloop.counter }}</div></td>
-                            <td class="history_items_col">
-                                {% for product in order.get_products %}
-                                    <div class="history_item">
-                                        {% if product.product %}
-                                            <div>{{ product.product.category.title_singular|title }}</div>
-                                            <div><strong>{{ product.product.title }}</strong></div>
-                                        {% else %}
-                                            <div><strong>{{ product.product_description }}</strong></div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            </td>
-                            <td class="history_status_col">
-                                {% if order.order_status == 'processed' %}
-                                    <div class="history_status history_status_ok">Обрабатывается</div>
-                                {% endif %}{% if order.order_status == 'posted' %}
-                                    <div class="history_status history_status_ok">Отправлен</div>
-                                {% endif %}{% if order.order_status == 'delivered' %}
-                                    <div class="history_status history_status_ok">Доставлен</div>
-                                {% endif %}{% if order.order_status == 'cancelled' %}
-                                    <div class="history_status history_status_cancel">Отменен</div>
-                                {% endif %}
-                                <div>{{ order.create_date|date:"j E" }}</div>
-                            </td>
-                            <td class="history_price_col">
-                                <em>Стоимость заказа</em> <span class="item_price">{{ order.total_price }} <i class="r">руб.</i></span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-                {% if loaded_count %}
-                    <div class="more">
-                        <a href="#" class="load_items">Ещё {{ loaded_count }} заказ{{ loaded_count|choose_plural:",а,ов" }}</a>
-                    </div>
-                {% endif %}
-            </div>
-        </div><!--/cabinet-->
-    </div><!--/right-->{% endcomment %}
-
 {% endblock %}
 
 {% block modal_bg %}

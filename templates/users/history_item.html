@@ -1,0 +1,33 @@
+{% load thumbnail %}
+
+<div class="history">
+    <div class="history_date">{{ order.create_date|date:"j E Y" }}</div>
+    <div class="history_num"><a href="/cabinet/history/order/{{ order.id }}/">Заказ № {{ order.id }}</a></div>
+
+    {% if order.order_status == 'processed' %}
+       <div class="history_status">Обрабатывается</div>
+    {% endif %}{% if order.order_status == 'posted' %}
+       <div class="history_status">Отправлен</div>
+    {% endif %}{% if order.order_status == 'delivered' %}
+       <div class="history_status">Доставлен</div>
+    {% endif %}{% if order.order_status == 'cancelled' %}
+       <div class="history_status">Отменен</div>
+    {% endif %}
+
+    <div class="history_items">
+        {% for product in order.get_products %}
+            {% if product.product %}
+                <a href="{{ product.product.get_absolute_url }}">
+                    {% thumbnail product.product.image "47x49" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                    {% endthumbnail %}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="history_sum">на <span class="item_price">{{ order.get_str_total }} <i>руб.</i></span></div>
+
+    <div class="history_t"></div>
+    <div class="history_b"></div>
+</div>
