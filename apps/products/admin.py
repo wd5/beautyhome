@@ -34,11 +34,15 @@ class BrandAdmin(AdminImageMixin, admin.ModelAdmin):
 
 admin.site.register(Brand, BrandAdmin)
 
+class LECategoryInlines(admin.TabularInline):
+    model = LECategory
+
 class LifeEventAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('id','title','order','is_published',)
     list_display_links = ('id','title',)
     list_editable = ('order','is_published',)
     list_filter = ('is_published',)
+    inlines = [LECategoryInlines,]
     search_fields = ('title',)
 
 admin.site.register(LifeEvent, LifeEventAdmin)
@@ -83,6 +87,12 @@ class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
 
+    class Media:
+        js = (
+            '/media/js/jquery.js',
+            '/media/js/product_form_js.js',
+            )
+
 field_set = (
         (None, {
             'fields': ('category', 'brand', 'title','image')
@@ -107,7 +117,7 @@ field_set = (
             'fields': ('is_new','is_hit','is_daily','is_unique','is_limit',)
         }),
         (None, {
-            'fields': ('life_events','related_products','id2s','order','is_published',)
+            'fields': ('life_events','le_category','related_products','id2s','order','is_published',)
         }),
     )
 

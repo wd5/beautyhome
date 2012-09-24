@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import os
 from django.core.mail.message import EmailMessage
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseBadRequest
 from django.shortcuts import render_to_response
@@ -7,11 +8,13 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView,FormView,DetailView, ListView, View
+from pytils.translit import translify
 from apps.siteblocks.models import Settings
 
-from forms import QuestionForm
-from models import Question#,QuestionCategory
+from forms import QuestionForm, AdviceForm
+from models import Question, Advice#,QuestionCategory
 import settings
+
 
 class QuestionListView(ListView):
     model = Question
@@ -77,3 +80,25 @@ class SaveQuestionForm(View):
             return HttpResponseBadRequest()
 
 save_question_form = csrf_exempt(SaveQuestionForm.as_view())
+
+class VisageAdvicesListView(FormView):
+    form_class = AdviceForm
+    template_name = 'faq/advices.html'
+    success_url = '/visage_advices/?success=True'
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        #form = self.get_form(form_class)
+        form = AdviceForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(VisageAdvicesListView, self).get_context_data(**kwargs)
+        context['advices'] = Advice.objects.published()
+        return context
+
+show_visage_advices = VisageAdvicesListView.as_view()

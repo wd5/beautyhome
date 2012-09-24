@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras pagination_tags products_extras %}
+
+{% block title %}
+    Консультации визажистов &mdash;
+{% endblock %}
+
+{% block main %}
+    <div class="catalog">
+        <div class="catalog_l col">
+{% comment %}            <div class="catalog_menu">
+                <ul>
+                    <li class="catalog_menu_l1"><a href="#">Макияж</a></li>
+                    <li class="catalog_menu_l2"><a href="#">Лицо и тело</a></li>
+                    <li class="catalog_menu_l2"><a href="#">Глаза</a></li>
+                    <li class="catalog_menu_l2"><a href="#">Губы</a></li>
+                    <li class="catalog_menu_l2"><a href="#">Ногти</a></li>
+                    <li class="curr"><a href="#">Декоративный лак</a></li>
+                    <li><a href="#">Базовое лечебное покрытие</a></li>
+                    <li><a href="#">Лак верхнего покрытия</a></li>
+                    <li><a href="#">Облестящие покрытия</a></li>
+                    <li><a href="#">Лак для педикюра</a></li>
+                    <li class="catalog_menu_l1"><a href="#">Средства для снятия макияжа</a></li>
+                    <li class="catalog_menu_l1"><a href="#">Наборы-подарки</a></li>
+                    <li class="catalog_menu_l1"><a href="#">Аксессуары</a></li>
+                    <li class="catalog_menu_l1"><a href="#">Коллекции</a></li>
+                </ul>
+            </div><!--/catalog_menu-->{% endcomment %}
+
+        </div><!--/catalog_l-->
+        <div class="catalog_r col">
+            <div class="bread">Советы / <a href="/visage_advices/">Консультации визажистов</a></div>
+
+            <div class="faqs">
+                {% if request.GET.success == 'True' %}Вопрос отправлен!{% endif %}
+                <form class="faq_form" method="post" action="" enctype="multipart/form-data">
+                    <div class="faq_form_l col">
+                        <div class="faq_textarea">
+                            {{ form.question }}
+                            {{ form.question.errors }}
+                        </div>
+                    </div>
+                    <div class="faq_form_r col">
+                        {{ form.image }}
+                        <div class="faq_upload"><a href="#" onclick ="javascript:document.getElementById('id_image').click();return false;"><span>Загрузить фотографию</span></a></div>
+                        {{ form.image.errors }}
+                        <div class="btn3"><div class="btn3_in"><input type="submit" value="Задать вопрос" /></div></div>
+                    </div>
+                </form>
+
+                {% autopaginate advices 7 %}
+                    {% for advice in advices %}
+                        <div class="faq">
+                            <div class="faq_img"><a href="{{ advice.get_absolute_url }}/">
+                                {% thumbnail advice.image "250" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" alt="" />
+                                {% endthumbnail %}
+                            </a>
+                            </div>
+                            <div class="faq_question">
+                                <p><a href="{{ advice.get_absolute_url }}">{{ advice.question }}</a></p>
+                                {% comment %}<p>Ирина</p>{% endcomment %}
+                            </div>
+                            <div class="cl"></div>
+                        </div>
+                    {% empty %}
+                        Советов пока не добавлено.
+                    {% endfor %}
+                {% paginate %}
+            </div><!--/faq-->
+        </div><!--/catalog_r-->
+    </div><!--/catalog-->
+{% endblock %}
+

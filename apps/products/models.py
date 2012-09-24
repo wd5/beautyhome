@@ -61,10 +61,33 @@ class LifeEvent(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return u'/category/lifeevents/%s/' % self.id
+        return u'/lifeevents/%s/' % self.id
 
     def get_src_image(self):
         return self.image.url
+
+    def get_sub_categories(self):
+        return self.lecategory_set.published()
+
+class LECategory(models.Model):
+    life_event = models.ForeignKey(LifeEvent, verbose_name=u'Категория')
+    title = models.CharField(verbose_name=u'Название', max_length=255)
+    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
+    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+
+    # Managers
+    objects = PublishedManager()
+
+    class Meta:
+        verbose_name =_(u'life_event_category')
+        verbose_name_plural =_(u'life_events_categories')
+        ordering = ['-order',]
+
+    def __unicode__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return u'/lifeevents/%s/%s/' % (self.life_event.id,self.id)
 
 class Category(MPTTModel):
     parent = TreeForeignKey('self', verbose_name=u'Родительская категория', related_name='children', blank=True, null=True, on_delete=models.SET_NULL)
@@ -248,6 +271,7 @@ class Product(models.Model):
     is_limit = models.BooleanField(verbose_name=u'Limited Edition', default=False)
 
     life_events = models.ManyToManyField(LifeEvent, verbose_name=u'для случаев жизни', blank=True, null=True)
+    le_category = models.ManyToManyField(LECategory, verbose_name=u'подкатегория случаев жизни', blank=True, null=True)
     related_products = models.ManyToManyField("self", verbose_name=u'С этим товаром рекомендуем купить', blank=True, null=True,)
 
     id2s = models.IntegerField(verbose_name=u'Идентификатор в 2 C', blank=True, null=True)

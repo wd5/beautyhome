@@ -35,7 +35,13 @@ msgid "reviews"
 msgstr "обзоры"
 
 msgid "life_event"
-msgstr "обзор"
+msgstr "случай"
 
 msgid "life_events"
-msgstr "обзоры"
+msgstr "случаи жизни"
+
+msgid "life_event_category"
+msgstr "подкатегория"
+
+msgid "life_events_categories"
+msgstr "подкатегории"

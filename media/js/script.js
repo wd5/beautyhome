@@ -282,6 +282,13 @@ $(function() {
     });
 
 
+
+    $('.faq_upload a').live('click',function(){
+        $('#id_iamge').click();
+    });
+
+
+
     //Анимация корзины при изменении
     function animate_cart(){
         $('.cartbox').animate({

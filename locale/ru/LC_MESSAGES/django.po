@@ -190,6 +190,12 @@ msgstr "случай"
 msgid "life_events"
 msgstr "случаи жизни"
 
+msgid "life_event_category"
+msgstr "подкатегория"
+
+msgid "life_events_categories"
+msgstr "подкатегории"
+
 #: apps/products/models.py:70
 msgid "category"
 msgstr "категория"

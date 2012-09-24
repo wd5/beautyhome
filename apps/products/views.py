@@ -5,12 +5,12 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Max, Min
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View
 from django.views.generic.simple import direct_to_template
 
 from django.views.generic import ListView, DetailView, DetailView
 
-from models import Category, Product, Brand
+from models import Category, Product, Brand, LECategory, LifeEvent
 
 
 class ShowCategory(TemplateView):
@@ -94,7 +94,7 @@ class ShowCategory(TemplateView):
             collection = products.values('collection').exclude(collection__exact='').distinct().order_by('collection')
             series = products.values('series').exclude(series__exact='').distinct().order_by('series')
             color = products.values('color').exclude(color__exact='').distinct().order_by('color')
-            if brands.count()==0: brands = False
+            if brands.count() == 0: brands = False
 
             setattr(context['category'], 'brands', brands)
             setattr(context['category'], 'collection', collection)
@@ -149,16 +149,121 @@ class ShowProduct(DetailView):
         if 'recent_prod_ids' in self.request.session:
             list = self.request.session['recent_prod_ids']
             if self.object.id not in list:
-                if len(list)>3:
+                if len(list) > 3:
                     list.pop(0)
                 list.append(self.object.id)
             else:
-                if len(list)>3:
+                if len(list) > 3:
                     list.remove(self.object.id)
                 list.append(self.object.id)
             self.request.session['recent_prod_ids'] = list
         else:
-            self.request.session['recent_prod_ids'] = [self.object.id,]
+            self.request.session['recent_prod_ids'] = [self.object.id, ]
         return context
 
 show_product = ShowProduct.as_view()
+
+class ShowBrand(TemplateView):
+    template_name = 'products/show_brand.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ShowBrand, self).get_context_data()
+        slug = self.kwargs.get('slug', None)
+        brands = Brand.objects.published()
+        categories = Category.objects.filter(is_published=True)
+        if slug == 'any': # если перешли по /brands/ - выведем любой
+            try:
+                brand = brands.order_by('?')[0]
+            except:
+                raise Http404
+        else:
+            try:
+                brand = brands.get(slug=slug)
+            except:
+                raise Http404
+        brand_cats_root = []
+        brand_products = brand.get_products()
+
+        cats = brand_products.values('category')
+        cats_ids = [item['category'] for item in cats]
+        parents_cats = categories.filter(parent=None)
+        present = False
+        for item in parents_cats:
+            descendants = item.get_descendants(include_self=False)
+            present = descendants.filter(id__in=cats_ids)
+            products = brand_products.filter(category__id__in=present)[:7]
+            if present:
+                setattr(item, 'products', products)
+
+        context['brand'] = brand
+        context['brands'] = brands
+        context['categories'] = parents_cats
+        return context
+
+show_brand = ShowBrand.as_view()
+
+class ShowLifeEventView(TemplateView):
+    template_name = 'products/show_life_event.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ShowLifeEventView, self).get_context_data()
+        pk_1 = self.kwargs.get('pk_1', None)
+        pk_2 = self.kwargs.get('pk_2', None)
+        l_events = LifeEvent.objects.published()
+        le_cats = LECategory.objects.published()
+        if pk_1 == None:
+            if pk_2 == None:
+                try:
+                    l_event = l_events.order_by('?')[0]
+                    products = l_event.product_set.published()
+                except:
+                    raise Http404
+            else:
+                try:
+                    l_event_cat = le_cats.get(id=pk_2)
+                    l_event = l_event_cat.life_event
+                    products = l_event_cat.product_set.published()
+                    context['l_event_cat'] = l_event_cat
+                except:
+                    l_event = l_events.order_by('?')[0]
+                    products = l_event.product_set.published()
+        else:
+            try:
+                l_event = l_events.get(id=pk_1)
+                products = l_event.product_set.published()
+            except:
+                raise Http404
+
+        context['l_event'] = l_event
+        context['l_events'] = l_events
+        context['products'] = products[:15]
+        return context
+
+show_life_events = ShowLifeEventView.as_view()
+
+class LoadLESubCat(View):
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if 'selected_ids' not in request.POST:
+                return HttpResponseBadRequest()
+
+            id_category = request.POST['selected_ids']
+
+            id_category_set = id_category.split(',')
+            selecter_categs = False
+
+            if id_category_set:
+                selecter_categs = LifeEvent.objects.published().filter(id__in=id_category_set)
+
+            html_code = u''
+            if selecter_categs:
+                for item in selecter_categs:
+                    for subcat in item.get_sub_categories():
+                        html_code = u'%s<option value="%s">%s - %s</option>' % (
+                            html_code, subcat.id, item.title, subcat.title)
+
+            return HttpResponse(html_code)
+        else:
+            return HttpResponseBadRequest()
+
+load_le_subcat = LoadLESubCat.as_view()

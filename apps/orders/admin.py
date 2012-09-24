@@ -33,7 +33,7 @@ class BuyLaterAdmin(admin.ModelAdmin):
     list_display_links = ('id','profile','sessionid','product_ids',)
     list_filter = ('profile',)
 
-admin.site.register(Cart, CartAdmin)
+#admin.site.register(Cart, CartAdmin)
 admin.site.register(Order, OrderAdmin)
-admin.site.register(BuyLater, BuyLaterAdmin)
+#admin.site.register(BuyLater, BuyLaterAdmin)
 

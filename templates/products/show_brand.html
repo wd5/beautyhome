@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% load thumbnail products_extras siteblocks_extras %}
+
+{% block title %}
+    {{ brand.title|default:"Бренды" }} &mdash;
+{% endblock %}
+
+{% block main %}
+    <div class="catalog">
+        <div class="catalog_l col">
+            <div class="catalog_menu">
+                <ul>
+                    {% for mbrand in brands %}
+                        <li class="catalog_menu_l2 {% if mbrand.id == brand.id %}curr{% endif %} "><a href="{{ mbrand.get_absolute_url }}">{{ mbrand.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div><!--/catalog_menu-->
+
+            {% block_banner %}
+        </div><!--/catalog_l-->
+
+        <div class="catalog_r col">
+            <div class="brand_page">
+                <div class="brand_page_img col">
+                    {% thumbnail brand.image "140" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" alt="" />
+                    {% endthumbnail %}
+                </div>
+                <div class="brand_page_des col">
+                    <h1>{{ brand.title }}</h1>
+                    <div class="text">
+                        {{ brand.description|safe }}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="items">
+                {% for category in categories %}
+                    {% if category.products %}
+                        <h2>{{ category.title|striptags }}</h2>
+                        {% for item in category.products %}
+                            <div class="item">
+                                <div class="item_img">
+                                    {% thumbnail item.image "164" as im %}
+                                        <a href="{{ item.get_absolute_url }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" /></a>
+                                    {% endthumbnail %}
+                                    {% if item.is_new or item.is_hit or item.is_daily or item.is_unique or item.is_limit %}
+                                        <div class="item_labels">
+                                            {% if item.is_daily %}
+                                                <div class="item_label_daily"></div>
+                                            {% endif %}
+                                            {% if item.is_hit %}
+                                                <div class="item_label_top"></div>
+                                            {% endif %}
+                                            {% if item.is_new %}
+                                                <div class="item_label_new"></div>
+                                            {% endif %}
+                                            {% if item.is_unique %}
+                                                <div class="item_label_unique"></div>
+                                            {% endif %}
+                                            {% if item.is_action %} <!-- todo: item.is_action !!! -->
+                                                <div class="item_label_action"></div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if item.is_limit and not item.discount_present and not item.discount %}
+                                        <div class="item_specs">
+                                            <div class="item_spec_limited">Limited edition</div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if item.discount_present or item.discount and not item.is_limit %}
+                                        <div class="item_specs">
+                                            {% if item.discount_present %}
+                                                <div class="item_spec_gift"></div>
+                                            {% else %}
+                                                <div class="item_specs"><div class="item_spec_plus">{{ item.discount }}</div></div>
+                                                <!-- а когда ставить <div class="item_spec_percent">30<span>%</span></div> ? -->
+                                            {% endif %}
+                                        </div>
+                                        {% if item.discount_description %}
+                                            <div class="item_gift_blob" style="display: none;">
+                                                {{ item.discount_description|safe }}
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <h3 class="item_name"><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+                                <div class="item_w">{{ item.volume }}</div>
+                                <div class="item_price">{{ item.get_str_price }} <i>руб.</i></div>
+                                {% if item.old_price %}
+                                    <div class="item_old_price">{{ item.get_str_old_price }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <a href="{{ category.get_absolute_url }}" class="items_all"><span>Все товары категории</span></a>
+                    {% endif %}
+                {% endfor %}
+            </div><!--/items-->
+        </div><!--/catalog_r-->
+    </div><!--/catalog-->
+
+
+    {% block_recent request.session %}
+{% endblock %}
+

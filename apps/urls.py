@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
-from apps.products.views import show_category, show_product
+from apps.products.views import show_category, show_product, show_brand, load_le_subcat, show_life_events
 from apps.orders.views import show_order_info
 from apps.siteblocks.views import show_action
 from django.conf.urls.defaults import patterns, include, url
@@ -13,11 +13,22 @@ from views import index
 
 urlpatterns = patterns('',
     url(r'^$',index, name='index'),
-    url(r'^faq/', include('apps.faq.urls')),
+    (r'^faq/', include('apps.faq.urls')),
+    (r'^visage_advices/', 'apps.faq.views.show_visage_advices'),
+    #(r'^visage_advices/checkform/$','apps.faq.views.save_va_question_form'),
     (r'^load_items/$',csrf_exempt(items_loader)),
 
     (r'^actions/(?P<pk>\d+)/$',show_action),
     (r'^actions/$',index, {'target':'actions'}),
+
+    (r'^brands/$',show_brand, {'slug':'any'}),
+    (r'^brands/(?P<slug>[^/]+)/$',show_brand),
+
+    (r'^lifeevents/$',show_life_events),
+    (r'^lifeevents/(?P<pk_1>\d+)/$',show_life_events),
+    (r'^lifeevents/[^/]+/(?P<pk_2>\d+)/$',show_life_events),
+
+    (r'^load_le_subcat/$',csrf_exempt(load_le_subcat)),
 
     #(r'^catalog/search/$',search_products,),
     (r'^category/$', index),
