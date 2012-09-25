@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras pagination_tags products_extras %}
+
+{% block title %}
+    Новости &mdash;
+{% endblock %}
+
+{% block main %}
+    <div class="news">
+        <h1>Новости</h1>
+
+        <div class="news_in">
+            {% for new in news %}
+                <div class="new {% cycle 'new_l' 'new_r' %}">
+                    <h3 class="new_h"><a href="{{ new.get_absolute_url }}">{{ new.title }}</a></h3>
+                    <div class="new_date">{{ new.date_add|date:"j E" }}</div>
+                    <div class="new_arr"></div>
+                </div>
+
+                <div class="cl"></div>
+            {% endfor %}
+            <div class="news_more"><div class="btn2"><div class="btn2_in"><a href="#">Еще 20</a></div></div></div>
+        </div><!--/news_in-->
+    </div><!--/news-->
+{% endblock %}
+

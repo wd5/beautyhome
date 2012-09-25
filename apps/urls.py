@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
-from apps.products.views import show_category, show_product, show_brand, load_le_subcat, show_life_events
+from apps.products.views import show_category, show_product, show_brand, load_le_subcat, show_life_events, show_reviews, show_review_detail
 from apps.orders.views import show_order_info
+from apps.newsboard.views import news_list,news_detail
 from apps.siteblocks.views import show_action
 from django.conf.urls.defaults import patterns, include, url
 from apps.users.views import show_cabinet, edt_profile_info, show_profile_form, registration_form, items_loader, check_addr_modal, del_addr
@@ -14,12 +15,15 @@ from views import index
 urlpatterns = patterns('',
     url(r'^$',index, name='index'),
     (r'^faq/', include('apps.faq.urls')),
+    (r'^visage_advices/(?P<pk>\d+)/$','apps.faq.views.show_advice'),
     (r'^visage_advices/', 'apps.faq.views.show_visage_advices'),
-    #(r'^visage_advices/checkform/$','apps.faq.views.save_va_question_form'),
     (r'^load_items/$',csrf_exempt(items_loader)),
 
     (r'^actions/(?P<pk>\d+)/$',show_action),
     (r'^actions/$',index, {'target':'actions'}),
+
+    (r'^news/(?P<pk>\d+)/$',news_detail),
+    (r'^news/$',news_list),
 
     (r'^brands/$',show_brand, {'slug':'any'}),
     (r'^brands/(?P<slug>[^/]+)/$',show_brand),
@@ -29,6 +33,9 @@ urlpatterns = patterns('',
     (r'^lifeevents/[^/]+/(?P<pk_2>\d+)/$',show_life_events),
 
     (r'^load_le_subcat/$',csrf_exempt(load_le_subcat)),
+
+    (r'^reviews/$',show_reviews),
+    (r'^reviews/(?P<pk>\d+)/$',show_review_detail),
 
     #(r'^catalog/search/$',search_products,),
     (r'^category/$', index),

@@ -10,7 +10,7 @@ from django.views.generic.simple import direct_to_template
 
 from django.views.generic import ListView, DetailView, DetailView
 
-from models import Category, Product, Brand, LECategory, LifeEvent
+from models import Category, Product, Brand, LECategory, LifeEvent, Review
 
 
 class ShowCategory(TemplateView):
@@ -135,6 +135,8 @@ class ShowProduct(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ShowProduct, self).get_context_data()
+        if self.object.is_published == False:
+            raise Http404
         context['slug'] = slug = self.kwargs.get('slug', None)
         context['sub_slug_1'] = sub_slug_1 = self.kwargs.get('sub_slug_1', None)
         context['sub_slug_2'] = sub_slug_2 = self.kwargs.get('sub_slug_2', None)
@@ -267,3 +269,43 @@ class LoadLESubCat(View):
             return HttpResponseBadRequest()
 
 load_le_subcat = LoadLESubCat.as_view()
+
+class ReviewListView(ListView):
+    model = Review
+    template_name = 'products/reviews.html'
+    context_object_name = 'reviews'
+    queryset = model.objects.published()
+
+show_reviews = ReviewListView.as_view()
+
+
+class ShowReview(DetailView):
+    model = Review
+    context_object_name = 'review'
+    template_name = 'products/show_review.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ShowReview, self).get_context_data()
+
+        product = self.object.get_first_product()
+        if product:
+            category = product.category
+            context['category'] = category
+            context['parent_category'] = category.get_root()
+            lvl = category.level
+            if lvl == 3:
+                context['sub_slug_3'] = category.slug
+                context['sub_slug_2'] = category.parent.slug
+                context['sub_slug_1'] = category.parent.parent.slug
+                context['slug'] = category.parent.parent.parent.slug
+            if lvl == 2:
+                context['sub_slug_2'] = category.slug
+                context['sub_slug_1'] = category.parent.slug
+                context['slug'] = category.parent.parent.slug
+            if lvl == 1:
+                context['sub_slug_1'] = category.slug
+                context['slug'] = category.parent.slug
+
+        return context
+
+show_review_detail = ShowReview.as_view()

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras products_extras %}
+
+{% block title %}
+    {{ review.title }} &mdash;
+{% endblock %}
+
+{% block main %}
+    <div class="catalog">
+        <div class="catalog_l col">
+            <div class="catalog_menu">
+                <ul>
+                    {% for child in parent_category.get_children %}
+                        <li class="catalog_menu_l1{% if child.slug == sub_slug_1 and not sub_slug_2 %} curr{% endif %}"><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+                        {% if child.slug == sub_slug_1 %}
+                            {% for child_l2 in child.get_children %}
+                                <li class="catalog_menu_l2{% if child_l2.slug == sub_slug_2 and not sub_slug_3 %} curr{% endif %}"><a href="{{ child_l2.get_absolute_url }}">{{ child_l2.title }}</a></li>
+                                {% if child_l2.slug == sub_slug_2 %}
+                                    {% for child_l3 in child_l2.get_children %}
+                                        <li {% if child_l3.slug == sub_slug_3 %}class="curr"{% endif %} ><a href="{{ child_l3.get_absolute_url }}">{{ child_l3.title }}</a></li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div><!--/catalog_menu-->
+            
+        </div><!--/catalog_l-->
+        
+        <div class="catalog_r col">
+            <div class="bread">Советы / <a href="/reviews/">Обзоры</a> / <a href="{{ review.get_absolute_url }}">{{ review.title }}</a></div>
+            <div class="comment">
+                <h1>{{ review.title }}</h1>
+            
+                <div class="comment_l col">
+                    <div class="text">
+                        {{ review.description|safe }}
+                    </div>
+                </div>
+
+                <div class="comment_r col">
+                    {% for product in review.get_products %}
+                        <div class="iwant_pl">
+                            <div class="btn1 iwant_btn"><div class="btn1_in"><input type="button" value="Хочу" class="review_buy_btn" name="{{ product.id }}" /></div></div>
+
+                            <div class="product_params">
+                                <dl>
+                                    <dl>
+                                        {% if product.brand %}
+                                            <dt>Бренд</dt>
+                                            <dd>{{ product.brand.title }}</dd>
+                                        {% endif %}
+                                        {% if product.series %}
+                                            <dt>Серия</dt>
+                                            <dd>{{ product.series }}</dd>
+                                        {% endif %}
+                                        {% if product.collection %}
+                                            <dt>Коллекция</dt>
+                                            <dd>{{ product.collection }}</dd>
+                                        {% endif %}
+                                        {% if product.art %}
+                                            <dt>Артикуль</dt>
+                                            <dd>{{ product.art }}</dd>
+                                        {% endif %}
+                                    </dl>
+                                </dl>
+                            </div><!--/product_params-->
+
+                            <div class="product_price">
+                                {% if product.old_price %}
+                                    <div class="product_price_old col">{{ product.get_str_old_price }}</div>
+                                {% endif %}
+                                <div class="product_price_val col">{{ product.get_str_price }}<i> руб.</i></div>
+                            </div>
+
+                            <div class="iwant_img">
+                                {% thumbnail product.image "145" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                {% endthumbnail %}
+                            </div>
+
+                            <div class="iwant_shade"></div>
+                        </div><!--/iwant_pl-->
+                    {% endfor %}
+                </div>
+            </div><!--/comment-->
+        </div><!--/catalog_r-->
+    </div><!--/catalog-->
+{% endblock %}
+

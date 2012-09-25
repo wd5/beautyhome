@@ -84,6 +84,17 @@ class ProductAdminForm(forms.ModelForm):
     discount_description = forms.CharField(widget=Redactor(attrs={'cols': 110, 'rows': 20}), required=False)
     discount_description.label=u'Описание Скидки/Акции'
 
+    categories = Category.objects.filter(level__lt=1)
+    needle_cats_ids = []
+    for item in categories:
+        descendants = item.get_descendants(include_self=True)
+        for descend in descendants:
+            if descend.is_leaf_node() and descend.is_published == True:
+                needle_cats_ids.append(descend.id)
+    categories = Category.objects.filter(id__in=needle_cats_ids)
+
+    category = forms.ModelChoiceField(queryset=categories, label='Категория', required=True)
+
     class Meta:
         model = Product
 
@@ -133,3 +144,22 @@ class ProductAdmin(AdminImageMixin, admin.ModelAdmin):
     form = ProductAdminForm
 
 admin.site.register(Product, ProductAdmin)
+
+
+class ReviewAdminForm(forms.ModelForm):
+    description = forms.CharField(widget=Redactor(attrs={'cols': 110, 'rows': 20}), required=True)
+    description.label=u'Текст обзора'
+
+    class Meta:
+        model = Brand
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('id','title','date_create','is_published',)
+    list_display_links = ('id','title','date_create',)
+    list_editable = ('is_published',)
+    search_fields = ('title','description',)
+    form = ReviewAdminForm
+    list_filter = ('is_published','date_create',)
+    raw_id_fields = ('products',)
+
+admin.site.register(Review, ReviewAdmin)

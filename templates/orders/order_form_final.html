@@ -7,11 +7,13 @@
 {% endblock %}
 
 {% block main %}
-    <div class="page_h">
-        <h1>Заказ оформлен</h1>
-    </div>
+    <div class="cabinet">
 
-    <div class="order_final">
+    <h1>Заказ оформлен</h1>
+
+
+    <div class="personal">
+
         <div class="text">
             <h2>Ваш заказ успешно оформлен под номером {{ order.id }}</h2>
             <p>Вся информация о заказе выслана на контактный e-mail. Наш менеджер скоро с Вами свяжется чтобы уточнить время доставки.</p>
@@ -30,11 +32,10 @@
         <div class="final_contents">
             {% for order_product in order.get_products %}
                 <div class="final_item">
-                    <div class="final_item_name">{{ order_product.product.title }} х {{ order_product.count }}</div>
-                    <div class="final_item_price">{{ order_product.get_str_total }} руб.</div>
+                    <div class="final_item_name">{{ order_product.product.title }} х {{ order_product.count }} на сумму {{ order_product.get_str_total }} руб.</div>
                 </div>
             {% endfor %}
-            <div class="final_sum">{{ order.total_price }} руб.</div>
+            <div class="final_sum">Общая сумма заказа {{ order.total_price }} руб.</div>
         </div><!--/final_contents-->
 
         {% if reg_form %}
@@ -47,18 +48,18 @@
                     {{ reg_form.username.errors }}
                     {{ reg_form.email.errors }}
                 </div>
-                <div class="input input3">
+                <div class="personal_input">
                     <label>Осталось только придумать пароль:</label>
                     {{ reg_form.password1 }}
                     {{ reg_form.password1.errors }}
                 </div>
-                <div class="input input3">
+                <div class="personal_input">
                     <label>Повторение пароля:</label>
                     {{ reg_form.password2 }}
                     {{ reg_form.password2.errors }}
                 </div>
                 <input type="hidden" name="order_id" value="{{ order.id }}">
-                <div><input class="btn2 reg_submit" type="submit" value="Зарегистрироваться" /></div>
+                <div><input class=" reg_submit" type="submit" value="Зарегистрироваться" /></div>
             </form>
         {% endif %}
     </div><!--/order_final-->
@@ -67,6 +68,8 @@
             $('.modal_bg').fadeOut(2000);
         },5000);
     </script>
+    </div>
+
 {% endblock %}
 
 {% block modal_bg %}

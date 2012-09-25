@@ -66,14 +66,16 @@
             <div class="advices_btn"><span>Советы</span></div>
             <div class="advices_pl" style="display: none;">
                 <div class="advices_content">
-                    <div class="advice advice_1"><div class="advice_lnk"><a href="/visage_advices/">Консультация визажисты</a></div></div>
-                    <div class="advice advice_2 advice_curr">
-                        <div class="advice_lnk"><a href="#">Посмотреть обзоры</a></div>
-                        <div class="advice_h"><a href="#">Issima Brume Essentielle de Lys</a></div>
-                        <div>Guerlain</div>
-                        <div class="advice_des"><p>Успокаивает кожу, смягчает ее, придает ощущение комфорта. Окутывает лицо защитной вуалью</p></div>
-                    </div>
-                    <div class="advice"><div class="advice_lnk"><a href="/visage_advices/">Консультация визажисты</a></div></div>
+                    <div class="advice advice_1"><div class="advice_lnk"><a href="/visage_advices/">Консультация визажистов</a></div></div>
+                    {% if review_at_menu %}
+                        <div class="advice advice_2 advice_curr">
+                            <div class="advice_lnk"><a href="/reviews/">Посмотреть обзоры</a></div>
+                            <div class="advice_h"><a href="{{ review_at_menu.get_absolute_url }}">{{ review_at_menu.title }}</a></div>
+                            {% comment %}<div>Guerlain</div>{% endcomment %}
+                            <div class="advice_des"><p>{{ review_at_menu.short_description }}</p></div>
+                        </div>
+                    {% endif %}
+                    <div class="advice"><div class="advice_lnk"><a href="/faq/">Вопросы-ответы</a></div></div>
                 </div><!--/advices_content-->
 
                 <div class="advices_t"></div>
@@ -125,15 +127,17 @@
         <form class="auth_form" id="auth_form" method="post" action="{% url auth_login %}?next={% if request.path == '/show_order_form/' %}{{ request.path }}{% else %}{{ next_url }}{% endif %}">
             {% csrf_token %}
             <h2>Вход</h2>
-            <div class="input input3">
+            <div class="personal_input">
+
                 <label>E-mail:</label>
                 {{ auth_form.username }}{{ auth_form.username.errors }} <a href="/registration_form/">Зарегистрироваться</a>
             </div>
-            <div class="input input3">
+            <div class="personal_input">
+
                 <label>Пароль:</label>
                 {{ auth_form.password }}{{ auth_form.password.errors }} <a href="/password/reset/">Восстановить пароль</a>
             </div>
-            <div><input class="btn2 auth_submit" type="submit" value="Войти" /></div>
+            <div><input class="auth_submit" type="submit" value="Войти" /></div>
         </form>
     </div>
 {% endif %}

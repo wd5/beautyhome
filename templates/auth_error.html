@@ -7,24 +7,25 @@
 {% endblock %}
 
 {% block main %}
-    <div class="text textpage">
+    <div class="cabinet">
         <h1>Ошибка при авторизации</h1>
 
-        <div class="order_final">
+        <div class="personal">
+
             {% if form.errors %}
                 <div class="text">
                     {{ form.non_field_errors }}
                 </div><!--/text-->
                 <form class="auth_form" id="auth_form" method="post" action="{% url auth_login %}?next={{ next_url }}">{% csrf_token %}
-                    <div class="input input3">
+                    <div class="personal_input">
                         <label>E-mail:</label>
                         {{ auth_form.username }}{{ auth_form.username.errors }}<a href="/registration_form/">Зарегистрироваться</a>
                     </div>
-                    <div class="input input3">
+                    <div class="personal_input">
                         <label>Пароль:</label>
                         {{ auth_form.password }}{{ auth_form.password.errors }}<a href="/password/reset/">Восстановить пароль</a>
                     </div>
-                    <div><input class="btn2 auth_submit" type="submit" value="Войти" /></div>
+                    <div><input class="auth_submit" type="submit" value="Войти" /></div>
                 </form>
             {% endif %}
         </div>

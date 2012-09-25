@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras %}
+
+
+{% block title %}
+    {{ news_current.title }} &mdash;
+{% endblock %}
+
+
+{% block main %}
+    <div class="text textpage">
+        <div class="bread"><a href="/news/">Новости</a> / </div>
+        <h2>{{ news_current.title }}</h2>
+        {{ news_current.text|safe }}
+        <p>{{ news_current.date_add|date:"j E Y" }}</p>
+    </div><!--/textpage-->
+{% endblock %}

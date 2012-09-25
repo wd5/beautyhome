@@ -12,21 +12,23 @@ from sorl.thumbnail import ImageField
 from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 
 def file_path_Brand(instance, filename):
-    return os.path.join('images','brands',  translify(filename).replace(' ', '_') )
+    return os.path.join('images', 'brands', translify(filename).replace(' ', '_'))
+
+
 class Brand(models.Model):
     title = models.CharField(verbose_name=u'Название', max_length=255)
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_Brand, blank=True)
-    description = models.TextField(verbose_name = u'Описание', blank=True)
-    slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице',)
-    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
-    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+    description = models.TextField(verbose_name=u'Описание', blank=True)
+    slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице', )
+    order = models.IntegerField(verbose_name=u'Порядок сортировки', default=10)
+    is_published = models.BooleanField(verbose_name=u'Опубликовано', default=True)
 
     # Managers
     objects = PublishedManager()
 
     class Meta:
-        verbose_name =_(u'brand')
-        verbose_name_plural =_(u'brands')
+        verbose_name = _(u'brand')
+        verbose_name_plural = _(u'brands')
         ordering = ['-order', 'title']
 
     def __unicode__(self):
@@ -41,21 +43,24 @@ class Brand(models.Model):
     def get_src_image(self):
         return self.image.url
 
+
 def file_path_LifeEvent(instance, filename):
-    return os.path.join('images','lifeEvents',  translify(filename).replace(' ', '_') )
+    return os.path.join('images', 'lifeEvents', translify(filename).replace(' ', '_'))
+
+
 class LifeEvent(models.Model):
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_LifeEvent, blank=True)
     title = models.CharField(verbose_name=u'Название', max_length=255)
-    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
-    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+    order = models.IntegerField(verbose_name=u'Порядок сортировки', default=10)
+    is_published = models.BooleanField(verbose_name=u'Опубликовано', default=True)
 
     # Managers
     objects = PublishedManager()
 
     class Meta:
-        verbose_name =_(u'life_event')
-        verbose_name_plural =_(u'life_events')
-        ordering = ['-order',]
+        verbose_name = _(u'life_event')
+        verbose_name_plural = _(u'life_events')
+        ordering = ['-order', ]
 
     def __unicode__(self):
         return self.title
@@ -69,33 +74,37 @@ class LifeEvent(models.Model):
     def get_sub_categories(self):
         return self.lecategory_set.published()
 
+
 class LECategory(models.Model):
     life_event = models.ForeignKey(LifeEvent, verbose_name=u'Категория')
     title = models.CharField(verbose_name=u'Название', max_length=255)
-    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
-    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+    order = models.IntegerField(verbose_name=u'Порядок сортировки', default=10)
+    is_published = models.BooleanField(verbose_name=u'Опубликовано', default=True)
 
     # Managers
     objects = PublishedManager()
 
     class Meta:
-        verbose_name =_(u'life_event_category')
-        verbose_name_plural =_(u'life_events_categories')
-        ordering = ['-order',]
+        verbose_name = _(u'life_event_category')
+        verbose_name_plural = _(u'life_events_categories')
+        ordering = ['-order', ]
 
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
-        return u'/lifeevents/%s/%s/' % (self.life_event.id,self.id)
+        return u'/lifeevents/%s/%s/' % (self.life_event.id, self.id)
+
 
 class Category(MPTTModel):
-    parent = TreeForeignKey('self', verbose_name=u'Родительская категория', related_name='children', blank=True, null=True, on_delete=models.SET_NULL)
+    parent = TreeForeignKey('self', verbose_name=u'Родительская категория', related_name='children', blank=True,
+        null=True, on_delete=models.SET_NULL)
     title = models.CharField(verbose_name=u'Название', max_length=100)
-    slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице',)
-    is_in_bottom_menu = models.BooleanField(verbose_name = u'Отображать в блоке "Всё сразу"', default=False, help_text=u'(только для категорий 2-го уровня)')
-    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
-    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+    slug = models.SlugField(verbose_name=u'Алиас', help_text=u'уникальное имя на латинице', )
+    is_in_bottom_menu = models.BooleanField(verbose_name=u'Отображать в блоке "Всё сразу"', default=False,
+        help_text=u'(только для категорий 2-го уровня)')
+    order = models.IntegerField(verbose_name=u'Порядок сортировки', default=10)
+    is_published = models.BooleanField(verbose_name=u'Опубликовано', default=True)
 
     #parent.custom_filter_spec = True
 
@@ -103,22 +112,22 @@ class Category(MPTTModel):
     objects = TreeManager()
 
     def __unicode__(self):
-        if self.level==1:
+        if self.level == 1:
             return '--- %s' % self.title
-        elif self.level==2:
+        elif self.level == 2:
             return '------ %s' % self.title
-        elif self.level==3:
+        elif self.level == 3:
             return '------------ %s' % self.title
         else:
             return self.title
 
     class Meta:
-        verbose_name =_(u'category')
-        verbose_name_plural =_(u'categories')
+        verbose_name = _(u'category')
+        verbose_name_plural = _(u'categories')
         ordering = ['-order', 'title']
 
     class MPTTMeta:
-            order_insertion_by = ['order']
+        order_insertion_by = ['order']
 
     def get_absolute_url(self):
         if self.is_child_node():
@@ -135,7 +144,7 @@ class Category(MPTTModel):
                     else:
                         exist_parent = False
                 if exist_parent:
-                    abs_url= u'%s/%s' % (parent.slug,abs_url)
+                    abs_url = u'%s/%s' % (parent.slug, abs_url)
 
             if not abs_url.startswith('/'):
                 abs_url = '/%s' % abs_url
@@ -161,7 +170,7 @@ class Category(MPTTModel):
                     else:
                         exist_parent = False
                 if exist_parent:
-                    abs_bread= u' <a href="%s">%s</a> / %s /' % (parent.get_absolute_url() ,parent.title ,abs_bread)
+                    abs_bread = u' <a href="%s">%s</a> / %s /' % (parent.get_absolute_url(), parent.title, abs_bread)
 
             if abs_bread.startswith('/'):
                 abs_bread = '%s' % abs_bread[1:]
@@ -204,7 +213,7 @@ class Category(MPTTModel):
         col2_childs = []
         for item in all_childrens:
             descendants = item.get_descend()
-            lvl2_3 = descendants.filter(level__in=[2,3])
+            lvl2_3 = descendants.filter(level__in=[2, 3])
             if not lvl2_3:
                 col2_childs.append(item)
         return col2_childs
@@ -214,33 +223,37 @@ class Category(MPTTModel):
             # развернем для данной все дочерние категории
             descend_ids = self.get_descend().values('id')
             if descend_ids:
-                products = Product.objects.filter(is_published=True,category__id__in=descend_ids)
+                products = Product.objects.filter(is_published=True, category__id__in=descend_ids)
             else:
                 products = Product.objects.filter(title="1").filter(title="2")
             return products
         else:
             return self.product_set.published()
 
+
 def str_price(price):
     if not price:
         return u'0'
-    value = u'%s' %price
+    value = u'%s' % price
     if price._isinteger():
-        value = u'%s' %value[:len(value)-3]
+        value = u'%s' % value[:len(value) - 3]
         count = 3
     else:
         count = 6
 
-    if len(value)>count:
-        ends = value[len(value)-count:]
-        starts = value[:len(value)-count]
+    if len(value) > count:
+        ends = value[len(value) - count:]
+        starts = value[:len(value) - count]
 
-        return u'%s %s' %(starts, ends)
+        return u'%s %s' % (starts, ends)
     else:
         return value
 
+
 def file_path_Product(instance, filename):
-    return os.path.join('images','products',  translify(filename).replace(' ', '_') )
+    return os.path.join('images', 'products', translify(filename).replace(' ', '_'))
+
+
 class Product(models.Model):
     category = models.ForeignKey(Category, verbose_name=u'Категория')
     brand = models.ForeignKey(Brand, verbose_name=u'Брэнд', blank=True, null=True)
@@ -250,17 +263,17 @@ class Product(models.Model):
     series = models.CharField(verbose_name=u'Серия', max_length=100, blank=True)
     collection = models.CharField(verbose_name=u'Коллекция', max_length=100, blank=True)
     art = models.CharField(verbose_name=u'Артикул', max_length=50, blank=True)
-    color = models.CharField(verbose_name = u'Цвет', max_length=50, blank=True)
-    volume = models.CharField(verbose_name = u'Объем', max_length=20, blank=True)
+    color = models.CharField(verbose_name=u'Цвет', max_length=50, blank=True)
+    volume = models.CharField(verbose_name=u'Объем', max_length=20, blank=True)
 
-    price = models.DecimalField(verbose_name=u'Цена', decimal_places=2, max_digits=10,)
+    price = models.DecimalField(verbose_name=u'Цена', decimal_places=2, max_digits=10, )
     old_price = models.DecimalField(verbose_name=u'Старая цена', decimal_places=2, max_digits=10, blank=True, null=True)
 
-    description = models.TextField(verbose_name=u'Описание',)
-    application = models.TextField(verbose_name=u'Способ применения',)
-    composition = models.TextField(verbose_name=u'Состав',)
+    description = models.TextField(verbose_name=u'Описание', )
+    application = models.TextField(verbose_name=u'Способ применения', )
+    composition = models.TextField(verbose_name=u'Состав', )
 
-    discount = models.CharField(verbose_name = u'Скидка/Акция', max_length=10, blank=True)
+    discount = models.CharField(verbose_name=u'Скидка/Акция', max_length=10, blank=True)
     discount_present = models.BooleanField(verbose_name=u'Подарок', default=False)
     discount_description = models.TextField(verbose_name=u'Описание Скидки/Акции', blank=True)
 
@@ -272,26 +285,27 @@ class Product(models.Model):
 
     life_events = models.ManyToManyField(LifeEvent, verbose_name=u'для случаев жизни', blank=True, null=True)
     le_category = models.ManyToManyField(LECategory, verbose_name=u'подкатегория случаев жизни', blank=True, null=True)
-    related_products = models.ManyToManyField("self", verbose_name=u'С этим товаром рекомендуем купить', blank=True, null=True,)
+    related_products = models.ManyToManyField("self", verbose_name=u'С этим товаром рекомендуем купить', blank=True,
+        null=True, )
 
     id2s = models.IntegerField(verbose_name=u'Идентификатор в 2 C', blank=True, null=True)
 
-    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
-    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+    order = models.IntegerField(verbose_name=u'Порядок сортировки', default=10)
+    is_published = models.BooleanField(verbose_name=u'Опубликовано', default=True)
 
     # Managers
     objects = PublishedManager()
 
     class Meta:
-        verbose_name =_(u'product_item')
-        verbose_name_plural =_(u'product_items')
-        ordering = ['-order',]
+        verbose_name = _(u'product_item')
+        verbose_name_plural = _(u'product_items')
+        ordering = ['-order', ]
 
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
-        return u'%s%s/' % (self.category.get_absolute_url(),self.id)
+        return u'%s%s/' % (self.category.get_absolute_url(), self.id)
 
     def get_str_price(self):
         return str_price(self.price)
@@ -305,35 +319,63 @@ class Product(models.Model):
     def get_related_products(self):
         return self.related_products.published()
 
+
 def file_path_Product(instance, filename):
-     return os.path.join('images','products',  translify(filename).replace(' ', '_') )
+    return os.path.join('images', 'products', translify(filename).replace(' ', '_'))
+
+
 class Photo(models.Model):
     product = models.ForeignKey(Product, verbose_name=u'Товар')
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_Product)
-    order = models.IntegerField(verbose_name=u'Порядок сортировки',default=10)
+    order = models.IntegerField(verbose_name=u'Порядок сортировки', default=10)
 
     class Meta:
-        verbose_name =_(u'product_photo')
-        verbose_name_plural =_(u'product_photos')
-        ordering = ['-order',]
+        verbose_name = _(u'product_photo')
+        verbose_name_plural = _(u'product_photos')
+        ordering = ['-order', ]
 
     def __unicode__(self):
-        return u'Фото товара %s' %self.product.title
+        return u'Фото товара %s' % self.product.title
+
 
 class Review(models.Model):
     title = models.CharField(verbose_name=u'Название', max_length=255)
-    date_create = models.DateTimeField(verbose_name = u'Дата', default=datetime.datetime.now)
-    description = models.TextField(verbose_name = u'Текст обзора',)
-    is_published = models.BooleanField(verbose_name = u'Опубликовано', default=True)
+    date_create = models.DateTimeField(verbose_name=u'Дата', default=datetime.datetime.now)
+    short_description = models.TextField(verbose_name=u'Краткое описание', blank=True, )
+    description = models.TextField(verbose_name=u'Текст обзора', )
+    is_published = models.BooleanField(verbose_name=u'Опубликовано', default=True)
     products = models.ManyToManyField(Product, verbose_name=u'товары обзора', blank=True, null=True)
 
     # Managers
     objects = PublishedManager()
 
     class Meta:
-        verbose_name =_(u'review')
-        verbose_name_plural =_(u'reviews')
-        ordering = ['-date_create',]
+        verbose_name = _(u'review')
+        verbose_name_plural = _(u'reviews')
+        ordering = ['-date_create', ]
+        get_latest_by = 'date_create'
+
 
     def __unicode__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return u'/reviews/%s/' % self.id
+
+    def get_products(self):
+        return self.products.published()
+
+    def get_first_product_category(self):
+        try:
+            product = self.products.published()[:1][0]
+            product = product.category
+        except:
+            product = False
+        return product
+
+    def get_first_product(self):
+        try:
+            product = self.products.published()[:1][0]
+        except:
+            product = False
+        return product

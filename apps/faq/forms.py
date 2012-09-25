@@ -6,25 +6,22 @@ class QuestionForm(forms.ModelForm):
     email = forms.EmailField(
         widget=forms.TextInput(
             attrs={
-                'required':'required',
                 'placeholder':'E-mail'
             }
         ),
-        required=False
+        required=True
     )
     name = forms.CharField(
         widget=forms.TextInput(
             attrs={
-                'required':'required',
                 'placeholder':'Имя'
             }
         ),
-        required=False
+        required=True
     )
     question = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                'required':'required',
                 'placeholder':'Вопрос'
             }
         ),
@@ -36,6 +33,22 @@ class QuestionForm(forms.ModelForm):
         fields = ('name', 'email', 'question',)
 
 class AdviceForm(forms.ModelForm):
+    email = forms.EmailField(
+        widget=forms.TextInput(
+            attrs={
+                'placeholder':'E-mail'
+            }
+        ),
+        required=True
+    )
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'placeholder':'Имя'
+            }
+        ),
+        required=True
+    )
     question = forms.CharField(
         widget=forms.Textarea(
             attrs={
@@ -57,4 +70,4 @@ class AdviceForm(forms.ModelForm):
 
     class Meta:
         model = Advice
-        fields = ('question','image',)
+        fields = ('name', 'email','question','image',)

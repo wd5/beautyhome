@@ -3,7 +3,7 @@
 {% load thumbnail siteblocks_extras pagination_tags products_extras %}
 
 {% block title %}
-    Вопросы-ответы &mdash;
+    Обзоры &mdash;
 {% endblock %}
 
 {% block main %}
@@ -30,40 +30,19 @@
 
         </div><!--/catalog_l-->
         <div class="catalog_r col">
-            <div class="bread">Советы / <a href="/faq/">Вопросы-ответы</a></div>
+            <div class="bread">Советы / <a href="/reviews/">Обзоры</a></div>
 
             <div class="faqs">
-                {% if request.GET.success == 'True' %}Вопрос отправлен!{% endif %}
-                <form class="faq_form" method="post" action="">
-                    <div class="personal_input">
-                        {{ form.name }}
-                        {{ form.name.errors }}
-
-                        {{ form.email }}
-                        {{ form.email.errors }}
-                    </div>
-                    <div class="faq_form_l col">
-                        <div class="faq_textarea">
-                            {{ form.question }}
-                            {{ form.question.errors }}
-                        </div>
-                    </div>
-                    <div class="faq_form_r col">
-                        <div class="btn3"><div class="btn3_in"><input type="submit" value="Задать вопрос" /></div></div>
-                    </div>
-                </form>
-
-                {% autopaginate questions 7 %}
-                    {% for question in questions %}
+                {% autopaginate reviews 7 %}
+                    {% for review in reviews %}
                         <div class="faq">
                             <div class="faq_question">
-                                <p><a href="{{ question.get_absolute_url }}">{{ question.question }}</a></p>
-                                <p>{{ question.name }}</p>
+                                <p><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></p>
                             </div>
                             <div class="cl"></div>
                         </div>
                     {% empty %}
-                        Вопросов пока нет.
+                        Обзоры пока не добавлены.
                     {% endfor %}
                 {% paginate %}
             </div><!--/faq-->

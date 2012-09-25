@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras %}
+
+
+{% block title %}
+    Вопрос визажистам от {{ advice.pub_date|date:"j E Y" }} &mdash;
+{% endblock %}
+
+
+{% block main %}
+    <div class="text textpage">
+        <h2>Вопрос</h2>
+        <div class="faq">
+           <div class="faq_img">
+               {% thumbnail advice.image "250" as im %}
+                   <img src="{{ im.url }}" width="{{ im.width }}" alt="" />
+               {% endthumbnail %}
+           </div>
+           <div class="faq_question">
+               <p>{{ advice.question }}</p>
+               <p>{{ advice.name }}</p>
+           </div>
+           <div class="cl"></div>
+       </div>
+
+        <h2>Ответ</h2>
+        <div class="faq">
+           <div class="faq_question">
+               <p>{{ advice.answer }}</p>
+               <p>{{ advice.author }}</p>
+           </div>
+           <div class="cl"></div>
+       </div>
+    </div><!--/textpage-->
+{% endblock %}

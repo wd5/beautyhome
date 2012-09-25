@@ -30,6 +30,9 @@ class Question(models.Model):
     def __unicode__(self):
         return u'Вопрос от %s' % self.pub_date
 
+    def get_absolute_url(self):
+        return u'/faq/%s/' % self.id
+
     def save(self, force_insert=False, force_update=False, using=None):
         if self.send_answer:
             subject = u'Ответ на ваш вопрос - %s' % settings.SITE_NAME
@@ -58,8 +61,8 @@ def file_path_Advice(instance, filename):
 
 class Advice(models.Model): #консультация визажиста
     pub_date = models.DateTimeField(verbose_name = u'Дата', default=datetime.datetime.now)
-    name = models.CharField(max_length = 150, verbose_name = u'Имя', blank = True)
-    email = models.CharField(verbose_name=u'E-mail',max_length=75, blank = True)
+    name = models.CharField(max_length = 150, verbose_name = u'Имя')
+    email = models.CharField(verbose_name=u'E-mail',max_length=75)
     question = models.TextField(verbose_name = u'Вопрос')
     image = ImageField(verbose_name=u'Изображение', upload_to=file_path_Advice, blank=True)
     answer = models.TextField(verbose_name = u'Ответ', blank = True)

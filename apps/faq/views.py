@@ -16,70 +16,53 @@ from models import Question, Advice#,QuestionCategory
 import settings
 
 
-class QuestionListView(ListView):
-    model = Question
+class QuestionListView(FormView):
+    form_class = QuestionForm
     template_name = 'faq/faq.html'
-    context_object_name = 'questions'
-    queryset = model.objects.published()
+    success_url = '/visage_advices/?success=True'
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            saved_object = form.save()
+            subject = u'%s - Новый вопрос' % settings.SITE_NAME
+            subject = u''.join(subject.splitlines())
+            message = render_to_string(
+                'faq/admin_message_template.html',
+                    {
+                    'saved_object': saved_object,
+                    'site_name': settings.SITE_NAME,
+                }
+            )
+            try:
+                emailto = Settings.objects.get(name='workemail').value
+            except Settings.DoesNotExist:
+                emailto = False
+
+            if emailto:
+                msg = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [emailto])
+                msg.content_subtype = "html"
+                msg.send()
+
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionListView, self).get_context_data(**kwargs)
+        context['questions'] = Question.objects.published()
+        return context
 
 questions_list = QuestionListView.as_view()
 
-#class QuestionByCategoryView(DetailView):
-#    model = QuestionCategory
-#    template_name = 'faq/faq_by_category.html'
-#    context_object_name = 'questionCategory'
-#
-#    def get_context_data(self, **kwargs):
-#        context = super(QuestionByCategoryView, self).get_context_data(**kwargs)
-#        if context['questionCategory'].is_published == False:
-#            context['questionCategory'] = False
-#        return context
-#
-#questions_by_category = QuestionByCategoryView.as_view()
+class ShowQuestion(DetailView):
+    model = Question
+    context_object_name = 'question'
+    template_name = 'faq/show_question.html'
 
-class QuestionFormView(FormView):
-    form_class = QuestionForm
-    template_name = 'faq/faq_form.html'
-
-question_form = QuestionFormView.as_view()
-
-class SaveQuestionForm(View):
-    def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            data = request.POST.copy()
-            faq_form = QuestionForm(data)
-            if faq_form.is_valid():
-                saved_object = faq_form.save()
-                subject = u'%s - Новый вопрос' % settings.SITE_NAME
-                subject = u''.join(subject.splitlines())
-                message = render_to_string(
-                    'faq/admin_message_template.html',
-                        {
-                        'saved_object': saved_object,
-                        'site_name': settings.SITE_NAME,
-                    }
-                )
-                try:
-                    emailto = Settings.objects.get(name='workemail').value
-                except Settings.DoesNotExist:
-                    emailto = False
-
-                if emailto:
-                    msg = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [emailto])
-                    msg.content_subtype = "html"
-                    msg.send()
-
-                return HttpResponse('success')
-            else:
-                faq_form_html = render_to_string(
-                    'faq/faq_form.html',
-                    {'form': faq_form}
-                )
-                return HttpResponse(faq_form_html)
-        else:
-            return HttpResponseBadRequest()
-
-save_question_form = csrf_exempt(SaveQuestionForm.as_view())
+show_question = ShowQuestion.as_view()
 
 class VisageAdvicesListView(FormView):
     form_class = AdviceForm
@@ -97,8 +80,17 @@ class VisageAdvicesListView(FormView):
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
+
         context = super(VisageAdvicesListView, self).get_context_data(**kwargs)
         context['advices'] = Advice.objects.published()
         return context
 
 show_visage_advices = VisageAdvicesListView.as_view()
+
+
+class ShowAdvice(DetailView):
+    model = Advice
+    context_object_name = 'advice'
+    template_name = 'faq/show_advice.html'
+
+show_advice = ShowAdvice.as_view()

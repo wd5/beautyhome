@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% load thumbnail siteblocks_extras %}
+
+
+{% block title %}
+    Вопрос от {{ question.pub_date|date:"j E Y" }} &mdash;
+{% endblock %}
+
+
+{% block main %}
+    <div class="text textpage">
+        <h2>Вопрос</h2>
+        {{ question.question }}
+        <p>{{ question.name }}</p>
+        <h2>Ответ</h2>
+        {{ question.answer }}
+        <p>{{ question.author }}</p>
+    </div><!--/textpage-->
+{% endblock %}

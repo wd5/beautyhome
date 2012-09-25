@@ -287,8 +287,6 @@ $(function() {
         $('#id_iamge').click();
     });
 
-
-
     //Анимация корзины при изменении
     function animate_cart(){
         $('.cartbox').animate({
@@ -445,6 +443,52 @@ $(function() {
                 success:function(data){
                     $('.img_fly').remove();
                     create_img_fly(parent_blk.find('.product_img'));
+
+                    $('.cartbox').replaceWith(data);
+
+                    var fly = $('.img_fly');
+                    var left_end = $('.cartbox').offset().left;
+                    var top_end = $('.cartbox').offset().top;
+
+                    fly.animate(
+                        {
+                            left: left_end,
+                            top: top_end
+                        },
+                        {
+                            queue: false,
+                            duration: 600,
+                            easing: "swing"
+                        }
+                    ).fadeOut(600);
+
+                    setTimeout(function(){
+                        animate_cart();
+                    } ,600);
+
+                },
+                error:function(jqXHR,textStatus,errorThrown){
+
+                }
+            });
+        }
+
+    });
+
+    $('.review_buy_btn').live('click',function(){
+        var product_id = $(this).attr('name')
+        var parent_blk = $(this).parents('.iwant_pl')
+
+        if (product_id){
+            $.ajax({
+                type:'post',
+                url:'/add_product_to_cart/',
+                data:{
+                    'product_id':product_id
+                },
+                success:function(data){
+                    $('.img_fly').remove();
+                    create_img_fly(parent_blk.find('.iwant_img'));
 
                     $('.cartbox').replaceWith(data);
 

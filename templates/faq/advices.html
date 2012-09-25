@@ -35,6 +35,13 @@
             <div class="faqs">
                 {% if request.GET.success == 'True' %}Вопрос отправлен!{% endif %}
                 <form class="faq_form" method="post" action="" enctype="multipart/form-data">
+                    <div class="personal_input">
+                        {{ form.name }}
+                        {{ form.name.errors }}
+
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
                     <div class="faq_form_l col">
                         <div class="faq_textarea">
                             {{ form.question }}
@@ -60,7 +67,7 @@
                             </div>
                             <div class="faq_question">
                                 <p><a href="{{ advice.get_absolute_url }}">{{ advice.question }}</a></p>
-                                {% comment %}<p>Ирина</p>{% endcomment %}
+                                <p>{{ advice.name }}</p>
                             </div>
                             <div class="cl"></div>
                         </div>
