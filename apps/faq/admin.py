@@ -16,7 +16,7 @@ admin.site.register(Question, QuestionAdmin)
 
 
 class AdviceAdminForm(forms.ModelForm):
-    answer = forms.CharField(widget=Redactor(attrs={'cols': 110, 'rows': 20}), required=True)
+    answer = forms.CharField(widget=Redactor(attrs={'cols': 110, 'rows': 20}), required=False)
     answer.label=u'Ответ'
 
     class Meta:
