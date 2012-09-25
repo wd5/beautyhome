@@ -272,6 +272,23 @@ $(function() {
     });
 
 
+    $('.auth_lnk').live('click',function(){
+        $("#show_login_form").fadeIn('fast');
+        return false;
+    });
+
+    $("#show_login_form").live('click',function(e){
+        if (e.target.id === "show_login_form"){
+            $(this).fadeOut('fast');
+        }
+    });
+
+    $("#reg_modal_bg").live('click',function(e){
+        if (e.target.id === "reg_modal_bg"){
+            window.location = '/';
+        }
+    });
+
     // выпадашка советы
     $('.advices_btn').live('click',function(){
         $("div.advices_pl").toggle();
@@ -398,6 +415,7 @@ $(function() {
         $.ajax({
             url: "/load_items/",
             data: {
+                template: parent.find('#template').val(),
                 load_ids: parent.find('#loaded_ids').val(),
                 m_name: parent.find('#m_name').val(),
                 a_name: parent.find('#a_name').val()
@@ -409,18 +427,55 @@ $(function() {
                         $(this).next().fadeIn("fast", arguments.callee);
                     });
                 //parent.find('.loaded').fadeIn('slow')  //простое появление
-                parent.find('#loaded_ids').val(parent.find('#new_load_ids').val())
-                parent.find('.history').removeClass('loaded')
-                var rctxt = parent.find('#remaining_count_text').val()
-                var rc = parent.find('#remaining_count').val()
+                parent.find('#loaded_ids').val(parent.find('#new_load_ids').val());
+                parent.find('.history').removeClass('loaded');
+                var rctxt = parent.find('#remaining_count_text').val();
+                var rc = parent.find('#remaining_count').val();
                 if (rctxt!=undefined)
-                    {el.html(rctxt)}
+                    {el.html(rctxt);}
                 if (rc<=0)
-                    {parent.find('.more').remove()}
-                parent.find('#remaining_count_text').remove()
-                parent.find('.all_history').remove()
-                parent.find('#new_load_ids').remove()
-                parent.find('#remaining_count').remove()
+                    {parent.find('.more').remove();}
+                parent.find('#remaining_count_text').remove();
+                parent.find('.all_history').remove();
+                parent.find('#new_load_ids').remove();
+                parent.find('#remaining_count').remove();
+
+            }
+        });
+
+        return false;
+    });
+
+
+    $('.news_more a').live('click',function(){
+        var el = $(this);
+        var parent = $(this).parents('.load_block');
+        $.ajax({
+            url: "/load_items/",
+            data: {
+                template: parent.find('#template').val(),
+                load_ids: parent.find('#loaded_ids').val(),
+                m_name: parent.find('#m_name').val(),
+                a_name: parent.find('#a_name').val(),
+                last_class: parent.find('.new:last').attr('class')
+            },
+            type: "POST",
+            success: function(data) {
+                parent.append(data);
+                parent.find('.loaded:eq(0)').fadeIn("fast", function (){ //появление по очереди
+                        $(this).next().fadeIn("fast", arguments.callee);
+                    });
+                //parent.find('.loaded').fadeIn('slow')  //простое появление
+                parent.find('#loaded_ids').val(parent.find('#new_load_ids').val());
+                parent.find('.new').removeClass('loaded')
+                parent.find('#remaining_count_text').remove();
+                parent.find('#new_load_ids').remove();
+                parent.find('#remaining_count').remove();
+                if (parent.find('#loaded_ids').val()){
+                    parent.find('.news_more').appendTo(parent);
+                } else {
+                    parent.find('.news_more').remove();
+                }
 
             }
         });
@@ -697,7 +752,8 @@ $(function() {
                         {$('.cart_submit_btn').attr('disabled', true);}
                     else
                         {$('.cart_submit_btn').attr('disabled', false);}
-                    parent.append('<div class="cart_item_deleted"><a class="cart_back" name="'+data.cart_product_id+'" href="#">Вернуть</a></div>')
+                    parent.append('<div class="cart_item_deleted"><div class="btn2"><div class="btn2_in"><a class="cart_back" name="'+data.cart_product_id+'" href="#">Вернуть</a></div></div></div>')
+                    getCartboxHtml();
                 },
                 error:function(data){
                 }
@@ -724,7 +780,8 @@ $(function() {
                         {$('.cart_submit_btn').attr('disabled', true);}
                     else
                         {$('.cart_submit_btn').attr('disabled', false);}
-                    parent.find('.cart_item_deleted').remove()
+                    parent.find('.cart_item_deleted').remove();
+                    getCartboxHtml();
                 },
                 error:function(data){
                 }

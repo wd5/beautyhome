@@ -1,33 +1,33 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from datetime import date, datetime, timedelta
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, TemplateView
 from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from apps.users.views import GetLoadIds
 
 from models import News
 
-class NewsListView(ListView):
-    model = News
-    context_object_name = 'news'
-    queryset = model.objects.published()
-
-#    def get_queryset(self):
-#        from django.db.models import Q
-#        query = self.queryset.published()
-#
-#        date = self.request.GET.get('date', None)
-#        if date:
-#            date = date.split('.')
-#            query = query.filter(
-#                Q(date_add__year = date[2])&
-#                Q(date_add__month = date[1])&
-#                Q(date_add__day = date[0])
-#            )
-#        return query
+class NewsListView(TemplateView):
+    template_name = 'newsboard/news_list.html'
+    def get_context_data(self, **kwargs):
+        context = super(NewsListView, self).get_context_data()
+        news = News.objects.published()
+        loaded_count = 5
+        result = GetLoadIds(news, loaded_count, True)
+        splited_result = result.split('!')
+        try:
+            remaining_count = int(splited_result[0])
+        except:
+            remaining_count = False
+        next_id_loaded_items = splited_result[1]
+        context['loaded_count'] = remaining_count
+        context['next_id_loaded_items'] = next_id_loaded_items
+        context['news'] = news[:loaded_count]
+        return context
 
 news_list = NewsListView.as_view()
 
@@ -55,7 +55,6 @@ class NewsDetailView(DetailView):
         return self.render_to_response(context)
 
 news_detail = NewsDetailView.as_view()
-
 
 
 class LatestNewsFeed(Feed):

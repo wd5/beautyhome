@@ -69,7 +69,7 @@
                     <div class="advice advice_1"><div class="advice_lnk"><a href="/visage_advices/">Консультация визажистов</a></div></div>
                     {% if review_at_menu %}
                         <div class="advice advice_2 advice_curr">
-                            <div class="advice_lnk"><a href="/reviews/">Посмотреть обзоры</a></div>
+                            <div class="advice_lnk"><a href="/reviews/">Обзоры косметики</a></div>
                             <div class="advice_h"><a href="{{ review_at_menu.get_absolute_url }}">{{ review_at_menu.title }}</a></div>
                             {% comment %}<div>Guerlain</div>{% endcomment %}
                             <div class="advice_des"><p>{{ review_at_menu.short_description }}</p></div>
@@ -121,29 +121,28 @@
 </div>
 <!--/PAGE-->
 
-{% if user.is_authenticated %}
-{% else %}
-    <div style="display: none;">
-        <form class="auth_form" id="auth_form" method="post" action="{% url auth_login %}?next={% if request.path == '/show_order_form/' %}{{ request.path }}{% else %}{{ next_url }}{% endif %}">
-            {% csrf_token %}
-            <h2>Вход</h2>
-            <div class="personal_input">
-
-                <label>E-mail:</label>
-                {{ auth_form.username }}{{ auth_form.username.errors }} <a href="/registration_form/">Зарегистрироваться</a>
-            </div>
-            <div class="personal_input">
-
-                <label>Пароль:</label>
-                {{ auth_form.password }}{{ auth_form.password.errors }} <a href="/password/reset/">Восстановить пароль</a>
-            </div>
-            <div><input class="auth_submit" type="submit" value="Войти" /></div>
-        </form>
-    </div>
-{% endif %}
-
 </div><!--/wrapper-->
 
+{% if user.is_authenticated %}
+{% else %}
+<div class="modal_bg" style="z-index: 30;display: none;" id="show_login_form">
+	<div class="modal_add_adr">
+		<h1>Вход</h1>
+		<form method="post" id="auth_form" action="{% url auth_login %}?next={% if request.path == '/show_order_form/' %}{{ request.path }}{% else %}{{ next_url }}{% endif %}">{% csrf_token %}
+			<div class="add_adr_input">
+				<label>Электронная почта</label>
+                {{ auth_form.username }}{{ auth_form.username.errors }}
+			</div>
+			<div class="add_adr_input">
+				<label>Пароль</label>
+                {{ auth_form.password }}{{ auth_form.password.errors }}
+			</div>
+			<div class="adr_add_submit"><div class="btn3"><div class="btn3_in"><input type="submit" value="Войти" /></div></div></div>
+		</form>
+		<div class="add_adr_modal_shade"></div>
+	</div>
+</div><!--/modal_bg-->
+{% endif %}
 {% block modal_bg %}
 {% endblock %}
 

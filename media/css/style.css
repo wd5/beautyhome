@@ -658,13 +658,26 @@ input, textarea {
 .carousel_in {
 	border-radius: 20px;
 	border: 3px dashed #c7b299;
-	padding: 120px 52px 18px 52px;
+	padding: 0 52px 18px 52px;
 }
 .jcarousel-clip, #carousel li {
 	width: 882px;
-	height: 350px;
 	overflow: hidden;
 }
+.jcarousel-clip {
+	height: 470px;
+}
+#carousel li {
+	height: 350px;
+	padding: 120px 0 0 0;
+}
+.carousel .actions {
+	margin: -50px 0 0 0;
+}
+.carousel .action {
+	margin: 0 10px 0 10px;
+}
+
 
 .jcarousel-prev, .jcarousel-next {
 	cursor: pointer;
@@ -672,7 +685,8 @@ input, textarea {
 	width: 78px;
 	height: 78px;
 	position: absolute;
-	top: 100px;
+	top: 220px;
+	z-index: 5;
 }
 .jcarousel-prev {
 	left: -40px;
@@ -682,7 +696,7 @@ input, textarea {
 	right: -40px;
 }
 .jcarousel-prev:active, .jcarousel-next:active {
-	top: 102px;
+	top: 222px;
 }
 
 
@@ -1713,6 +1727,19 @@ div.item_label_action {background-position: 0 -145px;}
 	width: 684px;
 	position: relative;
 }
+.cart_item_deleted {
+	text-align: center;
+	background: url('../img/cart_item_deleted_bg.png');
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.cart_item_deleted .btn2 {
+	position: relative;
+	top: 54px;
+}
 
 .cart_item_img, .cart_item_des, .cart_qty, .cart_price, .cart_gift_label {
 	display: inline-block;
@@ -2122,7 +2149,7 @@ div.item_label_action {background-position: 0 -145px;}
 }
 .input2 {
 	background-position: 0 -160px;
-	width: 150px;
+	width: 363px;
 }
 
 .order_form label {
@@ -2438,6 +2465,19 @@ div.cabinet_menu a {
 	text-align: center;
 	font-size: 17px;
 	margin-top: 18px;
+}
+.personal_submit {
+	text-align: center;
+	margin: 36px 0 0 0;
+}
+.personal .sysmess {
+	color: #999;
+	font-style: italic;
+	font-size: 15px;
+	width: 150px;
+	position: absolute;
+	right: 120px;
+	bottom: 54px;
 }
 /*/personal*/
 

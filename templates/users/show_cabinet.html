@@ -24,6 +24,7 @@
                 <input type="hidden" id="loaded_ids" autocomplete="off" value="{{ next_id_loaded_items }}">
                 <input type="hidden" id="a_name" autocomplete="off" value="orders">
                 <input type="hidden" id="m_name" autocomplete="off" value="Order">
+                <input type="hidden" id="template" autocomplete="off" value="order_load_template">
                 {% for order in orders %}
                     {% include 'users/history_item.html' %}
                 {% empty %}
@@ -100,7 +101,8 @@
                 <div class="personal_subscribe">
                     <label><input type="checkbox" name="is_in_subscribe"{% if user.profile.is_in_subscribe %} checked{% endif %} /> Подписаться на рассылку новостей</label>
                 </div>
-                <div class="sysmess" style="color:red;"></div>
+                <div class="personal_submit"><div class="btn3"><div class="btn3_in"><input type="button" value="Сохранить" /></div></div></div>
+                <div class="sysmess"></div>
                 <div class="personal_shade"></div>
             </div><!--/personal-->
         {% endif %}

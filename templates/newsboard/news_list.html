@@ -10,7 +10,11 @@
     <div class="news">
         <h1>Новости</h1>
 
-        <div class="news_in">
+        <div class="news_in load_block">
+            <input type="hidden" id="loaded_ids" autocomplete="off" value="{{ next_id_loaded_items }}">
+            <input type="hidden" id="a_name" autocomplete="off" value="newsboard">
+            <input type="hidden" id="m_name" autocomplete="off" value="News">
+            <input type="hidden" id="template" autocomplete="off" value="news_load_template">
             {% for new in news %}
                 <div class="new {% cycle 'new_l' 'new_r' %}">
                     <h3 class="new_h"><a href="{{ new.get_absolute_url }}">{{ new.title }}</a></h3>
@@ -20,7 +24,9 @@
 
                 <div class="cl"></div>
             {% endfor %}
-            <div class="news_more"><div class="btn2"><div class="btn2_in"><a href="#">Еще 20</a></div></div></div>
+            {% if loaded_count %}
+                <div class="news_more"><div class="btn2"><div class="btn2_in"><a href="#">Еще {{ loaded_count }}</a></div></div></div>
+            {% endif %}
         </div><!--/news_in-->
     </div><!--/news-->
 {% endblock %}

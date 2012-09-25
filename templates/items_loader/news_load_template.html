@@ -1,0 +1,10 @@
+{% load pytils_numeral thumbnail %}
+
+{% for item in items %}
+    <div class="new {% if last_class == 'new new_l' %}{% cycle 'new_r' 'new_l' %}{% endif %}{% if last_class == 'new new_r' %}{% cycle 'new_l' 'new_r' %}{% endif %} loaded" style="display: none;">
+        <h3 class="new_h"><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+        <div class="new_date">{{ item.date_add|date:"j E" }}</div>
+        <div class="new_arr"></div>
+    </div>
+    <div class="cl"></div>
+{% endfor %}

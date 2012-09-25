@@ -25,13 +25,6 @@
             <span class="item_price cart_qty_total_price"><span>{{ cart_item.get_str_total }}</span> <i>руб.</i></span>
             <div class="cart_qty_ok"><input class="cart_qty_modal_ok"  type="button" value="Сохранить" /></div>
         </div>
-{% comment %}        <div class="cart_qty_modal" style="display: none;">
-            <h3>Изменить количество</h3>
-            <input type="hidden" class="initial_count" value="{{ cart_item.count }}">
-            <input type="hidden" class="cart_qty_item_id" value="{{ cart_item.id }}">
-            <p><span class="cart_qty_price"><span>{{ cart_item.product.price|floatformat:0 }}</span> руб.</span> × <input class="cart_qty_modal_text" type="text" value="{{ cart_item.count }}"/> = <span class="cart_qty_total_price"><span>{{ cart_item.get_str_total }}</span> руб.</span></p>
-            <div><input class="cart_qty_modal_ok" type="button" value="Сохранить" /> <input class="cart_qty_modal_cancel" type="button" value="Отменить" /></div>
-        </div>{% endcomment %}
     </div>
     <div class="cart_price">
         <div class="item_price">{{ cart_item.get_str_total }} <i>руб.</i></div>
@@ -41,5 +34,5 @@
         <div class="cart_leave"><input type="button" class="later_cart_id" name="{{ cart_item.id }}" value="Оставить на потом" /></div>
     </div>
 
-    {% if cart_item.is_deleted %}<div class="cart_item_deleted"><a class="cart_back" name="{{ cart_item.id }}" href="#">Вернуть</a></div>{% endif %}
+    {% if cart_item.is_deleted %}<div class="cart_item_deleted"><div class="btn2"><div class="btn2_in"><a class="cart_back" name="{{ cart_item.id }}" href="#">Вернуть</a></div></div></div>{% endif %}
 </div>

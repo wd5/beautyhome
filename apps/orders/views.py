@@ -38,7 +38,7 @@ class ShowOrderInfo(DetailView):
                 except:
                     loaded_count = 5
                 queryset = profile.get_orders()
-                result = GetLoadIds(queryset, loaded_count)
+                result = GetLoadIds(queryset, loaded_count, True)
                 splited_result = result.split('!')
                 try:
                     remaining_count = int(splited_result[0])

@@ -25,6 +25,7 @@
             <input type="hidden" id="loaded_ids" autocomplete="off" value="{{ next_id_loaded_items }}">
             <input type="hidden" id="a_name" autocomplete="off" value="orders">
             <input type="hidden" id="m_name" autocomplete="off" value="Order">
+            <input type="hidden" id="template" autocomplete="off" value="order_load_template">
             {% for order in orders %}
                 {% include 'users/history_item.html' %}
             {% empty %}

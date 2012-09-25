@@ -44,7 +44,8 @@ class RegistrationFormView(FormView):
             new_user.set_password(data['password1'])
             new_user.save()
 
-            profile = Profile.objects.create(user=new_user, name=u'', last_name=u'', third_name=u'', b_day=datetime.date(1991,1,1), sex=u'female')
+            profile = Profile.objects.create(user=new_user, name=u'', last_name=u'', third_name=u'',
+                b_day=datetime.date(1991, 1, 1), sex=u'female')
 
             send_email_registration(username=new_user.username, password=data['password1'], to_email=new_user.email)
 
@@ -116,15 +117,16 @@ class ShowProfileForm(FormView):
 
 show_profile_form = ShowProfileForm.as_view()
 
-def GetLoadIds(queryset, loaded_count):
+def GetLoadIds(queryset, loaded_count, split):
     counter = 0
     next_id_loaded_items = ''
     for item in queryset[loaded_count:]:
         counter = counter + 1
         div = counter % loaded_count
         next_id_loaded_items = u'%s,%s' % (next_id_loaded_items, item.id)
-        #if div == 0:
-        #    next_id_loaded_items = u'%s|' % next_id_loaded_items
+        if split:
+            if div == 0:
+                next_id_loaded_items = u'%s|' % next_id_loaded_items
 
     if next_id_loaded_items.startswith(',') or next_id_loaded_items.startswith('|'):
         next_id_loaded_items = next_id_loaded_items[1:]
@@ -173,7 +175,7 @@ class ShowCabinetView(TemplateView):
                     except:
                         loaded_count = 5
                     queryset = profile.get_orders()
-                    result = GetLoadIds(queryset, loaded_count)
+                    result = GetLoadIds(queryset, loaded_count, False)
                     splited_result = result.split('!')
                     try:
                         remaining_count = int(splited_result[0])
@@ -198,7 +200,7 @@ class ShowCabinetView(TemplateView):
                     context['addresses'] = profile.get_addresses()
                     user_set = User.objects.filter(id=profile.user_id)
                     profile = Profile.objects.get(id=self.request.user.profile.id)
-                    context['addresses_form'] =  AddressForm(initial={'user':profile.user})
+                    context['addresses_form'] = AddressForm(initial={'user': profile.user})
                     context['addresses_form'].fields['user'].queryset = user_set
                 if division == 'bonus':
                     pass
@@ -214,13 +216,19 @@ class ItemsLoaderView(View):
         if not request.is_ajax():
             return HttpResponseRedirect('/')
         else:
-            if 'load_ids' not in request.POST or 'm_name' not in request.POST or 'a_name' not in request.POST:
+            if 'load_ids' not in request.POST or 'm_name' not in request.POST or 'a_name' not in request.POST or 'template' not in request.POST:
                 return HttpResponseBadRequest()
 
             load_ids = request.POST['load_ids']
+            template = request.POST['template']
             app_name = request.POST['a_name']
             model_name = request.POST['m_name']
             model = get_model(app_name, model_name)
+
+            try:
+                last_class = request.POST['last_class']
+            except:
+                last_class = False
 
             load_ids_list = load_ids.split('|')
             block_id = load_ids_list[0]
@@ -247,11 +255,11 @@ class ItemsLoaderView(View):
                 return HttpResponseBadRequest()
 
             response = HttpResponse()
-            load_template = 'items_loader/order_load_template.html'
+            load_template = 'items_loader/%s.html' % template
             items_html = render_to_string(
                 'items_loader/base_loader.html',
                     {'items': queryset, 'load_template': load_template, 'remaining_count': remaining_count,
-                     'load_ids': load_ids}
+                     'load_ids': load_ids, 'last_class': last_class}
             )
             response.content = items_html
             return response
@@ -351,7 +359,7 @@ class EditUsrInfoView(View):
                     profile.save()
                     return HttpResponse(u'Изменения внесены')
             elif type == "is_in_subscribe":
-                if value=='checked':
+                if value == 'checked':
                     profile.is_in_subscribe = True
                 else:
                     profile.is_in_subscribe = False
@@ -376,7 +384,7 @@ class CheckAddrForm(View):
             else:
                 addr_form_html = render_to_string(
                     'users/add_addr_modal.html',
-                    {'addresses_form': addr_form}
+                        {'addresses_form': addr_form}
                 )
                 return HttpResponse(addr_form_html)
         else:

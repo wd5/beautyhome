@@ -10,27 +10,30 @@
     <div class="carousel_out">
         <input type="hidden" class="index_target" value="{{ target }}">
         <div class="carousel">
-
             <div class="carousel_in">
-                <ul class="carousel_actions">
+
+                <ul id="carousel" class="carousel_actions">
+
                     {% for list in actions %}
                         <li>
-                            {% for item in list %}
-                                <div class="action">
-                                   <div class="action_img"><a href="{{ item.get_absolute_url }}">
-                                       {% thumbnail item.image "253x321" crop="center" as im %}
-                                           <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
-                                       {% endthumbnail %}
-                                   </a></div>
-                                   <div class="action_shade"></div>
-                                   <h3 class="action_name"><a href="{{ item.get_absolute_url }}" {% if item.is_target_blank %}target="_blank"{% endif %}>{{ item.title }}</a></h3>
-                                </div>
-                            {% endfor %}
+                            <div class="actions">
+                                {% for item in list %}
+                                    <div class="action">
+                                       <div class="action_img"><a href="{{ item.get_absolute_url }}">
+                                           {% thumbnail item.image "253x321" crop="center" as im %}
+                                               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                           {% endthumbnail %}
+                                       </a></div>
+                                       <div class="action_shade"></div>
+                                       <h3 class="action_name"><a href="{{ item.get_absolute_url }}" {% if item.is_target_blank %}target="_blank"{% endif %}>{{ item.title }}</a></h3>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
 
-                <ul class="carousel_daily">
+                <ul  id="carousel" class="carousel_daily">
                     {% for list in products_daily %}
                         <li>
                         {% for item in list %}
@@ -51,7 +54,7 @@
                     {% endfor %}
                 </ul>
 
-                <ul class="carousel_hit">
+                <ul id="carousel" class="carousel_hit">
                     {% for list in products_hit %}
                         <li>
                         {% for item in list %}
@@ -72,7 +75,7 @@
                     {% endfor %}
                 </ul>
 
-                <ul class="carousel_new">
+                <ul id="carousel" class="carousel_new">
                     {% for list in products_new %}
                         <li>
                         {% for item in list %}
@@ -93,7 +96,7 @@
                     {% endfor %}
                 </ul>
 
-                <ul class="carousel_unique">
+                <ul id="carousel" class="carousel_unique">
                     {% for list in products_unique %}
                         <li>
                         {% for item in list %}
