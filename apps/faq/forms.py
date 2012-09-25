@@ -69,6 +69,5 @@ class AdviceForm(forms.ModelForm):
     )
 
     class Meta:
-    class Meta:
         model = Advice
         fields = ('name', 'email','question','image',)
