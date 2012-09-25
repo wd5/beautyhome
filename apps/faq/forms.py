@@ -59,7 +59,7 @@ class AdviceForm(forms.ModelForm):
         required=True
     )
 
-    image = forms.CharField(
+    image = forms.ImageField(
         widget=forms.FileInput(
             attrs={
                 'style': 'visibility: hidden; position: absolute;',
@@ -68,6 +68,7 @@ class AdviceForm(forms.ModelForm):
         required=False
     )
 
+    class Meta:
     class Meta:
         model = Advice
         fields = ('name', 'email','question','image',)
