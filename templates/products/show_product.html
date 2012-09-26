@@ -2,11 +2,19 @@
 
 {% load thumbnail siteblocks_extras pagination_tags products_extras %}
 
+{% block jq_extend %}
+    <!-- Put this script tag to the <head> of your page -->
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?52"></script>
+{% endblock %}
+
 {% block title %}
     {{ product.title|striptags }} &mdash;
 {% endblock %}
 
 {% block main %}
+    <script type="text/javascript">
+      VK.init({apiId: 3144299, onlyWidgets: true});
+    </script>
     <div class="catalog">
         <div class="catalog_l col">
             <div class="catalog_menu">
@@ -124,7 +132,12 @@
                             {% endif %}
                         </ul>
 
-<!--    todo:                    <div class="product_likes">лайки контакта</div> -->
+                 <div class="product_likes">
+                     <div id="vk_like"></div>
+                     <script type="text/javascript">
+                     VK.Widgets.Like("vk_like", {type: "mini"});
+                     </script>
+                 </div>
                     </div>
                 </div><!--/product_l-->
 
@@ -226,10 +239,20 @@
 
     {% block_recent request.session %}
 
-    <!-- todo: vk
+    <!-- todo: vk-->
     <div class="vk">
-        <div class="vk_l col">код "Мы вконтакте"</div>
-        <div class="vk_r col">код комментов контакта</div>
+        <div class="vk_l col">
+            <div id="vk_groups"></div>
+            <script type="text/javascript">
+            VK.Widgets.Group("vk_groups", {mode: 0, width: "250", height: "290"}, 30216168);
+            </script>
+        </div>
+        <div class="vk_r col">
+            <div id="vk_comments"></div>
+            <script type="text/javascript">
+            VK.Widgets.Comments("vk_comments", {limit: 5, width: "696", attach: "*"});
+            </script>
+        </div>
     </div><!--/vk-->
 {% endblock %}
 

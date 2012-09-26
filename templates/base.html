@@ -12,6 +12,7 @@
     <script type="text/javascript" src="/media/js/jquery-ui-1.8.21.custom.min.js"></script>
     <script type="text/javascript" src="/media/js/fancybox/jquery.fancybox.pack.js"></script>
     <script type="text/javascript" src="/media/js/fancybox/helpers/jquery.fancybox-thumbs.js"></script>
+    {% block jq_extend %}{% endblock %}
     <script type="text/javascript" src="/media/js/script.js"></script>
     <title>
         {% block title %}
@@ -38,9 +39,9 @@
 
 		<div class="purse">
 			<div class="header_search">
-				<form method="post" action="">
+				<form class="search_form" method="get" action="/search/">
 					<div>
-						<input class="header_search_inpt" type="text" placeholder="поиск"/>
+						<input class="header_search_inpt" type="text" value="{% block query_text %}{% endblock %}" name="q" placeholder="поиск"/>
 						<input class="header_search_submit" type="submit" value="" />
 					</div>
 				</form>
@@ -105,9 +106,9 @@
 		</div>
 
 		<div class="footer_search">
-			<form method="post" action="">
+			<form class="search_form" method="get" action="/search/">
 				<div>
-					<input class="footer_search_inpt" type="text" placeholder="поиск"/>
+					<input class="footer_search_inpt" type="text" value="{% block query_text_footer %}{% endblock %}" name="q" placeholder="поиск"/>
 					<input class="footer_search_submit" type="submit" value="" />
 				</div>
 			</form>

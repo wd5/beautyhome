@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
-from apps.products.views import show_category, show_product, show_brand, load_le_subcat, show_life_events, show_reviews, show_review_detail
+from apps.products.views import show_category, show_product, show_brand, load_le_subcat, show_life_events, show_reviews, show_review_detail, search_in
 from apps.orders.views import show_order_info
 from apps.newsboard.views import news_list,news_detail
 from apps.siteblocks.views import show_action
@@ -12,6 +12,7 @@ from apps.users.views import show_cabinet, edt_profile_info, show_profile_form, 
 
 from views import index
 
+#url(r'^captcha/', include('captcha.urls')),
 urlpatterns = patterns('',
     url(r'^$',index, name='index'),
     (r'^faq/', include('apps.faq.urls')),
@@ -37,7 +38,8 @@ urlpatterns = patterns('',
     (r'^reviews/$',show_reviews),
     (r'^reviews/(?P<pk>\d+)/$',show_review_detail),
 
-    #(r'^catalog/search/$',search_products,),
+    (r'^search/$',search_in),
+
     (r'^category/$', index),
     (r'^category/(?P<slug>[^/]+)/$',show_category, {'sub_slug':'all'}),
     (r'^category/(?P<slug>[^/]+)/(?P<pk>\d+)/$',show_product),
@@ -102,7 +104,6 @@ urlpatterns = patterns('',
 
 
 )
-#url(r'^captcha/', include('captcha.urls')),
 
 #urlpatterns += #app_url
 

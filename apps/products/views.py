@@ -11,6 +11,8 @@ from django.views.generic.simple import direct_to_template
 from django.views.generic import ListView, DetailView, DetailView
 
 from models import Category, Product, Brand, LECategory, LifeEvent, Review
+from apps.faq.models import Advice
+
 
 
 class ShowCategory(TemplateView):
@@ -278,7 +280,6 @@ class ReviewListView(ListView):
 
 show_reviews = ReviewListView.as_view()
 
-
 class ShowReview(DetailView):
     model = Review
     context_object_name = 'review'
@@ -309,3 +310,51 @@ class ShowReview(DetailView):
         return context
 
 show_review_detail = ShowReview.as_view()
+
+class SearchInView(TemplateView):
+    template_name = 'search_results.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchInView, self).get_context_data()
+        products = Product.objects.published()
+        advices = Advice.objects.published()
+        reviews = Review.objects.published()
+        brands = Brand.objects.published()
+        try:
+            q = self.request.GET['q']
+        except:
+            q = ''
+        if q=='':
+            q = '?'
+        qs_products = products.filter(
+            Q(title__icontains=q) |
+            Q(category__title__icontains=q) |
+            Q(brand__title__icontains=q) |
+            Q(series__icontains=q) |
+            Q(collection__icontains=q) |
+            Q(art__icontains=q) |
+            Q(composition__icontains=q) |
+            Q(description__icontains=q) |
+            Q(price__icontains=q)
+        )
+        qs_advices = advices.filter(
+            Q(question__icontains=q) |
+            Q(answer__icontains=q)
+        )
+        qs_reviews = reviews.filter(
+            Q(title__icontains=q) |
+            Q(short_description__icontains=q) |
+            Q(description__icontains=q)
+        )
+        qs_brands = brands.filter(
+            Q(title__icontains=q) |
+            Q(description__icontains=q)
+        )
+        context['result_products'] = qs_products
+        context['result_advices'] = qs_advices
+        context['result_reviews'] = qs_reviews
+        context['result_brands'] = qs_brands
+        context['query'] = q
+        return context
+
+search_in = SearchInView.as_view()

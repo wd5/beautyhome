@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% load thumbnail %}
+
+{% block title %}
+    Результаты поиска &mdash;
+{% endblock %}
+{% block query_text %}{{ query }}{% endblock %}
+
+{% block main %}
+        <h1>Результаты поиска по запросу &laquo;{{ query }}&raquo;</h1>
+        {{ result_products }}<br/>
+        {{ result_advices }}<br/>
+        {{ result_reviews }}<br/>
+        {{ result_brands }}
+{% endblock %}
+
+{% block query_text_footer %}{{ query }}{% endblock %}
+
+
