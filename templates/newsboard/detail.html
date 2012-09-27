@@ -9,10 +9,22 @@
 
 
 {% block main %}
-    <div class="text textpage">
+    <div class="catalog_l col">
+    </div><!--/catalog_l-->
+
+    <div class="catalog_r col">
         <div class="bread"><a href="/news/">Новости</a> / </div>
-        <h2>{{ news_current.title }}</h2>
-        {{ news_current.text|safe }}
-        <p>{{ news_current.date_add|date:"j E Y" }}</p>
-    </div><!--/textpage-->
+        <div class="comment">
+            <h2>{{ news_current.title }}</h2>
+
+            <div class="comment_l col">
+                <div class="text">
+                    {{ news_current.text|safe }}
+                </div>
+                <div>{{ news_current.date_add|date:"j E Y" }}</div>
+            </div>
+        </div>
+
+    </div><!--/catalog_r-->
+
 {% endblock %}

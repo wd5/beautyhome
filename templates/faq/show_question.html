@@ -9,12 +9,28 @@
 
 
 {% block main %}
-    <div class="text textpage">
-        <h2>Вопрос</h2>
-        {{ question.question }}
-        <p>{{ question.name }}</p>
-        <h2>Ответ</h2>
-        {{ question.answer }}
-        <p>{{ question.author }}</p>
+    <div class="catalog">
+        <div class="catalog_l col">
+        </div><!--/catalog_l-->
+
+        <div class="catalog_r col">
+            <div class="bread">Советы / <a href="/visage_advices/">Консультация визажистов</a> / </div>
+            <div class="comment">
+                <div class="comment_l col">
+                    <p>{{ question.name }}</p>
+                    <div class="text">
+                        {{ question.question }}
+                    </div>
+                </div>
+                <div>
+                    <p>{{ question.answer }}</p>
+                    <p>{{ question.author }}</p>
+                </div>
+
+                <div class="comment_r col">
+                </div>
+            </div><!--/comment-->
+        </div><!--/catalog_r-->
+
     </div><!--/textpage-->
 {% endblock %}

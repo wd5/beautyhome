@@ -13,27 +13,27 @@
         <div class="catalog_l col">
         </div><!--/catalog_l-->
 
-        <h2>Вопрос</h2>
-        <div class="faq">
-           <div class="faq_img">
-               {% thumbnail advice.image "250" as im %}
-                   <img src="{{ im.url }}" width="{{ im.width }}" alt="" />
-               {% endthumbnail %}
-           </div>
-           <div class="faq_question">
-               <p>{{ advice.question }}</p>
-               <p>{{ advice.name }}</p>
-           </div>
-           <div class="cl"></div>
-       </div>
+        <div class="catalog_r col">
+            <div class="bread">Советы / <a href="/visage_advices/">Консультация визажистов</a> / </div>
+            <div class="comment">
+                <div class="comment_l col">
+                    <p>{{ advice.name }}</p>
+                    <div class="text">
+                        {% thumbnail advice.image "250" as im %}
+                           <img src="{{ im.url }}" width="{{ im.width }}" alt="" />
+                        {% endthumbnail %}
+                        {{ advice.description }}
+                    </div>
+                </div>
+                <div>
+                    <p>{{ advice.answer }}</p>
+                    <p>{{ advice.author }}</p>
+                </div>
 
-        <h2>Ответ</h2>
-        <div class="faq">
-           <div class="faq_question">
-               <p>{{ advice.answer }}</p>
-               <p>{{ advice.author }}</p>
-           </div>
-           <div class="cl"></div>
-       </div>
+                <div class="comment_r col">
+                </div>
+            </div><!--/comment-->
+        </div><!--/catalog_r-->
+
     </div><!--/textpage-->
 {% endblock %}
