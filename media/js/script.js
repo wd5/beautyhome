@@ -294,9 +294,19 @@ $(function() {
         $("div.advices_pl").toggle();
     });
 
-    $('div.advices_pl').live('mouseleave', function() {
-        $('.advices_pl').hide();
+    $('.advice_lnk_button').live('click',function(){
+        var el = $(this);
+        var parent = $(this).parents('.advice');
+        var advice_containers = $('.advice_container');
+        $('.advice').removeClass('advice_curr');
+        parent.addClass('advice_curr');
+        advice_containers.slideUp();
+        parent.find('.advice_container').slideDown();
     });
+
+    /*$('div.advices_pl').live('mouseleave', function() {
+        $('.advices_pl').hide();
+    });*/
 
 
 

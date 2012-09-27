@@ -67,16 +67,36 @@
             <div class="advices_btn"><span>Советы</span></div>
             <div class="advices_pl" style="display: none;">
                 <div class="advices_content">
-                    <div class="advice advice_1"><div class="advice_lnk"><a href="/visage_advices/">Консультация визажистов</a></div></div>
-                    {% if review_at_menu %}
-                        <div class="advice advice_2 advice_curr">
-                            <div class="advice_lnk"><a href="/reviews/">Обзоры косметики</a></div>
-                            <div class="advice_h"><a href="{{ review_at_menu.get_absolute_url }}">{{ review_at_menu.title }}</a></div>
-                            {% comment %}<div>Guerlain</div>{% endcomment %}
-                            <div class="advice_des"><p>{{ review_at_menu.short_description }}</p></div>
+                    {% if advice_at_menu %}
+                        <div class="advice advice_1">
+                            <div class="advice_lnk"><a href="#" class="advice_lnk_button">Консультация визажистов</a></div>
+                            <div class="advice_container" style="display: none;">
+                                <div class="advice_h"><a href="{{ advice_at_menu.get_absolute_url }}">{{ advice_at_menu.question }}</a></div>
+                                <div class="advice_des"><p>{{ advice_at_menu.answer }}</p><a href="/visage_advices/">Все вопросы визажистам</a></div>
+                            </div>
                         </div>
                     {% endif %}
-                    <div class="advice"><div class="advice_lnk"><a href="/faq/">Вопросы-ответы</a></div></div>
+
+                    {% if review_at_menu %}
+                        <div class="advice advice_2 advice_curr">
+                            <div class="advice_lnk"><a href="#" class="advice_lnk_button">Обзоры косметики</a></div>
+                            <div class="advice_container">
+                                <div class="advice_h"><a href="{{ review_at_menu.get_absolute_url }}">{{ review_at_menu.title }}</a></div>
+                                {% comment %}<div>Guerlain</div>{% endcomment %}
+                                <div class="advice_des"><p>{{ review_at_menu.short_description }}</p><a href="/reviews/">Все обзоры косметики</a></div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if question_at_menu %}
+                        <div class="advice">
+                            <div class="advice_lnk"><a href="#" class="advice_lnk_button">Вопросы-ответы</a></div>
+                            <div class="advice_container" style="display: none;">
+                                <div class="advice_h"><a href="{{ question_at_menu.get_absolute_url }}">{{ question_at_menu.question }}</a></div>
+                                <div class="advice_des"><p>{{ question_at_menu.answer }}</p><a href="/faq/">Все вопросы-ответы</a></div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div><!--/advices_content-->
 
                 <div class="advices_t"></div>

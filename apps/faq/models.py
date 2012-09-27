@@ -26,6 +26,7 @@ class Question(models.Model):
         verbose_name = _(u'question')
         verbose_name_plural = _(u'questions')
         ordering = ['-pub_date']
+        get_latest_by = 'pub_date'
 
     def __unicode__(self):
         return u'Вопрос от %s' % self.pub_date
@@ -78,6 +79,7 @@ class Advice(models.Model): #консультация визажиста
         verbose_name = _(u'advice')
         verbose_name_plural = _(u'advices')
         ordering = ['-pub_date']
+        get_latest_by = 'pub_date'
 
     def __unicode__(self):
         return u'Вопрос визажистам от %s' % self.pub_date
